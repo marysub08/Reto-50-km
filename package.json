@@ -1,0 +1,10 @@
+{
+  "name": "desafio-50k-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Funciones serverless para el cobro con Mercado Pago y el progreso de los alumnos del Desafío 50 km",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "mercadopago": "^3.5.0"
+  }
+}

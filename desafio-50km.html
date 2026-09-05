@@ -1,0 +1,2345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desafío 50 km en 30 días – Plan Personalizado</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon-180.png">
+<script>
+window.onerror = function(msg, src, line) {
+  var d = document.getElementById('js-error-banner');
+  if (!d) {
+    d = document.createElement('div');
+    d.id = 'js-error-banner';
+    d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#dc2626;color:#fff;padding:12px 16px;font-size:13px;z-index:9999;word-break:break-all';
+    document.body ? document.body.insertBefore(d, document.body.firstChild) : document.addEventListener('DOMContentLoaded', function(){ document.body.insertBefore(d, document.body.firstChild); });
+  }
+  d.textContent = 'Error JS (ln ' + line + '): ' + msg;
+};
+</script>
+<style>
+  :root {
+    --azul-dk:    #075985;
+    --azul:       #0284c7;
+    --azul-md:    #0ea5e9;
+    --celeste:    #1d5c82;
+    --celeste-lt: #0369a1;
+    --fondo:      #f5fafd;
+    --fondo-2:    #eaf5fb;
+    --card-bg:    rgba(14,165,233,.06);
+    --card-brd:   rgba(14,165,233,.22);
+    --texto:      #0c2436;
+    --texto-2:    #075985;
+    --glass:      rgba(255,255,255,.75);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { overflow-x: hidden; }
+  body { max-width: 100vw; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; color: var(--texto); background: var(--fondo); min-height: 100vh; }
+
+  /* ── PROFESSIONAL ICON SYSTEM (replaces the most visible emoji) ── */
+  .icn { display: inline-flex; align-items: center; justify-content: center; width: 1em; height: 1em; vertical-align: -0.15em; flex-shrink: 0; }
+  .icn svg { width: 100%; height: 100%; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #eaf5fb 0%, #dcf0fa 55%, #cfe9f8 100%);
+    padding: 36px 24px 28px; text-align: center;
+    border-bottom: 1px solid var(--card-brd); position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+    width: 500px; height: 300px;
+    background: radial-gradient(ellipse, rgba(14,165,233,.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block; background: var(--card-bg); border: 1px solid var(--card-brd);
+    color: var(--azul-md); font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 14px;
+  }
+  .hero h1 { font-size: clamp(1.8rem,5vw,2.8rem); font-weight: 800; line-height: 1.1; margin-bottom: 8px; color: var(--texto); }
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--azul), var(--azul-md));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero p { font-size: .95rem; color: var(--celeste); max-width: 400px; margin: 0 auto; }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    background: var(--fondo-2); padding: 12px 24px;
+    border-bottom: 1px solid var(--card-brd); position: sticky; top: 0; z-index: 100; display: none;
+  }
+  .progress-wrap.visible { display: block; }
+  .progress-label { font-size: 12px; color: var(--celeste); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .progress-bar { height: 4px; background: rgba(14,165,233,.12); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--azul-dk), var(--azul-md)); border-radius: 2px; transition: width .4s; }
+
+  /* ── LAYOUT ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+  .container { max-width: 680px; margin: 0 auto; padding: 24px 16px; }
+
+  /* ── CARDS ── */
+  .card { background: var(--card-bg); border: 1px solid var(--card-brd); border-radius: 16px; padding: 22px; margin-bottom: 16px; }
+  .card-glow { background: var(--card-bg); border: 1px solid var(--card-brd); border-radius: 16px; padding: 22px; margin-bottom: 16px; position: relative; overflow: hidden; }
+  .card-glow::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 0%, rgba(56,189,248,.08) 0%, transparent 60%); pointer-events: none; }
+
+  /* ── FORM ── */
+  .q-step-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--azul-md); text-transform: uppercase; margin-bottom: 6px; }
+  .q-question { font-size: 1.1rem; font-weight: 700; color: var(--texto); margin-bottom: 20px; line-height: 1.3; }
+  .input-group { margin-bottom: 16px; }
+  .input-group label { display: block; font-size: 12px; font-weight: 600; color: var(--celeste); margin-bottom: 6px; }
+  .input-group input, .input-group select {
+    width: 100%; padding: 12px 14px;
+    background: rgba(14,165,233,.05); border: 1px solid var(--card-brd);
+    border-radius: 10px; font-size: 15px; color: var(--texto); transition: border-color .2s;
+  }
+  .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--azul-md); background: rgba(14,165,233,.1); }
+  .input-group select option { background: #fff; }
+
+  .opts { display: grid; gap: 10px; }
+  .opts.c2 { grid-template-columns: 1fr 1fr; }
+  .opt {
+    border: 1px solid var(--card-brd); border-radius: 12px; padding: 14px 12px;
+    cursor: pointer; background: var(--card-bg); transition: all .2s;
+  }
+  .opt:hover { border-color: var(--azul-md); background: rgba(14,165,233,.1); }
+  .opt.sel { border-color: var(--azul-md); background: rgba(14,165,233,.15); box-shadow: 0 0 0 1px var(--azul-md); }
+  .opt-icon { font-size: 1.4rem; margin-bottom: 4px; }
+  .opt-label { font-size: 13px; font-weight: 700; color: var(--texto); }
+  .opt-desc { font-size: 11px; color: var(--celeste); margin-top: 2px; line-height: 1.3; }
+  .opt-row { border: 1px solid var(--card-brd); border-radius: 12px; padding: 13px 16px; cursor: pointer; background: var(--card-bg); transition: all .2s; display: flex; align-items: flex-start; gap: 12px; }
+  .opt-row:hover { border-color: var(--azul-md); background: rgba(14,165,233,.1); }
+  .opt-row.sel { border-color: var(--azul-md); background: rgba(14,165,233,.15); }
+  .opt-row .opt-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; margin-bottom: 0; }
+
+  /* ── BUTTONS ── */
+  .nav-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+  .btn { padding: 12px 22px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all .2s; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .btn-p { background: linear-gradient(135deg, var(--azul-dk), var(--azul)); color: #fff; }
+  .btn-p:hover { opacity: .88; transform: translateY(-1px); }
+  .btn-p:active { opacity: .7; transform: none; }
+  .btn-s { background: rgba(14,165,233,.08); border: 1px solid var(--card-brd); color: var(--celeste); }
+  .btn-s:hover { background: rgba(14,165,233,.16); }
+  .btn-lg { padding: 14px 28px; font-size: 15px; width: 100%; text-align: center; border-radius: 12px; }
+  .btn:disabled { opacity: .3; cursor: not-allowed; transform: none; }
+
+  /* ── PLAN HEADER ── */
+  .plan-hdr {
+    background: linear-gradient(135deg, rgba(14,165,233,.1), rgba(3,105,161,.16));
+    border: 1px solid var(--card-brd); border-radius: 16px; padding: 22px; margin-bottom: 18px;
+    position: relative; overflow: hidden;
+  }
+  .plan-hdr::after {
+    content: ''; position: absolute; right: 10px; bottom: 2px; width: 80px; height: 80px; opacity: .12;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23075985' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='6' cy='18' r='3.2'/%3E%3Ccircle cx='18' cy='18' r='3.2'/%3E%3Cpath d='M6 18 10 10h5M10 10l3 8M13 18h5M13 18l-3-4M15 10l3 8'/%3E%3Ccircle cx='15' cy='6' r='1.3' fill='%23075985' stroke='none'/%3E%3C/svg%3E");
+    background-size: contain; background-repeat: no-repeat;
+  }
+  .plan-hdr .greeting { font-size: 12px; color: var(--celeste); margin-bottom: 4px; }
+  .plan-hdr h2 { font-size: 1.35rem; font-weight: 800; color: var(--texto); margin-bottom: 10px; }
+  .chip { display: inline-block; background: rgba(14,165,233,.1); border: 1px solid rgba(56,189,248,.2); border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 600; color: var(--celeste-lt); margin-right: 6px; margin-bottom: 4px; }
+
+  /* ── WEEK LABEL ── */
+  .week-bar { display: flex; align-items: center; gap: 12px; background: rgba(14,165,233,.07); border: 1px solid var(--card-brd); border-radius: 12px; padding: 14px 16px; margin-bottom: 18px; }
+  .week-num { background: linear-gradient(135deg, var(--azul-dk), var(--azul)); color: #fff; font-weight: 900; font-size: 1.2rem; min-width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .week-bar-text .wbt { font-size: .95rem; font-weight: 700; color: var(--texto); }
+  .week-bar-text .wbd { font-size: 12px; color: var(--celeste); margin-top: 3px; line-height: 1.4; }
+
+  /* ── SECTION TITLE ── */
+  .sec-title { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--texto-2); margin: 20px 0 10px; display: flex; align-items: center; gap: 6px; }
+  .checkin-wrap h3 { display: flex; align-items: center; gap: 7px; }
+
+  /* ── DAY CARDS ── */
+  .day-card { background: var(--card-bg); border: 1px solid var(--card-brd); border-radius: 12px; padding: 13px 15px; margin-bottom: 8px; display: flex; gap: 13px; align-items: flex-start; transition: border-color .2s; }
+  .day-card:hover { border-color: var(--azul-md); }
+  .day-num-col { min-width: 36px; text-align: center; }
+  .dname { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--texto-2); }
+  .dnum { font-size: 1.3rem; font-weight: 900; color: var(--texto); line-height: 1; }
+  .day-body { flex: 1; }
+  .day-bdg { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 5px; margin-bottom: 5px; }
+  .bdg-bike { background: rgba(14,165,233,.15); color: var(--azul-md); border: 1px solid rgba(14,165,233,.25); }
+  .bdg-str  { background: rgba(139,92,246,.14); color: #6d28d9; border: 1px solid rgba(139,92,246,.25); }
+  .bdg-rest { background: rgba(148,163,184,.1); color: #64748b; border: 1px solid rgba(148,163,184,.2); }
+  .day-main { font-size: 14px; font-weight: 600; color: var(--texto); line-height: 1.3; }
+  .day-main .elev-row { font-weight: 400; }
+  .day-det  { font-size: 12px; color: var(--celeste); line-height: 1.4; margin-top: 3px; }
+
+  /* ── GOAL BOX ── */
+  .goal-box { background: rgba(14,165,233,.07); border: 1px solid var(--card-brd); border-radius: 14px; padding: 16px; margin-bottom: 14px; text-align: center; }
+  .goal-box .gi { font-size: 1.8rem; margin-bottom: 5px; }
+  .goal-box h3 { font-size: .95rem; font-weight: 800; color: var(--texto); margin-bottom: 5px; }
+  .goal-box p { font-size: 13px; color: var(--celeste); line-height: 1.5; }
+
+  /* ── EXERCISE CARDS ── */
+  .ex-card { background: #ffffff; border: 1px solid var(--card-brd); border-radius: 12px; margin-bottom: 8px; overflow: hidden; transition: border-color .2s, transform .1s; }
+  .ex-card:hover { border-color: var(--azul-md); transform: translateY(-1px); }
+  .ex-card:active { transform: translateY(0); }
+  .ex-hdr { display: flex; align-items: center; gap: 12px; padding: 14px 15px; }
+  .ex-ico { font-size: 1.4rem; width: 32px; text-align: center; flex-shrink: 0; color: var(--azul-dk); }
+  .ex-info { flex: 1; min-width: 0; }
+  .ex-name { font-size: 14px; font-weight: 700; color: var(--texto); }
+  .ex-sets-chip { background: rgba(14,165,233,.18); border: 1px solid rgba(56,189,248,.4); color: #075985; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; }
+  .ex-toggle { font-size: 11px; color: var(--azul-md); flex-shrink: 0; padding: 0; background: none; border: none; cursor: pointer; white-space: nowrap; }
+  .ex-body { display: none; padding: 0 15px 13px 55px; border-top: 1px solid var(--card-brd); }
+  /* ── STRENGTH DAY CARDS ── */
+  .day-card-str { cursor: pointer; border-color: rgba(56,189,248,.35); }
+  .day-card-str:hover { border-color: var(--azul-md); background: rgba(14,165,233,.1); }
+  .day-card-str:active { transform: scale(.99); }
+  .str-arrow { font-size: 11px; font-weight: 700; color: var(--azul-md); white-space: nowrap; align-self: center; flex-shrink: 0; padding-left: 6px; }
+  @keyframes str-pulse { 0%,100%{border-color:var(--card-brd)} 50%{border-color:var(--azul)} }
+  .str-flash { animation: str-pulse .6s ease; }
+  .ex-body.open { display: block; }
+  .ex-steps-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--azul-md); margin: 10px 0 7px; }
+  .ex-steps { list-style: none; }
+  .ex-steps li { font-size: 12px; color: var(--celeste-lt); padding: 4px 0 4px 16px; border-left: 2px solid rgba(56,189,248,.2); margin-left: 4px; margin-bottom: 3px; line-height: 1.5; position: relative; }
+  .ex-steps li::before { content: '→'; position: absolute; left: -12px; color: var(--azul-md); font-size: 10px; top: 5px; }
+  .ex-tip { font-size: 12px; color: var(--texto-2); margin-top: 8px; padding: 7px 10px; background: rgba(14,165,233,.06); border-radius: 7px; border-left: 2px solid var(--azul); line-height: 1.4; }
+
+  /* ── NUTRITION ── */
+  .nut-row { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(56,189,248,.1); align-items: flex-start; }
+  .nut-row:last-child { border-bottom: none; }
+  .nut-ico { font-size: 1.2rem; width: 26px; text-align: center; flex-shrink: 0; margin-top: 2px; }
+  .nut-title { font-size: 13px; font-weight: 700; color: var(--texto); margin-bottom: 2px; }
+  .nut-items { font-size: 12px; color: var(--celeste); line-height: 1.4; }
+
+  /* ── ALERTS ── */
+  .alert { border-radius: 12px; padding: 13px 15px; font-size: 13px; line-height: 1.5; margin-bottom: 14px; display: none; }
+  .alert.show { display: block; }
+  .alert-warn { background: rgba(245,158,11,.1); border: 1px solid rgba(245,158,11,.3); color: #92400e; }
+  .alert-info { background: rgba(139,92,246,.1); border: 1px solid rgba(139,92,246,.25); color: #6d28d9; }
+  .alert strong { font-weight: 700; }
+  .warmup-box { background: rgba(250,204,21,.07); border: 1px solid rgba(250,204,21,.25); border-radius: 10px; padding: 12px 14px; font-size: 12px; color: #92400e; line-height: 1.5; margin-bottom: 12px; }
+  .pers-box { background: rgba(139,92,246,.08); border: 1px solid rgba(139,92,246,.25); border-radius: 12px; padding: 13px 15px; font-size: 13px; color: #6d28d9; line-height: 1.5; margin-bottom: 16px; }
+  .ex-age-note { font-size: 11px; color: #92400e; background: rgba(250,204,21,.06); border-radius: 6px; padding: 5px 8px; margin-top: 5px; border-left: 2px solid rgba(250,204,21,.4); line-height: 1.4; }
+  .rest-note { font-size: 12px; color: var(--celeste); background: rgba(14,165,233,.06); border-radius: 7px; padding: 8px 11px; margin-bottom: 10px; }
+
+  /* ── MODAL ── */
+  .ex-modal { display:none; position:fixed; inset:0; background:rgba(245,250,253,.98); z-index:500; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:16px 16px 40px; }
+  .ex-modal.open { display:flex; flex-direction:column; }
+  .ex-modal-inner { max-width:600px; width:100%; margin:0 auto; background:#ffffff; border:1px solid rgba(56,189,248,.3); border-radius:18px; padding:24px 22px; }
+  .ex-modal-close { display:flex; justify-content:flex-end; margin-bottom:20px; }
+  .ex-modal-close button { background:rgba(14,165,233,.15); border:1px solid rgba(56,189,248,.4); color:var(--celeste); padding:9px 18px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:700; letter-spacing:.3px; }
+  .ex-modal-close button:hover { background:rgba(14,165,233,.28); }
+  .ex-modal-title { font-size:1.4rem; font-weight:800; color:var(--texto); margin-bottom:6px; }
+  .ex-modal-subtitle { font-size:13px; color:#92400e; margin-bottom:20px; }
+
+  /* ── CHECK-IN RESULT DETAILED ── */
+  .ci-feedback { background:var(--card-bg); border:1px solid var(--card-brd); border-radius:14px; padding:20px; margin-bottom:18px; }
+  .ci-feedback .cif-icon { font-size:2.5rem; margin-bottom:8px; }
+  .ci-feedback .cif-head { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .ci-feedback .cif-avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--azul-dk),var(--azul)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.05rem; flex-shrink:0; }
+  .ci-feedback .cif-name { font-weight:800; font-size:12px; color:var(--celeste-lt); text-transform:uppercase; letter-spacing:.04em; }
+  .ci-feedback .cif-title { font-size:1.05rem; font-weight:800; color:var(--texto); margin-bottom:10px; }
+  .ci-feedback .cif-score { display:inline-block; background:linear-gradient(135deg,var(--azul-dk),var(--azul)); color:#fff; font-size:1rem; font-weight:800; padding:4px 14px; border-radius:8px; margin-bottom:12px; }
+  .ci-feedback .cif-item { font-size:13px; line-height:1.5; padding:7px 0; border-bottom:1px solid rgba(56,189,248,.1); }
+  .ci-feedback .cif-item:last-child { border-bottom:none; }
+  .ci-feedback .cif-body { font-size:14px; line-height:1.65; color:var(--texto); }
+  .cif-ok   { color:var(--celeste-lt); }
+  .cif-warn { color:#92400e; }
+  .cif-pain { color:#be185d; }
+
+  /* ── CHECK-IN ── */
+  .checkin-wrap { background: rgba(14,165,233,.06); border: 1px solid var(--card-brd); border-radius: 16px; padding: 22px; margin-top: 28px; }
+  .checkin-wrap h3 { font-size: 1.05rem; font-weight: 800; color: var(--texto); margin-bottom: 4px; }
+  .ci-sub { font-size: 12px; color: var(--celeste); margin-bottom: 18px; }
+  .ci-q-block { margin-bottom: 16px; }
+  .ci-q-text { font-size: 13px; font-weight: 600; color: var(--celeste-lt); margin-bottom: 8px; }
+  .ci-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .ci-opt { background: var(--card-bg); border: 1px solid var(--card-brd); border-radius: 8px; padding: 8px 10px; font-size: 12px; font-weight: 600; color: var(--celeste); cursor: pointer; text-align: center; transition: all .15s; }
+  .ci-opt:hover { border-color: var(--azul-md); color: #fff; }
+  .ci-opt.sel { border-color: var(--azul-md); background: rgba(14,165,233,.18); color: #fff; }
+
+  /* ── CHECK-IN RESULT ── */
+  .ci-result { background: var(--card-bg); border: 1px solid var(--card-brd); border-radius: 14px; padding: 20px; text-align: center; display: none; margin-top: 16px; }
+  .ci-result.show { display: block; }
+  .cr-icon { font-size: 2.5rem; margin-bottom: 8px; }
+  .cr-title { font-size: 1.05rem; font-weight: 800; color: var(--texto); margin-bottom: 6px; }
+  .cr-msg { font-size: 13px; color: var(--celeste); line-height: 1.5; margin-bottom: 16px; }
+  .cr-score { display: inline-block; background: linear-gradient(135deg, var(--azul-dk), var(--azul)); color: #fff; font-size: 1.2rem; font-weight: 900; padding: 6px 18px; border-radius: 10px; margin-bottom: 14px; }
+
+  /* ── DAY 30 ── */
+  .day30-card { background: linear-gradient(135deg, rgba(14,165,233,.1), rgba(56,189,248,.07)); border: 2px solid var(--azul-md); border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 14px; }
+  .day30-card .d30i { font-size: 3rem; margin-bottom: 8px; }
+  .day30-card h3 { font-size: 1.35rem; font-weight: 800; color: var(--azul-md); margin-bottom: 8px; }
+  .day30-card p { font-size: 13px; color: var(--celeste); line-height: 1.55; }
+
+  /* ── BIKE REC ── */
+  .bike-hero { background: linear-gradient(135deg, rgba(14,165,233,.1), rgba(3,105,161,.15)); border: 1px solid var(--card-brd); border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 18px; }
+  .bike-hero h2 { font-size: 1.3rem; font-weight: 800; color: var(--texto); margin-bottom: 8px; }
+  .bike-hero p { font-size: 13px; color: var(--celeste); line-height: 1.5; }
+  .bike-opt { background: var(--card-bg); border: 1px solid var(--card-brd); border-radius: 14px; padding: 18px; margin-bottom: 12px; display: flex; gap: 14px; align-items: flex-start; }
+  .bike-opt-dot { width: 12px; height: 12px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+  .bike-opt h3 { font-size: .95rem; font-weight: 700; color: var(--texto); margin-bottom: 4px; }
+  .bike-price { font-weight: 700; color: var(--azul-md); font-size: .95rem; }
+  .bike-opt p { font-size: 12px; color: var(--celeste); line-height: 1.4; margin-top: 4px; }
+  .bike-tag { display: inline-block; background: rgba(14,165,233,.1); border: 1px solid var(--card-brd); color: var(--celeste); font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 5px; margin-right: 4px; margin-top: 5px; }
+  .tip-box { background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.25); border-radius: 11px; padding: 13px 15px; font-size: 13px; color: #92400e; line-height: 1.5; margin-bottom: 14px; }
+  /* ── FITTING (guía de compra) ── */
+  .fitting-box { background: linear-gradient(135deg, rgba(139,92,246,.18) 0%, rgba(79,70,229,.08) 100%); border: 1.5px solid rgba(139,92,246,.55); border-left: 5px solid #8b5cf6; border-radius: 0 16px 16px 0; margin: 24px 0 16px; overflow: hidden; }
+  .fitting-box-alt { border-left-color: #8b5cf6; }
+  .fitting-hdr { display: flex; align-items: center; gap: 14px; padding: 18px 20px; cursor: pointer; }
+  .fitting-hdr:hover { background: rgba(139,92,246,.12); }
+  .fitting-icon { font-size: 2rem; flex-shrink: 0; }
+  .fitting-title { font-size: 15px; font-weight: 800; color: var(--texto); margin-bottom: 3px; }
+  .fitting-sub { font-size: 12px; color: #6d28d9; }
+  .fitting-cta { margin-left: auto; background: rgba(139,92,246,.25); border: 1px solid rgba(139,92,246,.5); color: #5b21b6; font-size: 12px; font-weight: 700; padding: 7px 14px; border-radius: 8px; white-space: nowrap; flex-shrink: 0; transition: background .2s; }
+  .fitting-hdr:hover .fitting-cta { background: rgba(139,92,246,.42); }
+  .fitting-arrow { display:none; }
+  .fitting-body { display: none; padding: 0 20px 20px; border-top: 1px solid rgba(139,92,246,.22); }
+  .fitting-body.open { display: block; }
+  .fitting-pro { background: rgba(139,92,246,.12); border-radius: 10px; padding: 13px 15px; font-size: 13px; color: #5b21b6; line-height: 1.55; margin: 14px 0; }
+  .fitting-tip-list { display: flex; flex-direction: column; gap: 12px; }
+  .fitting-tip { display: flex; gap: 12px; align-items: flex-start; font-size: 13px; color: #6d28d9; line-height: 1.5; }
+  .fitting-tip strong { color: var(--texto); }
+  .fitting-tip-ico { font-size: 1.3rem; flex-shrink: 0; width: 28px; text-align: center; margin-top: 1px; }
+  /* ── FITTING (plan screen) ── */
+  .fitting-plan { background: linear-gradient(135deg, rgba(20,184,166,.15) 0%, rgba(6,182,212,.06) 100%); border: 1.5px solid rgba(20,184,166,.45); border-left: 5px solid #14b8a6; border-radius: 0 16px 16px 0; margin-bottom: 14px; overflow: hidden; }
+  .fitting-plan .fitting-hdr:hover { background: rgba(20,184,166,.12); }
+  .fitting-plan .fitting-title { font-size: 14px; }
+  .fitting-plan .fitting-sub { color: #0f766e; }
+  .fitting-plan .fitting-cta { background: rgba(20,184,166,.2); border-color: rgba(20,184,166,.4); color: #115e59; }
+  .fitting-plan .fitting-hdr:hover .fitting-cta { background: rgba(20,184,166,.38); }
+  .fitting-plan .fitting-body { border-top-color: rgba(20,184,166,.2); }
+  .fitting-plan .fitting-pro { background: rgba(20,184,166,.1); color: #115e59; }
+  .fitting-plan .fitting-tip { color: #0f766e; }
+
+  /* ── ELEVATION ROW ── */
+  .elev-row { display:flex; align-items:center; gap:8px; margin-top:7px; padding:6px 10px; border-radius:8px; }
+  .elev-row svg { flex-shrink:0; }
+  .elev-row-label { font-size:11px; font-weight:700; }
+  .elev-row-hint  { font-size:11px; opacity:.8; }
+  .elev-llano     { background:rgba(34,197,94,.1);  border:1px solid rgba(34,197,94,.25); }
+  .elev-ondulado  { background:rgba(234,179,8,.1);  border:1px solid rgba(234,179,8,.25); }
+  .elev-subida    { background:rgba(249,115,22,.1); border:1px solid rgba(249,115,22,.25); }
+  .elev-intervalos{ background:rgba(239,68,68,.1);  border:1px solid rgba(239,68,68,.25); }
+  .elev-libre     { background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.25); }
+  .elev-llano     .elev-row-label { color:#15803d; }
+  .elev-ondulado  .elev-row-label { color:#a16207; }
+  .elev-subida    .elev-row-label { color:#c2410c; }
+  .elev-intervalos .elev-row-label { color:#b91c1c; }
+  .elev-libre     .elev-row-label { color:#475569; }
+  .elev-llano     .elev-row-hint  { color:#15803d; }
+  .elev-ondulado  .elev-row-hint  { color:#a16207; }
+  .elev-subida    .elev-row-hint  { color:#c2410c; }
+  .elev-intervalos .elev-row-hint { color:#b91c1c; }
+  .elev-libre     .elev-row-hint  { color:#475569; }
+  /* ── PRINT ── */
+  .print-btn { display: flex; align-items: center; gap: 8px; background: var(--card-bg); border: 1px solid var(--card-brd); color: var(--celeste); padding: 10px 14px; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 600; margin-bottom: 18px; }
+  .print-btn:hover { background: rgba(14,165,233,.12); }
+
+  /* ── CHAT MAR IA ── */
+  .chat-wrap { background: #fff; border: 1px solid var(--card-brd); border-radius: 18px; overflow: hidden; box-shadow: 0 8px 30px rgba(14,165,233,.1); display: flex; flex-direction: column; height: min(620px, 78vh); }
+  .chat-header { display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: linear-gradient(135deg, var(--azul-dk), var(--azul)); color: #fff; flex-shrink: 0; }
+  .chat-avatar { width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+  .chat-name { font-weight: 800; font-size: 15px; }
+  .chat-status { font-size: 11px; opacity: .9; display: flex; align-items: center; gap: 5px; margin-top: 1px; }
+  .chat-status::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #4ade80; display: inline-block; }
+  .chat-messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 18px 16px; display: flex; flex-direction: column; gap: 10px; background: var(--fondo-2); }
+  .msg-row { display: flex; gap: 8px; max-width: 88%; animation: msgIn .25s ease; align-items: flex-end; }
+  .msg-row.bot { align-self: flex-start; }
+  .msg-row.user { align-self: flex-end; }
+  .msg-mini-avatar { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg,var(--azul-dk),var(--azul-md)); color:#fff; display: flex; align-items: center; justify-content: center; font-size: .8rem; flex-shrink: 0; }
+  .msg-bubble { padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.45; }
+  .msg-row.bot .msg-bubble { background: #fff; border: 1px solid var(--card-brd); color: var(--texto); border-bottom-left-radius: 4px; }
+  .msg-row.user .msg-bubble { background: linear-gradient(135deg, var(--azul-dk), var(--azul)); color: #fff; border-bottom-right-radius: 4px; }
+  @keyframes msgIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .typing-row .msg-bubble { display: flex; align-items: center; gap: 4px; padding: 13px 16px; }
+  .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--celeste); opacity: .4; animation: typingBounce 1.2s infinite; }
+  .typing-dot:nth-child(2) { animation-delay: .2s; }
+  .typing-dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes typingBounce { 0%,60%,100% { transform: translateY(0); opacity: .4; } 30% { transform: translateY(-4px); opacity: 1; } }
+  .chat-input-dock { border-top: 1px solid var(--card-brd); padding: 12px 14px; background: #fff; flex-shrink: 0; }
+  .chat-quick-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chat-quick-opts.wide { flex-direction: column; }
+  .chat-chip { border: 1px solid var(--card-brd); background: var(--card-bg); color: var(--texto); font-size: 13px; font-weight: 600; padding: 10px 15px; border-radius: 20px; cursor: pointer; transition: all .15s; text-align: left; }
+  .chat-chip:hover { border-color: var(--azul-md); background: rgba(14,165,233,.15); }
+  .chat-chip.sel { border-color: var(--azul-md); background: rgba(14,165,233,.22); box-shadow: 0 0 0 1px var(--azul-md); }
+  .chat-chip .chip-desc { display: block; font-size: 11px; font-weight: 400; color: var(--celeste); margin-top: 2px; margin-left: 26px; }
+  .chat-chip .chip-ic { margin-right: 9px; color: var(--azul-md); }
+  .chat-quick-opts.wide .chat-chip { border-radius: 12px; }
+  .chat-text-row { display: flex; gap: 8px; }
+  .chat-text-row input, .chat-text-row select { flex: 1; min-width: 0; padding: 11px 14px; border: 1px solid var(--card-brd); border-radius: 12px; font-size: 15px; background: var(--fondo-2); color: var(--texto); }
+  .chat-text-row input:focus, .chat-text-row select:focus { outline: none; border-color: var(--azul-md); }
+  .chat-send-btn { background: linear-gradient(135deg, var(--azul-dk), var(--azul)); color: #fff; border: none; border-radius: 12px; padding: 0 18px; font-weight: 700; cursor: pointer; font-size: 14px; flex-shrink: 0; }
+  .chat-send-btn:disabled { opacity: .35; cursor: not-allowed; }
+  .chat-start-btn { width: 100%; }
+
+  /* ── ASK MAR IA (floating Q&A widget) ── */
+  .askmi-btn { position: fixed; right: 18px; bottom: 18px; z-index: 700; display: none; align-items: center; gap: 9px; background: linear-gradient(135deg, var(--azul-dk), var(--azul)); color: #fff; border: none; border-radius: 999px; padding: 13px 18px 13px 14px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 24px rgba(14,165,233,.35); }
+  .askmi-btn.show { display: flex; }
+  .askmi-btn .icn { font-size: 1.15rem; }
+  .askmi-panel { position: fixed; right: 18px; bottom: 18px; z-index: 800; width: min(360px, calc(100vw - 32px)); height: min(520px, 72vh); background: #fff; border: 1px solid var(--card-brd); border-radius: 18px; box-shadow: 0 14px 44px rgba(14,165,233,.22); display: none; flex-direction: column; overflow: hidden; }
+  .askmi-panel.open { display: flex; }
+  .askmi-hdr { display: flex; align-items: center; gap: 10px; padding: 13px 16px; background: linear-gradient(135deg, var(--azul-dk), var(--azul)); color: #fff; flex-shrink: 0; }
+  .askmi-hdr .chat-avatar { width: 34px; height: 34px; font-size: 1.05rem; }
+  .askmi-hdr-txt { flex: 1; }
+  .askmi-hdr-name { font-weight: 800; font-size: 14px; }
+  .askmi-hdr-sub { font-size: 10.5px; opacity: .9; }
+  .askmi-close { background: rgba(255,255,255,.18); border: none; color: #fff; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 13px; flex-shrink: 0; }
+  .askmi-msgs { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px; display: flex; flex-direction: column; gap: 9px; background: var(--fondo-2); }
+  .askmi-msgs .msg-row { max-width: 92%; }
+  .askmi-empty { font-size: 12.5px; color: var(--celeste); text-align: center; padding: 10px 6px; line-height: 1.5; }
+  .askmi-dock { border-top: 1px solid var(--card-brd); padding: 10px 12px; background: #fff; flex-shrink: 0; }
+  .askmi-row { display: flex; gap: 7px; }
+  .askmi-row input { flex: 1; min-width: 0; padding: 10px 13px; border: 1px solid var(--card-brd); border-radius: 12px; font-size: 14px; background: var(--fondo-2); color: var(--texto); }
+  .askmi-row input:focus { outline: none; border-color: var(--azul-md); }
+  .askmi-row button { background: linear-gradient(135deg, var(--azul-dk), var(--azul)); color: #fff; border: none; border-radius: 12px; padding: 0 15px; font-weight: 700; cursor: pointer; font-size: 13px; flex-shrink: 0; }
+  .askmi-row button:disabled { opacity: .35; cursor: not-allowed; }
+  .askmi-note { font-size: 10px; color: var(--celeste); text-align: center; margin-top: 7px; }
+
+  @media (max-width: 520px) {
+    .askmi-panel { right: 8px; bottom: 8px; width: calc(100vw - 16px); height: min(480px, 70vh); }
+    .askmi-btn { right: 12px; bottom: 12px; }
+  }
+
+  @media (max-width: 520px) {
+    /* Disable pseudo-element overlays on mobile (iOS WebKit touch bug) */
+    .card-glow::before, .hero::before { display: none !important; }
+    /* Layout base */
+    .container { padding: 16px 12px; }
+    .card, .card-glow { padding: 14px 12px; }
+    .hero { padding: 28px 16px 22px; }
+    .hero h1 { font-size: 2rem; }
+
+    /* Questionnaire */
+    .opts.c2 { grid-template-columns: 1fr; }
+    .ci-opts { grid-template-columns: 1fr !important; }
+    .nav-row { flex-direction: column; }
+    .nav-row .btn { width: 100%; text-align: center; }
+
+    /* Day cards */
+    .day-card { padding: 11px 12px; gap: 10px; }
+    .str-arrow { display: none; }
+    .day-body { min-width: 0; }
+    .day-main { font-size: 13px; }
+    .day-det  { font-size: 11px; }
+
+    /* Elevation row */
+    .elev-row { flex-wrap: wrap; }
+    .elev-row-hint { display: none; }
+
+    /* Exercise cards */
+    .ex-sets-chip { font-size: 10px; padding: 3px 7px; }
+    .ex-name { font-size: 13px; }
+
+    /* Fitting */
+    .fitting-icon { font-size: 1.5rem; }
+    .fitting-title { font-size: 13px; }
+    .fitting-sub { display: none; }
+    .fitting-cta { font-size: 11px; padding: 5px 10px; }
+    .fitting-tip { font-size: 12px; }
+
+    /* Modal */
+    .ex-modal { padding: 12px 10px 32px; }
+    .ex-modal-inner { padding: 18px 14px; border-radius: 14px; }
+    .ex-modal-title { font-size: 1.2rem; }
+
+    /* Check-in */
+    .checkin-wrap { padding: 18px 14px; }
+    .ci-opt { padding: 10px 8px; font-size: 12px; }
+
+    /* Week bar */
+    .week-bar { padding: 11px 13px; gap: 10px; }
+    .week-bar-text .wbt { font-size: .85rem; }
+
+    /* Bike guide */
+    .bike-opt { padding: 14px; }
+    .fitting-hdr { padding: 14px 14px; gap: 10px; }
+
+    /* Step 2 edad/sexo grid */
+    .edad-sexo-grid { grid-template-columns: 1fr !important; }
+
+    /* Buttons */
+    .btn { min-height: 44px; }
+    .btn-lg { font-size: 14px; }
+
+    /* Chat */
+    .chat-wrap { height: 82vh; border-radius: 14px; }
+    .chat-header { padding: 12px 14px; }
+    .chat-messages { padding: 14px 12px; }
+    .msg-row { max-width: 92%; }
+    .msg-bubble { font-size: 13px; }
+    .chat-input-dock { padding: 10px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="previewBanner" style="display:none;position:sticky;top:0;left:0;right:0;z-index:9999;background:#7c3aed;color:#fff;font-size:12px;padding:8px 14px;text-align:center;font-weight:600;">
+  🔧 Modo vista previa (solo vos la ves) — no se cobró nada · <a href="#" onclick="salirPreview();return false;" style="color:#fff;text-decoration:underline">salir y ver como un alumno</a>
+</div>
+
+<div class="hero">
+  <div class="hero-badge"><span class="icn" data-icon="bike"></span> Programa oficial</div>
+  <h1>Desafío <span>50 km</span><br>en 30 días</h1>
+  <p>Completá tu perfil y recibí tu plan semana a semana, adaptado a tu progreso real</p>
+</div>
+
+<div class="progress-wrap" id="progressWrap">
+  <div class="progress-label">
+    <span id="pText">Paso 1 de 6</span><span id="pPct">17%</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="pFill" style="width:17%"></div></div>
+</div>
+
+<!-- ══ PAGO ══ -->
+<div class="screen active" id="screen-pay">
+  <div class="container">
+    <div class="card-glow" style="text-align:center;padding:32px 20px">
+      <div class="icn" data-icon="bike" style="font-size:3rem;margin-bottom:12px;color:var(--azul-dk)"></div>
+      <h2 style="font-size:1.35rem;font-weight:800;color:var(--texto);margin-bottom:10px">Sumate al Desafío 50 km</h2>
+      <p style="color:var(--celeste);font-size:14px;line-height:1.6;margin-bottom:20px">Plan personalizado de 30 días + coaching de <strong style="color:var(--texto)">Mar IA</strong>, ajustándose semana a semana a tu progreso real.</p>
+      <div style="font-size:2.2rem;font-weight:900;color:var(--azul-dk);margin-bottom:2px">$20.000 <span style="font-size:.85rem;font-weight:600;color:var(--celeste)">ARS</span></div>
+      <div style="font-size:12px;color:var(--celeste);margin-bottom:24px">Pago único · acceso inmediato</div>
+      <button class="btn btn-p btn-lg" id="btnComprar" onclick="iniciarPago()">Comprar ahora →</button>
+      <div id="payError" class="alert alert-warn" style="margin-top:14px;text-align:left"></div>
+      <div style="margin-top:16px;font-size:12px">
+        <a href="javascript:void(0)" onclick="openRefundModal()" style="color:var(--celeste);text-decoration:underline">Política de reembolso</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VERIFICANDO PAGO ══ -->
+<div class="screen" id="screen-verificando">
+  <div class="container">
+    <div class="card-glow" style="text-align:center;padding:40px 20px">
+      <div class="icn" data-icon="clock" style="font-size:2.5rem;margin-bottom:14px;color:var(--azul-dk)"></div>
+      <h2 style="font-size:1.2rem;font-weight:800;color:var(--texto);margin-bottom:8px">Confirmando tu pago...</h2>
+      <p style="color:var(--celeste);font-size:13px">Un segundo, ya volvemos.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGO PENDIENTE / RECHAZADO ══ -->
+<div class="screen" id="screen-pago-problema">
+  <div class="container">
+    <div class="card-glow" style="text-align:center;padding:32px 20px">
+      <div class="icn" id="problemaIcon" data-icon="alert" style="font-size:2.5rem;margin-bottom:12px;color:#b45309"></div>
+      <h2 style="font-size:1.2rem;font-weight:800;color:var(--texto);margin-bottom:8px" id="problemaTitulo">Tu pago no se completó</h2>
+      <p style="color:var(--celeste);font-size:13px;line-height:1.6;margin-bottom:20px" id="problemaTexto">No te preocupes, no se te cobró nada. Podés intentarlo de nuevo cuando quieras.</p>
+      <button class="btn btn-p btn-lg" onclick="volverAPagar()">Intentar de nuevo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ WELCOME ══ -->
+<div class="screen" id="screen-welcome">
+  <div class="container">
+    <div class="card-glow" style="text-align:center;padding:32px 20px">
+      <div class="icn" data-icon="medal" style="font-size:3rem;margin-bottom:12px;color:var(--azul-dk)"></div>
+      <h2 style="font-size:1.35rem;font-weight:800;color:var(--texto);margin-bottom:10px">¡Compra confirmada!</h2>
+      <p style="color:var(--celeste);font-size:14px;line-height:1.6;margin-bottom:24px"><strong style="color:var(--texto)">Mar IA</strong>, tu coach virtual, te está esperando para armarte el plan.<br><strong style="color:var(--texto)">7 preguntas — menos de 2 minutos.</strong></p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px">
+        <div style="background:var(--card-bg);border:1px solid var(--card-brd);border-radius:10px;padding:12px">
+          <div class="icn" data-icon="clock" style="font-size:1.3rem;color:var(--azul-md)"></div><div style="font-size:11px;color:var(--celeste);margin-top:4px">2 minutos</div>
+        </div>
+        <div style="background:var(--card-bg);border:1px solid var(--card-brd);border-radius:10px;padding:12px">
+          <div class="icn" data-icon="sliders" style="font-size:1.3rem;color:var(--azul-md)"></div><div style="font-size:11px;color:var(--celeste);margin-top:4px">100% personal</div>
+        </div>
+        <div style="background:var(--card-bg);border:1px solid var(--card-brd);border-radius:10px;padding:12px">
+          <div class="icn" data-icon="calendar" style="font-size:1.3rem;color:var(--azul-md)"></div><div style="font-size:11px;color:var(--celeste);margin-top:4px">Semana a semana</div>
+        </div>
+      </div>
+      <div id="accessLinkBox" style="display:none;text-align:left;background:var(--card-bg);border:1px solid var(--card-brd);border-radius:12px;padding:14px 16px;margin-bottom:20px">
+        <div style="font-size:12px;color:var(--celeste);margin-bottom:8px">📌 Guardá este link — es tu acceso personal. Con él entrás desde cualquier celular o compu sin perder tu progreso.</div>
+        <div style="display:flex;gap:8px">
+          <input id="accessLinkInput" readonly onclick="this.select()" style="flex:1;min-width:0;padding:9px 11px;border:1px solid var(--card-brd);border-radius:8px;font-size:12px;background:#fff;color:var(--texto)">
+          <button type="button" id="copyAccessLinkBtn" class="btn btn-s" onclick="copyAccessLink()" style="white-space:nowrap">Copiar</button>
+        </div>
+      </div>
+      <a href="javascript:void(0)" class="btn btn-p btn-lg" id="btnEmpezar" onclick="startQuiz()" style="position:relative;z-index:2;display:block;text-decoration:none">Empezar cuestionario →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CHAT CON MAR IA ══ -->
+<div class="screen" id="screen-quiz">
+  <div class="container" style="max-width:600px">
+    <div class="chat-wrap">
+      <div class="chat-header">
+        <div class="chat-avatar"><span class="icn" data-icon="coach" style="font-size:1.3rem"></span></div>
+        <div>
+          <div class="chat-name">Mar IA</div>
+          <div class="chat-status">tu coach virtual · en línea</div>
+        </div>
+      </div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input-dock" id="chatInputDock"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NO BICI ══ -->
+<div class="screen" id="screen-nobici">
+  <div class="container">
+    <div class="bike-hero"><div class="icn" data-icon="bike" style="font-size:3rem;margin-bottom:10px;color:var(--azul-dk)"></div><h2>Primero, elegí tu bici</h2><p>Para el desafío de 50 km necesitás una. Te ayudamos a elegir la mejor opción según tus posibilidades.</p></div>
+    <div class="tip-box">💡 <strong>¿Cuál elegir?</strong> Depende del terreno donde vas a entrenar. Los precios varían mucho dentro de cada categoría — lo importante es la calidad del componente, no el tipo de bici.</div>
+
+    <div class="bike-opt"><div class="bike-opt-dot" style="background:#22c55e"></div><div><h3>MTB – Mountain Bike</h3><p>La opción más versátil. Te permite andar en asfalto, tierra, ripio y caminos irregulares. Las ruedas anchas generan algo más de resistencia en ruta comparada con una híbrida o de ruta, lo que hace el desafío un poco más exigente físicamente — pero perfectamente realizable. Si querés una sola bici para todo tipo de terreno, esta es tu opción.</p><span class="bike-tag">Todo terreno</span><span class="bike-tag">Máxima versatilidad</span><span class="bike-tag">Más exigente en asfalto</span></div></div>
+
+    <div class="bike-opt"><div class="bike-opt-dot" style="background:var(--azul)"></div><div><h3>Híbrida</h3><p>El punto medio ideal para este desafío. Ruedas más finas que la MTB (menos resistencia en asfalto) pero más anchas que una bici de ruta (mayor estabilidad en tierra). Con cambios y frenos a disco, te da buen control en superficies mixtas. Recomendada si la mayor parte del recorrido es pavimento o ciclovía.</p><span class="bike-tag">Asfalto y tierra</span><span class="bike-tag">Equilibrada</span></div></div>
+
+    <div class="bike-opt"><div class="bike-opt-dot" style="background:#f59e0b"></div><div><h3>Ruta / Cicloturismo</h3><p>La más eficiente en pavimento. Más liviana y aerodinámica: los 50 km se sienten notablemente más fáciles que con una MTB. Si te gustan los recorridos asfaltados y ya sabés que el ciclismo va a ser parte de tu vida, esa es la mejor inversión.</p><span class="bike-tag">Asfalto</span><span class="bike-tag">Máxima eficiencia</span></div></div>
+
+    <div class="tip-box">🔧 <strong>No olvidés:</strong> casco, lentes, guantes y luces. Son esenciales para entrenar seguro. El candado es opcional, si querés.</div>
+
+    <!-- FITTING SECTION - separado visualmente -->
+    <div style="height:8px"></div>
+    <div class="fitting-box fitting-box-alt">
+      <div class="fitting-hdr" onclick="toggleFitting()">
+        <span class="fitting-icon icn" data-icon="ruler"></span>
+        <div>
+          <div class="fitting-title">Fitting: la diferencia entre disfrutar y sufrir</div>
+          <div class="fitting-sub">Una bici mal ajustada genera dolor, ineficiencia y lesiones.</div>
+        </div>
+        <span class="fitting-cta" id="fitting-cta">Ver tips ▾</span>
+        <span class="fitting-arrow" id="fitting-arrow"></span>
+      </div>
+      <div class="fitting-body" id="fitting-body">
+        <div class="fitting-pro">
+          🏅 <strong>Lo ideal: hacé un fitting profesional.</strong> Un especialista analiza tu morfología, postura y forma de pedalear para ajustar la bici exactamente a tu cuerpo. Vale la pena especialmente si vas a usar la bici seguido — evita lesiones de rodilla, espalda y cuello, y mejora notablemente la eficiencia del pedaleo.
+        </div>
+        <div class="fitting-tip-list">
+          <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="knee"></span><div><strong>Altura del sillín</strong><br>En el punto más bajo del pedaleo, la pierna debe quedar casi extendida (10–15° de flexión de rodilla). Si el sillín está muy bajo, las rodillas se sobrecargan. Muy alto y el talón pierde contacto al pedalear.</div></div>
+          <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="arrows"></span><div><strong>Avance/retroceso del sillín</strong><br>Poné el pedal a las 3 en punto (horizontal hacia adelante). La rótula de la rodilla debe quedar justo sobre el eje del pedal. Un sillín muy adelantado genera presión en rodilla; muy atrás, tensión en cadera.</div></div>
+          <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="grip"></span><div><strong>Distancia al manubrio</strong><br>Brazos ligeramente flexionados al tomar el manubrio, sin tensión en hombros ni cuello. Si estirás demasiado o te encogés, hay algo mal. El largo del potencia es clave acá.</div></div>
+          <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="ruler"></span><div><strong>Altura del manubrio</strong><br>Una postura más erguida es más cómoda para principiantes y para recorridos largos. Bajar el manubrio es más aerodinámico pero exige más de la espalda baja. Para 50 km, priorizá la comodidad.</div></div>
+          <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="tilt"></span><div><strong>Inclinación del sillín</strong><br>El sillín debe estar horizontal o con una inclinación mínima hacia adelante (1–2°). Si duele la zona perineal, probá inclinarlo levemente hacia adelante. Nunca hacia atrás — genera deslizamiento y presión lumbar.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-p btn-lg" onclick="goToPlan()" style="margin-bottom:8px;margin-top:8px">✅ Ya tengo mi bici – Ver mi plan →</button>
+    <p style="text-align:center;font-size:12px;color:var(--celeste);margin-top:10px">O volvé cuando la tengas lista</p>
+  </div>
+</div>
+
+<!-- ══ PLAN ══ -->
+<div class="screen" id="screen-plan">
+  <div class="container">
+    <div id="planHdr" class="plan-hdr"></div>
+    <div id="alertSalud" class="alert alert-warn"></div>
+    <div id="alertEdad" class="alert alert-info"></div>
+    <div id="alertIMC" class="alert alert-info"></div>
+
+    <!-- FITTING EN EL PLAN -->
+    <div class="fitting-plan" style="margin-bottom:14px">
+      <div class="fitting-hdr" onclick="toggleFitting2()">
+        <span class="fitting-icon icn" data-icon="ruler"></span>
+        <div>
+          <div class="fitting-title">Fitting: ajustá tu bici antes de empezar</div>
+          <div class="fitting-sub">Una bici mal ajustada genera dolor y lesiones.</div>
+        </div>
+        <span class="fitting-cta" id="fitting-cta2">Ver tips ▾</span>
+        <span class="fitting-arrow" id="fitting-arrow2"></span>
+      </div>
+      <div class="fitting-body" id="fitting-body2">
+        <div class="fitting-pro">
+          🏅 <strong>Lo ideal: hacé un fitting profesional.</strong> Un especialista analiza tu morfología, postura y forma de pedalear para ajustar la bici exactamente a tu cuerpo. Evita lesiones de rodilla, espalda y cuello, y mejora notablemente la eficiencia del pedaleo.
+        </div>
+        <div class="fitting-tip-list">
+          <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="knee"></span><div><strong>Altura del sillín</strong><br>En el punto más bajo del pedaleo, la pierna debe quedar casi extendida (10–15° de flexión de rodilla). Muy bajo sobrecarga las rodillas; muy alto pierde potencia y estabilidad.</div></div>
+          <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="arrows"></span><div><strong>Avance/retroceso del sillín</strong><br>Pedal a las 3 en punto: la rótula debe quedar justo sobre el eje del pedal. Muy adelante → presión en rodilla. Muy atrás → tensión en cadera.</div></div>
+          <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="grip"></span><div><strong>Distancia al manubrio</strong><br>Brazos ligeramente flexionados, sin tensión en hombros ni cuello. Si estirás demasiado o te encogés, algo está mal.</div></div>
+          <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="ruler"></span><div><strong>Altura del manubrio</strong><br>Postura más erguida = más cómoda para recorridos largos. Para 50 km, priorizá la comodidad sobre la aerodinámica.</div></div>
+          <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="tilt"></span><div><strong>Inclinación del sillín</strong><br>Horizontal o con 1–2° hacia adelante. Si duele la zona perineal, probá inclinarlo levemente. Nunca hacia atrás.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="print-btn" onclick="window.print()"><span class="icn" data-icon="printer"></span> Imprimir / guardar mi plan</button>
+    <div id="weekContent"></div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════
+//  ICON SYSTEM (professional line icons, replaces the most visible emoji)
+// ════════════════════════════════════
+const ISVG = (inner) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+const ICONS = {
+  bike: ISVG(`<circle cx="6" cy="18" r="3.2"/><circle cx="18" cy="18" r="3.2"/><path d="M6 18 10 10h5M10 10l3 8M13 18h5M13 18l-3-4M15 10l3 8"/><circle cx="15" cy="6" r="1.3" fill="currentColor" stroke="none"/>`),
+  check: ISVG(`<path d="M5 13l4 4L19 7"/>`),
+  chatbubble: ISVG(`<path d="M4 5.5h16v10H9l-4 4v-4H4z"/>`),
+  clock: ISVG(`<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>`),
+  sliders: ISVG(`<line x1="6" y1="4" x2="6" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="18" y1="4" x2="18" y2="20"/><circle cx="6" cy="9" r="2.1" fill="currentColor" stroke="none"/><circle cx="12" cy="15" r="2.1" fill="currentColor" stroke="none"/><circle cx="18" cy="7" r="2.1" fill="currentColor" stroke="none"/>`),
+  calendar: ISVG(`<rect x="3.5" y="5" width="17" height="15" rx="2"/><line x1="3.5" y1="10" x2="20.5" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/>`),
+  coach: ISVG(`<circle cx="12" cy="8.2" r="4"/><path d="M4.5 20c0-4.5 3.5-7 7.5-7s7.5 2.5 7.5 7"/>`).replace('fill="none"','fill="currentColor"'),
+  cart: ISVG(`<path d="M3 4h2l2.3 12.2a2 2 0 002 1.8h7.5a2 2 0 002-1.7L20 8H6.2"/><circle cx="9.5" cy="20" r="1.3" fill="currentColor" stroke="none"/><circle cx="17" cy="20" r="1.3" fill="currentColor" stroke="none"/>`),
+  level1: ISVG(`<rect x="4" y="14" width="4" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="10" y="9" width="4" height="11" rx="1" opacity=".28"/><rect x="16" y="4" width="4" height="16" rx="1" opacity=".28"/>`),
+  level2: ISVG(`<rect x="4" y="14" width="4" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="10" y="9" width="4" height="11" rx="1" fill="currentColor" stroke="none"/><rect x="16" y="4" width="4" height="16" rx="1" opacity=".28"/>`),
+  level3: ISVG(`<rect x="4" y="14" width="4" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="10" y="9" width="4" height="11" rx="1" fill="currentColor" stroke="none"/><rect x="16" y="4" width="4" height="16" rx="1" fill="currentColor" stroke="none"/>`),
+  knee: ISVG(`<path d="M10 3v8"/><path d="M10 11l3 7"/><path d="M13 18h3.5"/>`),
+  spine: ISVG(`<line x1="12" y1="3" x2="12" y2="21"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10.5" x2="16" y2="10.5"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="8" y1="19.5" x2="16" y2="19.5"/>`),
+  heart: ISVG(`<path d="M12 20.5S3.5 15.4 3.5 9.2C3.5 6 5.8 4 8.4 4c1.7 0 3 .9 3.6 2.1C12.6 4.9 13.9 4 15.6 4c2.6 0 4.9 2 4.9 5.2 0 6.2-8.5 11.3-8.5 11.3z"/>`),
+  dumbbell: ISVG(`<rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><line x1="5.5" y1="12" x2="18.5" y2="12"/><rect x="6.5" y="7" width="2" height="10" rx="1"/><rect x="15.5" y="7" width="2" height="10" rx="1"/>`),
+  scale: ISVG(`<line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="8" x2="4" y2="12"/><line x1="20" y1="8" x2="20" y2="12"/><path d="M2 12q2 4 4 0"/><path d="M18 12q2 4 4 0"/><line x1="8" y1="20" x2="16" y2="20"/>`),
+  medal: ISVG(`<circle cx="12" cy="9" r="5.5"/><path d="M8.5 13.5L6 21l6-3 6 3-2.5-7.5"/>`),
+  ruler: ISVG(`<rect x="3" y="9" width="18" height="6" rx="1"/><line x1="7" y1="9" x2="7" y2="12"/><line x1="11" y1="9" x2="11" y2="13"/><line x1="15" y1="9" x2="15" y2="12"/><line x1="19" y1="9" x2="19" y2="13"/>`),
+  printer: ISVG(`<path d="M6 9V4h12v5"/><rect x="4" y="9" width="16" height="8" rx="1.4"/><path d="M6 17v4h12v-4"/><circle cx="16.5" cy="12.2" r="0.9" fill="currentColor" stroke="none"/>`),
+  target: ISVG(`<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/>`),
+  flag: ISVG(`<line x1="5" y1="3" x2="5" y2="21"/><path d="M5 4.5h13l-3.6 3.75L18 12H5z" fill="currentColor" stroke="none"/>`),
+  leaf: ISVG(`<path d="M6 20C4 14 7 6 18 4c-1 9-5 14-12 16z"/><path d="M7 19c3-4 6-8 10-13"/>`),
+  trend: ISVG(`<polyline points="3,17 9,11 13,15 21,5"/><polyline points="15,5 21,5 21,11"/>`),
+  rocket: ISVG(`<path d="M12 2.5c3 2 5 6.2 5 10 0 2.2-1 4.2-2.2 5.3l-2.8 2.7-2.8-2.7C8 16.7 7 14.7 7 12.5c0-3.8 2-8 5-10z"/><circle cx="12" cy="10" r="1.7" fill="currentColor" stroke="none"/><path d="M8.5 16.5l-3 4.5 4.7-2.7M15.5 16.5l3 4.5-4.7-2.7"/>`),
+  alert: ISVG(`<path d="M12 3.5l9.5 16.5H2.5z"/><line x1="12" y1="9.5" x2="12" y2="14"/><circle cx="12" cy="16.8" r="0.6" fill="currentColor" stroke="none"/>`),
+  xmark: ISVG(`<line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>`),
+  fire: ISVG(`<path d="M12 2c2 4-1 5-1 8a3 3 0 106 0c0-2-1-3-1-4 2 3 3 6 3 8a6 6 0 11-12 0c0-5 3-8 5-12z"/>`),
+  arrows: ISVG(`<line x1="4" y1="12" x2="20" y2="12"/><polyline points="8.5,7 4,12 8.5,17"/><polyline points="15.5,7 20,12 15.5,17"/>`),
+  grip: ISVG(`<path d="M3 15c2-5 6.5-8 9-8s7 3 9 8"/><circle cx="6" cy="16" r="1.6" fill="currentColor" stroke="none"/><circle cx="18" cy="16" r="1.6" fill="currentColor" stroke="none"/>`),
+  tilt: ISVG(`<rect x="4" y="10.5" width="16" height="4" rx="1.5" transform="rotate(-8 12 12)"/><line x1="12" y1="12" x2="12" y2="19"/><line x1="9" y1="19" x2="15" y2="19"/>`),
+  // ── exercise-pose icons (strength library) ──
+  squat: ISVG(`<circle cx="12" cy="4" r="1.7"/><line x1="12" y1="5.7" x2="12" y2="11"/><line x1="12" y1="7" x2="9" y2="9"/><line x1="12" y1="7" x2="15" y2="9"/><line x1="12" y1="11" x2="8" y2="13"/><line x1="12" y1="11" x2="16" y2="13"/><line x1="8" y1="13" x2="8" y2="19"/><line x1="16" y1="13" x2="16" y2="19"/>`),
+  lunge: ISVG(`<circle cx="12" cy="4" r="1.7"/><line x1="12" y1="5.7" x2="11" y2="11"/><line x1="12" y1="7" x2="9" y2="8.5"/><line x1="12" y1="7" x2="15" y2="8.5"/><line x1="11" y1="11" x2="15" y2="13"/><line x1="15" y1="13" x2="15" y2="19"/><line x1="11" y1="11" x2="7" y2="15"/><line x1="7" y1="15" x2="9" y2="19"/>`),
+  hinge: ISVG(`<circle cx="16" cy="4" r="1.7"/><line x1="15" y1="5.6" x2="9" y2="12"/><line x1="9" y1="12" x2="9" y2="19.5"/><line x1="12" y1="8" x2="8" y2="15"/><line x1="4.5" y1="15" x2="11" y2="15"/>`),
+  bridge: ISVG(`<circle cx="3" cy="19" r="1.5"/><line x1="4.3" y1="19" x2="11" y2="13"/><line x1="11" y1="13" x2="15" y2="15.5"/><line x1="15" y1="15.5" x2="15" y2="19.5"/>`),
+  hipthrust: ISVG(`<rect x="1" y="16.3" width="3" height="3.2" rx="0.6"/><line x1="4" y1="17.5" x2="11" y2="13"/><line x1="11" y1="13" x2="15" y2="15.5"/><line x1="15" y1="15.5" x2="15" y2="19.5"/>`),
+  plank: ISVG(`<circle cx="5" cy="8" r="1.6"/><line x1="6.3" y1="9" x2="20" y2="15.5"/><line x1="20" y1="15.5" x2="20" y2="19.5"/><line x1="9.5" y1="11" x2="9.5" y2="15.3"/>`),
+  superman: ISVG(`<circle cx="6" cy="11" r="1.6"/><line x1="7.5" y1="12" x2="15" y2="14"/><line x1="7.5" y1="10.3" x2="3" y2="7.5"/><line x1="15" y1="14" x2="20.5" y2="10.5"/>`),
+  row: ISVG(`<circle cx="16" cy="4" r="1.7"/><line x1="15" y1="5.6" x2="9" y2="12"/><line x1="9" y1="12" x2="9" y2="19.5"/><line x1="12" y1="8" x2="7.5" y2="9"/><line x1="7.5" y1="9" x2="6.3" y2="12"/><circle cx="6.3" cy="12.8" r="1" fill="currentColor" stroke="none"/>`),
+  birddog: ISVG(`<line x1="5" y1="16" x2="17" y2="16"/><line x1="5" y1="16" x2="5" y2="20"/><line x1="10" y1="16" x2="10" y2="20"/><line x1="17" y1="16" x2="21.5" y2="11.5"/><line x1="5" y1="16" x2="1.5" y2="19.5"/>`),
+  press: ISVG(`<circle cx="12" cy="4" r="1.7"/><line x1="12" y1="5.7" x2="12" y2="14"/><line x1="12" y1="7" x2="9" y2="3.3"/><line x1="12" y1="7" x2="15" y2="3.3"/><line x1="12" y1="14" x2="9" y2="20"/><line x1="12" y1="14" x2="15" y2="20"/><circle cx="9" cy="3.3" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="3.3" r="1" fill="currentColor" stroke="none"/>`),
+  core: ISVG(`<rect x="8" y="4" width="8" height="15" rx="3"/><line x1="8" y1="8.5" x2="16" y2="8.5"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="12" y1="4" x2="12" y2="19"/>`),
+  mobility: ISVG(`<path d="M4 12a8 8 0 0113-6"/><path d="M20 12a8 8 0 01-13 6"/><polyline points="17,3.5 17,7 13.5,7"/><polyline points="7,20.5 7,17 10.5,17"/>`)
+};
+function ic(name, cls) {
+  return `<span class="icn${cls ? ' ' + cls : ''}">${ICONS[name] || ''}</span>`;
+}
+function renderIcons(root) {
+  (root || document).querySelectorAll('[data-icon]').forEach(el => {
+    const name = el.getAttribute('data-icon');
+    if (ICONS[name]) el.innerHTML = ICONS[name];
+  });
+}
+renderIcons();
+
+// ════════════════════════════════════
+//  EXERCISE LIBRARY
+// ════════════════════════════════════
+const EJ = {
+  squat_bw: { name:'Sentadilla libre', icon:'squat',
+    steps:['Pies al ancho de hombros, punteras levemente abiertas hacia afuera.','Empujá las caderas hacia atrás y abajo, como si buscaras una silla detrás de vos.','Bajá hasta que los muslos queden paralelos al suelo (o hasta donde llegues sin dolor).','Pecho arriba, espalda recta, rodillas en la dirección de las punteras.','Empujá con los talones para subir. Inhalá al bajar, exhalá al subir.'],
+    tip:'Si perdés equilibrio, hacéla cerca de una pared. La profundidad mejora con la práctica.' },
+  squat_goblet: { name:'Sentadilla con peso frontal', icon:'squat',
+    steps:['Posición igual a la sentadilla, pero sostenés una botella llena de agua con ambas manos frente al pecho.','Al bajar, los codos pasan por dentro de las rodillas, lo que obliga al pecho a quedar erguido.','El peso frontal actúa como contrapeso y facilita llegar más profundo con mejor técnica.'],
+    tip:'Ideal para aprender la sentadilla profunda. El peso adelante corrige automáticamente la postura.' },
+  squat_bulgar: { name:'Sentadilla búlgara', icon:'squat',
+    steps:['Colocá una silla o banco detrás de vos. Parate a ~60–70 cm dándole la espalda.','Apoyá el empeine del pie trasero sobre el borde de la silla.','El pie delantero apunta al frente. Bajá: el muslo delantero llega paralelo al suelo, la rodilla trasera desciende hacia el piso sin tocarlo.','La rodilla delantera NO debe adelantarse más allá de los dedos del pie.','Empujá con el talón delantero para subir. Completá todas las reps de un lado antes de cambiar.'],
+    tip:'Es normal que cueste el equilibrio al principio. Podés apoyarte de algo. Sentís el trabajo en cuádriceps y glúteo.' },
+  squat_jump: { name:'Sentadilla con salto', icon:'squat',
+    steps:['Bajá en sentadilla hasta los 90°.','Al subir, empujá con fuerza explosiva y saltá verticalmente extendiendo todo el cuerpo.','Aterrizá con las rodillas levemente dobladas para absorber el impacto. NUNCA con piernas rectas.','Controlá el aterrizaje: suave, como un gato.'],
+    tip:'Desarrolla potencia explosiva. Solo incorporarlo cuando la sentadilla básica esté bien consolidada.' },
+  lunge_front: { name:'Estocada frontal (Lunge)', icon:'lunge',
+    steps:['Parate derecho con pies juntos.','Dá un paso largo hacia adelante. Al caer, doblá ambas rodillas: la delantera a ~90°, la trasera baja casi hasta el piso sin tocarlo.','La rodilla delantera no debe sobrepasar los dedos del pie.','Empujá el talón delantero para volver. Alternás pierna en cada repetición.'],
+    tip:'Si perdés equilibrio, hacélas cerca de una pared. El movimiento es siempre controlado.' },
+  lunge_lateral: { name:'Estocada lateral', icon:'lunge',
+    steps:['Parate con pies juntos, manos en la cadera.','Dá un gran paso hacia un lado. Doblá esa rodilla y empujá la cadera hacia atrás, como si te sentaras en esa dirección.','La pierna opuesta queda completamente extendida.','Empujá con el talón para volver al centro. Alternás lados.'],
+    tip:'Activa los abductores de cadera, zonas muy usadas en el pedaleo. Imprescindible para ciclistas.' },
+  lunge_walk: { name:'Estocada caminando', icon:'lunge',
+    steps:['Igual que la estocada frontal, pero no volvés al punto inicial.','El pie trasero avanza para hacer la siguiente estocada hacia adelante.','Avanzás por la habitación con estocadas continuas.','Necesitás al menos 4–5 metros de espacio libre.'],
+    tip:'Mayor coordinación y ritmo cardíaco que la estocada estática. Excelente para resistencia muscular.' },
+  glute_bridge: { name:'Puente de glúteo', icon:'bridge',
+    steps:['Acostado boca arriba, rodillas dobladas, pies planos al ancho de la cadera.','Apretá los glúteos y empujá las caderas hacia arriba hasta que el cuerpo forme una línea desde hombros a rodillas.','Mantené 1–2 segundos apretando fuerte.','Bajá controlado sin tocar el suelo con la cadera y volvé a subir.'],
+    tip:'El trabajo lo hacen los GLÚTEOS, no la espalda. Si sentís la zona lumbar, acomodá la posición de los pies.' },
+  glute_bridge_1: { name:'Puente de glúteo a una pierna', icon:'bridge',
+    steps:['Igual que el puente normal, pero extendés una pierna hacia arriba paralela a la otra rodilla.','Solo el pie de apoyo empuja el suelo para elevar la cadera.','Completá todas las reps de un lado antes de cambiar.'],
+    tip:'Notablemente más difícil. Activa más el glúteo y entrena la estabilidad lumbar unilateral.' },
+  hip_thrust: { name:'Hip thrust (empuje de cadera)', icon:'hipthrust',
+    steps:['Sentate en el suelo con la parte alta de la espalda apoyada en el borde de un banco, sofá firme o cama. Los omóplatos quedan al nivel del borde.','Pies planos al ancho de la cadera, rodillas a ~90° cuando estés arriba.','Empujá las caderas hacia arriba hasta que muslos y torso queden paralelos al suelo.','Apretá los glúteos con fuerza arriba. Mantené 1 segundo.','Bajá controlado sin tocar el suelo y volvé a subir.'],
+    tip:'El ejercicio más efectivo para el glúteo mayor y fundamental para el ciclismo. El movimiento viene de los glúteos, NUNCA de la espalda.' },
+  hip_thrust_1: { name:'Hip thrust a una pierna', icon:'hipthrust',
+    steps:['Igual que el hip thrust normal, pero extendés una pierna hacia el frente paralela al suelo.','Solo el pie de apoyo empuja el suelo.','Muy efectivo para detectar desequilibrios entre piernas.'],
+    tip:'Si al principio es muy difícil, apoyá levemente el pie levantado hasta ganar fuerza.' },
+  rdl: { name:'Peso muerto rumano', icon:'hinge',
+    steps:['De pie, pies al ancho de la cadera. Podés sostener una mochila cargada o botellas.','Manteniendo la espalda RECTA, empujá las caderas hacia atrás lentamente.','El peso baja por la parte delantera de las piernas, lo más cerca posible.','Parás cuando sentís el estiramiento fuerte en la parte trasera del muslo (isquiotibiales). No en función de llegar al piso.','Subís empujando las caderas hacia adelante.'],
+    tip:'Si la espalda empieza a redondear, llegaste demasiado abajo. La profundidad la limita tu flexibilidad.' },
+  deadlift_1: { name:'Peso muerto a una pierna', icon:'hinge',
+    steps:['Parate sobre una pierna, rodilla levemente flexionada.','Incliná el torso hacia adelante mientras la pierna libre sube detrás, formando una "T" con el cuerpo.','La cadera no debe rotar. Mantené la pelvis nivelada.','Volvé a la posición inicial de forma controlada.'],
+    tip:'Mirá un punto fijo en el suelo para mantener el equilibrio. Trabaja el glúteo posterior y los estabilizadores del tobillo.' },
+  deadlift_conv: { name:'Peso muerto con mochila', icon:'hinge',
+    steps:['Colocá una mochila cargada en el suelo frente a vos.','Pies al ancho de la cadera. Doblá las rodillas para agarrar la mochila. Espalda recta, pecho orgulloso.','Empujá el suelo con los talones y extendé rodillas y cadera al mismo tiempo para levantarte. La mochila sube pegada a las piernas.','Al bajar: caderas atrás primero, luego doblá rodillas.'],
+    tip:'La espalda recta es innegociable. Si se redondea, reducí el peso. Trabaja prácticamente todo el cuerpo.' },
+  plank: { name:'Plancha frontal', icon:'plank',
+    steps:['Apoyate sobre los antebrazos (codos bajo los hombros) y las puntas de los pies.','El cuerpo forma una línea recta de cabeza a talones.','Apretá el abdomen como si esperaras un golpe, y apretá los glúteos también.','No levantes la cola ni la hundas. Mirá el suelo con el cuello neutro.','Respirá normalmente. No aguantes la respiración.'],
+    tip:'Si 25 segundos son muy difíciles al principio, apoyá las rodillas. Con práctica no lo vas a necesitar.' },
+  plank_side: { name:'Plancha lateral', icon:'plank',
+    steps:['Acostado de lado, apoyá el antebrazo en el suelo (codo bajo el hombro) y el borde externo del pie inferior.','Levantá la cadera hasta que el cuerpo forme una línea diagonal de cabeza a tobillo.','La cadera no debe caer. El brazo libre va en la cadera o extendido al techo.','Mantené el tiempo indicado y cambiá de lado.'],
+    tip:'Si es muy difícil, apoyá la rodilla inferior. Fortalece el core lateral, clave para la estabilidad en la bici.' },
+  plank_tap: { name:'Plancha con toque de hombro', icon:'plank',
+    steps:['Plancha alta: brazos extendidos, palmas bajo los hombros.','Sin rotar la cadera, levantá la mano derecha y tocá el hombro izquierdo. Volvé.','La mano izquierda toca el hombro derecho. Eso es 1 repetición completa.','Clave: la cadera NO se mueve. Si se mueve, abrí más los pies.'],
+    tip:'Entrena el core anti-rotación, crucial para mantener el torso estable mientras pedaleás kilómetros.' },
+  plank_updown: { name:'Plancha dinámica (bajada-subida)', icon:'plank',
+    steps:['Empezás en plancha alta (brazos extendidos).','Bajá el antebrazo derecho al suelo, luego el izquierdo: plancha baja.','Subí el brazo derecho, luego el izquierdo: plancha alta. Eso es 1 repetición.','Alternás el brazo que inicia en cada rep. La cadera no rota.'],
+    tip:'Más difícil de lo que parece. Priorizá la estabilidad de la cadera por sobre la velocidad.' },
+  plank_dyn: { name:'Plancha deslizante', icon:'plank',
+    steps:['Plancha alta (brazos extendidos). Pies sobre algo que se deslice: bolsa de plástico en piso liso, o calcetines en piso de madera.','Doblá las rodillas hacia el pecho deslizando los pies. Extendelas. Eso es 1 rep.','Alternativa: deslizá los pies hacia un lado y luego al otro (movimiento de sierra).','El torso y los brazos no se mueven.'],
+    tip:'La inestabilidad activa mucho más el core que la plancha estática. Sin superficie deslizante, usá una silla con ruedas.' },
+  superman: { name:'Superman (extensión de espalda)', icon:'superman',
+    steps:['Acostado boca abajo, brazos extendidos al frente como si volaras.','Levantá simultáneamente los brazos, el pecho y las piernas del suelo.','Apretá los glúteos y la zona lumbar.','Mantené 2–3 segundos arriba. Bajá con control y repetí.'],
+    tip:'No necesitás subir muy alto. Lo importante es la contracción de la cadena posterior, no la altura.' },
+  row: { name:'Remo inclinado', icon:'row',
+    steps:['Sostenés una mochila cargada con ambas manos.','Incliná el torso ~45° hacia adelante. Espalda RECTA como una tabla.','Tirá la mochila hacia tu ombligo doblando los codos hacia atrás y arriba.','El torso no se mueve durante el movimiento. Bajá controlado.'],
+    tip:'Clave para la postura en bici y para evitar el dolor de espalda. Trabajás la espalda media.' },
+  bird_dog: { name:'Bird-dog', icon:'birddog',
+    steps:['Cuadrupedia: rodillas bajo la cadera, manos bajo los hombros. Espalda plana como una mesa.','Extendé simultáneamente el brazo derecho al frente y la pierna izquierda hacia atrás. Ambos paralelos al suelo.','La espalda no se mueve ni rota. Mantené 2 segundos.','Volvé y cambiá: brazo izquierdo + pierna derecha.'],
+    tip:'Fundamental para la estabilidad lumbar en ciclismo. Si la cadera se mueve mucho, la práctica lo irá corrigiendo.' },
+  shoulder_press: { name:'Press de hombros', icon:'press',
+    steps:['De pie o sentado, botellas llenas en cada mano.','Brazos a los costados, doblados a 90°, antebrazos hacia arriba.','Empujá las manos hacia arriba hasta extender los brazos.','Bajá controlado a los 90°. No arqueés la espalda.'],
+    tip:'Los hombros soportan el peso del cuerpo en el manubrio durante kilómetros. No subestimes este ejercicio.' },
+  core_circ: { name:'Circuito de core (5 minutos)', icon:'core',
+    steps:['30 seg Plancha frontal (antebrazos).','30 seg Bicicleta: acostado, manos detrás de la cabeza, llevás el codo derecho a la rodilla izquierda elevada mientras la pierna derecha se extiende. Alternás.','30 seg Mountain climbers: plancha alta, rodillas al pecho alternando rápido.','30 seg Hollow body: acostado, brazos sobre la cabeza y piernas extendidas a 15 cm del suelo, espalda baja pegada al piso.','Repetís el circuito sin descanso.'],
+    tip:'Si no podés completar 5 minutos, hacé 3 e ir aumentando. Elegantemente brutal.' },
+  movilidad: { name:'Movilidad de cadera (rutina completa)', icon:'mobility',
+    steps:['Círculos de cadera: de pie, manos en la cadera, círculos amplios (10 hacia cada lado).','Piriforme: acostado boca arriba, cruzá un tobillo sobre la rodilla opuesta. Abrazá el muslo y acercalo al pecho. 30 seg por lado.','Apertura: plantas de los pies juntas boca arriba, dejá caer las rodillas hacia afuera. 1 minuto.','Flexor de cadera: estocada con rodilla trasera en el suelo, empujá la cadera hacia adelante y abajo. 30 seg por lado.'],
+    tip:'La cadera es el motor del ciclismo. 5–10 minutos de movilidad después de cada sesión reducen el riesgo de lesión a la mitad.' }
+};
+
+// ════════════════════════════════════
+//  PLAN DATA  (base values, adapted at render time)
+// ════════════════════════════════════
+const PLANS = {
+  principiante: [
+    {
+      label:'Semana 1 – Activación',
+      tip:'Esta semana es de adaptación. Priorizá la técnica y la postura sobre la velocidad. Si sentís molestias, reducí el km sin culpa.',
+      goal:{ icon:'target', title:'Meta de la semana', text:'Completar los 3 recorridos en bici y las 2 sesiones de fuerza sin lesionarte. Establecer el hábito.' },
+      days:[
+        { day:'LUN', num:1, type:'bike', kmIdx:0, elev:'llano', det:'Terreno plano. Explorá el recorrido sin presión: enfocate en la postura, los apoyos en el manubrio y cómo sentís la bici.' },
+        { day:'MAR', num:2, type:'str',  det:'Sesión de fuerza A – Piernas + Core (ver ejercicios abajo).' },
+        { day:'MIÉ', num:3, type:'bike', kmIdx:1, elev:'llano', det:'Llano o muy suave. Mantené la cadencia constante y controlá la respiración. Sin apuros.' },
+        { day:'JUE', num:4, type:'rest', det:'Caminata 20–30 min + estiramientos de cuádriceps, isquiotibiales y cadera.' },
+        { day:'VIE', num:5, type:'str',  det:'Sesión de fuerza B – Glúteos + Estabilidad (ver ejercicios abajo).' },
+        { day:'SÁB', num:6, type:'bike', kmIdx:2, elev:'llano', det:'La salida más larga de la semana. Buscá un recorrido plano. Llevá agua y anotá cómo te sentiste.' },
+        { day:'DOM', num:7, type:'rest', det:'Estiramientos suaves. Tu cuerpo está construyendo la base.' }
+      ],
+      bikeKm:[5,6,8],
+      sessA:{ title:'Sesión A – Piernas + Core (Martes)', baseSets:3, exs:[{id:'squat_bw',reps:'12 reps'},{id:'lunge_front',reps:'10 reps/pierna'},{id:'glute_bridge',reps:'15 reps'},{id:'plank',reps:'25 seg'},{id:'superman',reps:'12 reps'}] },
+      sessB:{ title:'Sesión B – Glúteos + Estabilidad (Viernes)', baseSets:3, exs:[{id:'glute_bridge_1',reps:'10 reps/pierna'},{id:'lunge_lateral',reps:'10 reps/pierna'},{id:'plank_side',reps:'20 seg/lado'},{id:'bird_dog',reps:'10 reps/lado'},{id:'row',reps:'12 reps'}] },
+      nut:[{ico:'🥣',t:'Antes del entreno',i:'Banana, avena con leche o tostadas con palta. Comé 1 hora antes.'},{ico:'💧',t:'Hidratación',i:'Mínimo 2 litros de agua por día. Siempre con botella en la bici.'},{ico:'🍗',t:'Post-entreno',i:'Pollo, huevos, yogur griego, legumbres. Proteínas para recuperarse.'},{ico:'🍊',t:'Antioxidantes',i:'Naranja, kiwi, frutillas. Reducen la inflamación muscular post-esfuerzo.'}]
+    },
+    {
+      label:'Semana 2 – Progresión',
+      tip:'Tu cuerpo ya se adaptó al movimiento. Empezarás a sentir los cambios en resistencia.',
+      goal:{ icon:'trend', title:'Meta de la semana', text:'Completar la salida del sábado sin detenciones largas. El ritmo conversacional es la clave.' },
+      days:[
+        { day:'LUN', num:8,  type:'bike', kmIdx:0, elev:'ondulado', det:'Buscá un recorrido con 1–2 subidas suaves. Al subir: bajá la marcha y mantené el ritmo. No te cuelgues de los brazos.' },
+        { day:'MAR', num:9,  type:'str',  det:'Sesión A – Intentá sumar 1–2 repeticiones más que la semana pasada.' },
+        { day:'MIÉ', num:10, type:'bike', kmIdx:1, elev:'ondulado', det:'Incluí una subida de 2–3 min. Al llegar arriba, recuperate y continuás. Primera práctica real de pendiente.' },
+        { day:'JUE', num:11, type:'rest', det:'Caminata 25 min. Foam roller en cuádriceps y glúteos si tenés.' },
+        { day:'VIE', num:12, type:'str',  det:'Sesión B – Sumá 5 min de movilidad de cadera al final.' },
+        { day:'SÁB', num:13, type:'bike', kmIdx:2, elev:'ondulado', det:'Ruta con ondulaciones suaves. Ritmo conversacional todo el tiempo, incluso en las subidas. Llevá snack y agua.' },
+        { day:'DOM', num:14, type:'rest', det:'Revisá cómo responden piernas y rodillas. Eso es información valiosa.' }
+      ],
+      bikeKm:[8,10,12],
+      sessA:{ title:'Sesión A – Piernas + Core (Martes)', baseSets:3, exs:[{id:'squat_goblet',reps:'12 reps'},{id:'lunge_walk',reps:'10 reps/pierna'},{id:'hip_thrust',reps:'12 reps'},{id:'plank_tap',reps:'12 reps'},{id:'superman',reps:'12 reps'}] },
+      sessB:{ title:'Sesión B – Glúteos + Estabilidad (Viernes)', baseSets:3, exs:[{id:'glute_bridge_1',reps:'12 reps/pierna'},{id:'lunge_lateral',reps:'12 reps/pierna'},{id:'plank_side',reps:'25 seg/lado'},{id:'bird_dog',reps:'12 reps/lado'},{id:'movilidad',reps:'5 min'}] },
+      nut:[{ico:'🍠',t:'Carbohidratos de calidad',i:'Batata, arroz integral, pasta. Tu combustible principal.'},{ico:'🥜',t:'Snack pre-salida larga',i:'Almendras o nueces + banana 30 min antes del sábado.'},{ico:'🥩',t:'Proteínas',i:'Aumentá un poco: pechuga, atún, huevos, legumbres en almuerzo y cena.'},{ico:'💊',t:'Magnesio natural',i:'Espinaca, semillas de zapallo, chocolate negro >70%. Reduce calambres.'}]
+    },
+    {
+      label:'Semana 3 – Consolidación',
+      tip:'La salida del sábado es el gran hito de esta semana. Planeá la ruta de antemano y llevá todo lo que necesitás.',
+      goal:{ icon:'rocket', title:'Meta de la semana', text:'Completar la salida del sábado. Ya podés ver los 50 km como algo posible.' },
+      days:[
+        { day:'LUN', num:15, type:'bike', kmIdx:0, elev:'ondulado', det:'Terreno variado con ondulaciones. Practicá la respiración abdominal al subir: profunda y continua, sin aguantar el aire.' },
+        { day:'MAR', num:16, type:'str',  det:'Sesión A – Aumentamos a 4 series. Descansá 60 seg entre series.' },
+        { day:'MIÉ', num:17, type:'bike', kmIdx:1, elev:'intervalos', det:'Buscá una cuesta de 1–2 min. Subí fuerte × 3, recuperate bajando. Más 3 km suaves antes y después.' },
+        { day:'JUE', num:18, type:'rest', det:'Yoga o movilidad 30 min. Cadera, isquiotibiales y zona lumbar.' },
+        { day:'VIE', num:19, type:'str',  det:'Sesión B – Énfasis en core. La columna te lo va a agradecer el sábado.' },
+        { day:'SÁB', num:20, type:'bike', kmIdx:2, elev:'subida', det:'Incluí una subida de 5–10 min en la ruta. Planeala de antemano. Llevá agua, snack y ganas.' },
+        { day:'DOM', num:21, type:'rest', det:'Comé bien, dormí 8h. Tu cuerpo está construyendo resistencia real.' }
+      ],
+      bikeKm:[12,15,20],
+      sessA:{ title:'Sesión A – Piernas + Core (Martes)', baseSets:4, exs:[{id:'squat_bulgar',reps:'10 reps/pierna'},{id:'lunge_walk',reps:'12 reps/pierna'},{id:'hip_thrust',reps:'12 reps'},{id:'plank',reps:'35 seg'},{id:'rdl',reps:'10 reps'}] },
+      sessB:{ title:'Sesión B – Glúteos + Core (Viernes)', baseSets:3, exs:[{id:'glute_bridge_1',reps:'12 reps/pierna'},{id:'plank_tap',reps:'14 reps'},{id:'bird_dog',reps:'12 reps/lado'},{id:'row',reps:'12 reps'},{id:'movilidad',reps:'8 min'}] },
+      nut:[{ico:'🍝',t:'Carga de carbos (viernes)',i:'Pasta, arroz, pan integral la noche previa a la salida larga.'},{ico:'🍬',t:'Durante la bici (+45 min)',i:'Dátiles, banana o frutos secos cada 15–20 km.'},{ico:'🥗',t:'Antiinflamatorio natural',i:'Cúrcuma con pimienta, jengibre en el té, aceite de oliva.'},{ico:'🐟',t:'Omega-3',i:'Salmón, atún, sardinas 2–3 veces/semana. Reduce inflamación muscular.'}]
+    },
+    {
+      label:'Semana 4 – ¡Los 50 km!', finalDay:true,
+      tip:'Esta semana reducimos el volumen para llegar al 100% el día 30. No hagas más de lo indicado: la clave es el descanso.',
+      goal:{ icon:'flag', title:'Día 30 – ¡50 km!', text:'Todo el trabajo ya está hecho. Solo tenés que salir y disfrutar cada kilómetro.' },
+      days:[
+        { day:'LUN', num:22, type:'bike', kmIdx:0, elev:'libre', det:'Últimos km de entrenamiento real. Sin presión: plano o lo que tengas ganas.' },
+        { day:'MAR', num:23, type:'str',  det:'Fuerza ligera – 2 series de cada ejercicio. Mantener, no exigirse.' },
+        { day:'MIÉ', num:24, type:'bike', kmIdx:1, elev:'ondulado', det:'Hacé el recorrido que más disfrutás. Si tiene alguna subida, mejor: ya la manejás bien.' },
+        { day:'JUE', num:25, type:'rest', det:'Revisá la bici: neumáticos, cadena, frenos. Preparate tácticamente.' },
+        { day:'VIE', num:26, type:'str',  det:'Activación ligera: sentadillas, puente, plancha. Nada más. Guardá energía.' },
+        { day:'SÁB', num:27, type:'rest', det:'Revisá la ruta de los 50 km. Dejá todo listo.' },
+        { day:'DOM', num:28, type:'rest', det:'Cena de carga de carbos: pasta o arroz con pollo. Dormí mínimo 8h.' }
+      ],
+      bikeKm:[15,20,0],
+      sessA:{ title:'Fuerza de mantenimiento (Martes + Viernes)', baseSets:2, exs:[{id:'squat_bw',reps:'10 reps'},{id:'glute_bridge',reps:'12 reps'},{id:'plank',reps:'25 seg'},{id:'movilidad',reps:'5 min'}] },
+      sessB:null,
+      nut:[{ico:'🍝',t:'Noche previa al día 30',i:'Plato grande de pasta o arroz con pollo. Sin picante ni grasa en exceso.'},{ico:'🥣',t:'Desayuno día 30 (1h antes)',i:'Avena con banana y miel. Café si lo tomás habitualmente.'},{ico:'🚰',t:'Hidratación día 30',i:'500 ml antes de salir. Al menos 1 litro en la bici. Bebé cada 20 min.'},{ico:'🍬',t:'Durante los 50 km',i:'Snack o dátiles cada 15–20 km. Practicaste esto en los entrenos: aplicalo igual.'}]
+    }
+  ],
+  intermedio: [
+    {
+      label:'Semana 1 – Base progresiva',
+      tip:'Tu cuerpo ya tiene base. Esta semana establecemos el volumen y ajustamos la postura y cadencia en bici.',
+      goal:{ icon:'target', title:'Meta de la semana', text:'Completar la salida del sábado a buen ritmo sin agotarte. Dejá un 20% de energía en reserva.' },
+      days:[
+        { day:'LUN', num:1,  type:'bike', kmIdx:0, elev:'llano', det:'Z2 en llano. Podés hablar con facilidad. Calentamiento 10 min suave, cierre suave.' },
+        { day:'MAR', num:2,  type:'str',  det:'Sesión A – Fuerza media. 3–4 series. Ver ejercicios.' },
+        { day:'MIÉ', num:3,  type:'bike', kmIdx:1, elev:'ondulado', det:'5 km suave → 5 km moderado-alto en terreno ondulado → 5 km suave. Las subidas son parte del trabajo.' },
+        { day:'JUE', num:4,  type:'rest', det:'Movilidad 30 min. Cadera, cuádriceps, espalda baja. Foam roller si tenés.' },
+        { day:'VIE', num:5,  type:'str',  det:'Sesión B – Cuerpo completo. Cadena posterior + core.' },
+        { day:'SÁB', num:6,  type:'bike', kmIdx:2, elev:'ondulado', det:'Ruta con desnivel moderado. Ritmo constante: no te fundas en la primera subida. Llevá agua y snack.' },
+        { day:'DOM', num:7,  type:'rest', det:'Dormí bien, hidratate, comé proteínas.' }
+      ],
+      bikeKm:[12,15,18],
+      sessA:{ title:'Sesión A – Piernas + Core (Martes)', baseSets:4, exs:[{id:'squat_bulgar',reps:'10 reps/pierna'},{id:'rdl',reps:'10 reps'},{id:'hip_thrust',reps:'12 reps'},{id:'plank',reps:'30 seg'},{id:'row',reps:'12 reps'}] },
+      sessB:{ title:'Sesión B – Cuerpo completo (Viernes)', baseSets:3, exs:[{id:'lunge_walk',reps:'12 reps/pierna'},{id:'glute_bridge_1',reps:'12 reps/pierna'},{id:'plank_tap',reps:'12 reps'},{id:'bird_dog',reps:'12 reps/lado'},{id:'movilidad',reps:'8 min'}] },
+      nut:[{ico:'🥣',t:'Pre-entreno',i:'Avena con frutas 1–1.5h antes. Dátiles si es salida corta.'},{ico:'🍠',t:'Carbohidratos de calidad',i:'Batata, arroz integral, pasta. Priorizalos antes de entrenar.'},{ico:'🥩',t:'Proteínas post-entreno',i:'1.6–2g por kg de peso corporal. Pollo, huevos, legumbres.'},{ico:'💧',t:'Hidratación',i:'2.5 litros/día. 500 ml por hora de ejercicio en entreno.'}]
+    },
+    {
+      label:'Semana 2 – Volumen',
+      tip:'Esta semana el volumen sube. Planeá la ruta del sábado con anticipación y con puntos de agua identificados.',
+      goal:{ icon:'trend', title:'Meta de la semana', text:'Completar la salida del sábado sin detenciones por fatiga. Los 50 km ya se ven reales.' },
+      days:[
+        { day:'LUN', num:8,  type:'bike', kmIdx:0, elev:'ondulado', det:'Zona aeróbica con terreno variado. Mantené cadencia 80–90 RPM incluso en subidas, aunque cueste más esfuerzo.' },
+        { day:'MAR', num:9,  type:'str',  det:'Sesión A + 5 min de movilidad de cadera al cierre.' },
+        { day:'MIÉ', num:10, type:'bike', kmIdx:1, elev:'intervalos', det:'Buscá una cuesta de 2–3 min. 5 × (sube fuerte + baja recuperando). Calentamiento y enfriamiento de 5 km cada uno.' },
+        { day:'JUE', num:11, type:'rest', det:'Caminata 30 min + estiramientos de piernas y espalda 15 min.' },
+        { day:'VIE', num:12, type:'str',  det:'Sesión B con énfasis en core y cadena posterior.' },
+        { day:'SÁB', num:13, type:'bike', kmIdx:2, elev:'subida', det:'Ruta con 1–2 subidas reales de 5–8 min. Llevá GPS y snack. El desnivel entrena lo que los km planos no pueden.' },
+        { day:'DOM', num:14, type:'rest', det:'Revisá piernas, espalda y niveles de energía. Anotalos.' }
+      ],
+      bikeKm:[15,20,25],
+      sessA:{ title:'Sesión A – Piernas + Potencia (Martes)', baseSets:4, exs:[{id:'squat_bulgar',reps:'12 reps/pierna'},{id:'rdl',reps:'10 reps'},{id:'hip_thrust',reps:'12 reps'},{id:'plank_updown',reps:'10 reps'},{id:'row',reps:'12 reps'}] },
+      sessB:{ title:'Sesión B – Core + Glúteos (Viernes)', baseSets:3, exs:[{id:'squat_jump',reps:'8 reps'},{id:'lunge_walk',reps:'12 reps/pierna'},{id:'plank_tap',reps:'14 reps'},{id:'hip_thrust_1',reps:'10 reps/pierna'},{id:'movilidad',reps:'8 min'}] },
+      nut:[{ico:'🍝',t:'Carga previa a salida larga',i:'El viernes a la noche: pasta, arroz o batata. Más carbos de lo habitual.'},{ico:'🥜',t:'Snack durante la salida',i:'Banana o dátiles. Comé algo cada 20 km para mantener el glucógeno.'},{ico:'🐟',t:'Omega-3 y antiinflamatorio',i:'Salmón, atún. O suplemento de omega-3 si no consumís pescado regularmente.'},{ico:'🍊',t:'Potasio',i:'Banana, naranja, kiwi. Previene calambres en salidas largas.'}]
+    },
+    {
+      label:'Semana 3 – Intensidad',
+      tip:'Semana de mayor exigencia. La salida del sábado es tu ensayo general. Equipate como si fueran los 50 km reales.',
+      goal:{ icon:'fire', title:'Meta de la semana', text:'Completar la salida del sábado. Eso demostrará que los 50 km son un hecho.' },
+      days:[
+        { day:'LUN', num:15, type:'bike', kmIdx:0, elev:'ondulado', det:'Ritmo aeróbico-tempo con terreno ondulado. Subidas: elevá el ritmo cardíaco. Bajas: recuperate y preparate para la siguiente.' },
+        { day:'MAR', num:16, type:'str',  det:'Sesión A – Alta intensidad. 4 series en todos los ejercicios. Descanso: 60 seg.' },
+        { day:'MIÉ', num:17, type:'bike', kmIdx:1, elev:'intervalos', det:'Alternás zona 2 y zona 3 cada 5 km. Si hay subida, usala para el bloque Z3. Técnica: cadencia alta, no fuerza bruta.' },
+        { day:'JUE', num:18, type:'rest', det:'Yoga o natación suave 30 min. Recuperación activa crucial esta semana.' },
+        { day:'VIE', num:19, type:'str',  det:'Sesión B + 15 min de movilidad y estiramientos profundos.' },
+        { day:'SÁB', num:20, type:'bike', kmIdx:2, elev:'subida', det:'Ruta con desnivel acumulado. Equipate como el día 30. Las subidas ya son tuyas.' },
+        { day:'DOM', num:21, type:'rest', det:'Dormí bien, comé proteínas y carbohidratos. Hidratate mucho.' }
+      ],
+      bikeKm:[20,25,35],
+      sessA:{ title:'Sesión A – Potencia máxima (Martes)', baseSets:4, exs:[{id:'squat_bulgar',reps:'12 reps/pierna'},{id:'rdl',reps:'10 reps'},{id:'hip_thrust',reps:'12 reps'},{id:'plank_dyn',reps:'10 reps'},{id:'core_circ',reps:'5 min'}] },
+      sessB:{ title:'Sesión B – Core + Movilidad (Viernes)', baseSets:3, exs:[{id:'squat_jump',reps:'8 reps'},{id:'deadlift_1',reps:'10 reps/pierna'},{id:'plank_side',reps:'30 seg/lado'},{id:'hip_thrust_1',reps:'10 reps/pierna'},{id:'movilidad',reps:'10 min'}] },
+      nut:[{ico:'🍝',t:'Pre-salida larga (viernes noche)',i:'Plato grande de pasta o arroz con proteína magra. Hidratate bien.'},{ico:'🍬',t:'Durante la salida',i:'Gel o snack real cada 15 km. No experimentes con alimentos nuevos.'},{ico:'🥤',t:'Post-entreno',i:'Proteína + carbohidratos simples en los 30 min post-entreno.'},{ico:'💊',t:'Recuperación',i:'Magnesio y zinc (semillas de zapallo, cacao puro). Reducen calambres y mejoran el sueño.'}]
+    },
+    {
+      label:'Semana 4 – ¡Los 50 km!', finalDay:true,
+      tip:'Taper week: reducimos el volumen para llegar frescos al día 30. No hagas más de lo indicado.',
+      goal:{ icon:'flag', title:'Día 30 – ¡50 km!', text:'Todo el trabajo está hecho. Solo tenés que disfrutarlo y cruzar la meta.' },
+      days:[
+        { day:'LUN', num:22, type:'bike', kmIdx:0, elev:'ondulado', det:'Sin esfuerzo máximo. Terreno variado tranquilo: disfrutá el movimiento.' },
+        { day:'MAR', num:23, type:'str',  det:'Fuerza de mantenimiento – 2 series. Sin fatigar.' },
+        { day:'MIÉ', num:24, type:'bike', kmIdx:1, elev:'libre', det:'Tu último entrenamiento. Hacé el recorrido que más disfrutás. Confiá en el trabajo acumulado.' },
+        { day:'JUE', num:25, type:'rest', det:'Revisá neumáticos, frenos y cadena. Preparate tácticamente.' },
+        { day:'VIE', num:26, type:'str',  det:'Activación 20 min máximo. Guardá energía.' },
+        { day:'SÁB', num:27, type:'rest', det:'Cena de carga de carbos: pasta o arroz con pollo.' },
+        { day:'DOM', num:28, type:'rest', det:'Descanso absoluto. Visualizá la ruta. Mañana es el día.' }
+      ],
+      bikeKm:[20,25,0],
+      sessA:{ title:'Fuerza de mantenimiento (Martes + Viernes)', baseSets:2, exs:[{id:'squat_bw',reps:'10 reps'},{id:'glute_bridge',reps:'12 reps'},{id:'plank',reps:'25 seg'},{id:'movilidad',reps:'5 min'}] },
+      sessB:null,
+      nut:[{ico:'🍝',t:'Sábado – carga de carbos',i:'Pasta, arroz, pan integral. La mejor cena previa al gran día.'},{ico:'🥣',t:'Desayuno día 30 (1h–1.5h antes)',i:'Avena con banana y miel. Nada nuevo en el día de la carrera.'},{ico:'🚰',t:'Hidratación día 30',i:'500 ml al levantarte. Al menos 1.5L durante los 50 km. Bebé antes de tener sed.'},{ico:'🍬',t:'Durante los 50 km',i:'Snack o gel cada 15–20 km. Practicaste esto en entrenos: aplicalo igual.'}]
+    }
+  ],
+  avanzado: [
+    {
+      label:'Semana 1 – Carga base fuerte',
+      tip:'Como ciclista avanzado/a, el reto es mantener la intensidad sin sobrecargarte. Evaluamos puntos débiles y ajustamos.',
+      goal:{ icon:'target', title:'Meta de la semana', text:'Completar la salida del sábado a ritmo Z3–Z4. Evaluar resistencia de piernas y espalda.' },
+      days:[
+        { day:'LUN', num:1,  type:'bike', kmIdx:0, elev:'llano', det:'Z2 en llano. Cadencia alta 90–95 RPM, piñón pequeño. Recuperación activa.' },
+        { day:'MAR', num:2,  type:'str',  det:'Fuerza + potencia. Alta intensidad, descanso 45 seg entre series.' },
+        { day:'MIÉ', num:3,  type:'bike', kmIdx:1, elev:'subida', det:'15 min calentamiento + subida de 10–15 min a tempo Z3 + cierre suave. Z3 sostenible: podés hablar con frases cortas.' },
+        { day:'JUE', num:4,  type:'str',  det:'Fuerza específica + 15 min movilidad de cadera.' },
+        { day:'VIE', num:5,  type:'bike', kmIdx:0, elev:'llano', det:'Z1–Z2 en llano. Sin forzar. El cuerpo asimila la carga de la semana.' },
+        { day:'SÁB', num:6,  type:'bike', kmIdx:2, elev:'ondulado', det:'Z3 con terreno ondulado. Evaluá tus zonas y cómo responde el cuerpo en cada repecho.' },
+        { day:'DOM', num:7,  type:'rest', det:'Descanso total. Recuperación del sistema nervioso central.' }
+      ],
+      bikeKm:[20,25,30],
+      sessA:{ title:'Sesión A – Potencia (Martes)', baseSets:4, exs:[{id:'squat_bulgar',reps:'12 reps/pierna'},{id:'deadlift_conv',reps:'10 reps'},{id:'hip_thrust',reps:'12 reps'},{id:'plank_dyn',reps:'10 reps'},{id:'row',reps:'12 reps'}] },
+      sessB:{ title:'Sesión B – Fuerza específica (Jueves)', baseSets:4, exs:[{id:'shoulder_press',reps:'10 reps'},{id:'lunge_walk',reps:'12 reps/pierna'},{id:'plank_updown',reps:'10 reps'},{id:'hip_thrust_1',reps:'10 reps/pierna'},{id:'movilidad',reps:'10 min'}] },
+      nut:[{ico:'⚡',t:'Periodización nutricional',i:'Más carbohidratos en días de bici. Más proteína en días de fuerza.'},{ico:'🥣',t:'Pre-entreno largo',i:'Avena con dátiles y nueces. Carbohidratos de liberación rápida 30 min antes.'},{ico:'🥩',t:'Proteínas elevadas',i:'2g por kg de peso. Necesario para mantener masa muscular con alto volumen.'},{ico:'💊',t:'Suplementación básica',i:'Creatina monohidrato (3–5g/día), magnesio y vitamina D si no te da suficiente el sol.'}]
+    },
+    {
+      label:'Semana 2 – Volumen alto',
+      tip:'El mayor volumen de todo el plan. La salida del sábado es el verdadero test de resistencia.',
+      goal:{ icon:'trend', title:'Meta de la semana', text:'Completar la salida del sábado a Z3 promedio. Si lo lográs, los 50 km son un hecho.' },
+      days:[
+        { day:'LUN', num:8,  type:'bike', kmIdx:0, elev:'ondulado', det:'Tempo Z3 en terreno ondulado. Medí FC o potencia. Las subidas deben sostenerse en Z3–Z4.' },
+        { day:'MAR', num:9,  type:'str',  det:'Fuerza máxima – series pesadas. 5×5. Descanso 2 min.' },
+        { day:'MIÉ', num:10, type:'bike', kmIdx:1, elev:'intervalos', det:'8 × (3 min Z5 subiendo + 2 min recuperando bajando). Muy exigente. Hidratate antes, durante y después.' },
+        { day:'JUE', num:11, type:'rest', det:'Movilidad + baño frío opcional. Foam roller completo.' },
+        { day:'VIE', num:12, type:'str',  det:'Circuito funcional 3 rondas + 15 min de movilidad extendida.' },
+        { day:'SÁB', num:13, type:'bike', kmIdx:2, elev:'subida', det:'Recorrido largo con desnivel acumulado. Planeá los puntos de subida y calculá la nutrición según km, no tiempo.' },
+        { day:'DOM', num:14, type:'rest', det:'Sueño, nutrición y relax. Tu cuerpo hace el trabajo ahora.' }
+      ],
+      bikeKm:[25,30,40],
+      sessA:{ title:'Sesión A – Fuerza máxima (Martes)', baseSets:5, exs:[{id:'squat_bulgar',reps:'5 reps/pierna (pesado)'},{id:'deadlift_conv',reps:'5 reps (pesado)'},{id:'hip_thrust',reps:'10 reps (pesado)'},{id:'plank_dyn',reps:'12 reps'},{id:'row',reps:'10 reps (pesado)'}] },
+      sessB:{ title:'Sesión B – Funcional + Movilidad (Viernes)', baseSets:3, exs:[{id:'squat_jump',reps:'8 reps'},{id:'deadlift_1',reps:'10 reps/pierna'},{id:'core_circ',reps:'5 min'},{id:'hip_thrust_1',reps:'10 reps/pierna'},{id:'movilidad',reps:'10 min'}] },
+      nut:[{ico:'🍝',t:'Carga de carbos (viernes)',i:'2–3 tazas de pasta o arroz. Hidratación elevada el día previo.'},{ico:'🥤',t:'Intra-entreno (salida larga)',i:'Bebida isotónica: agua + pizca de sal + limón + miel. O isotónica comercial.'},{ico:'🥤',t:'Recuperación post-salida',i:'Batido de proteínas + carbohidratos simples en los primeros 30 min.'},{ico:'💊',t:'Antiinflamatorios naturales',i:'Cúrcuma con pimienta negra, jengibre, cerezas. No dependas del ibuprofeno.'}]
+    },
+    {
+      label:'Semana 3 – Pico + descarga inicial',
+      tip:'Empezamos el taper. Mantenemos la intensidad pero bajamos el volumen. Tu cuerpo consolida las mejoras.',
+      goal:{ icon:'fire', title:'Meta de la semana', text:'Los 45 km del sábado se van a sentir más fáciles que los 40 de la semana pasada. Ese es el taper.' },
+      days:[
+        { day:'LUN', num:15, type:'bike', kmIdx:0, elev:'ondulado', det:'Z2–Z3 en terreno ondulado. Técnica en subidas: cadencia alta, respiración controlada, nunca fuerza bruta.' },
+        { day:'MAR', num:16, type:'str',  det:'Sesión A – Peso similar a semana 2 pero 1 serie menos.' },
+        { day:'MIÉ', num:17, type:'bike', kmIdx:1, elev:'subida', det:'Practicá el ritmo exacto del día 30. Si la ruta final tiene subidas, recorrélas hoy y aprendé cómo responde tu cuerpo.' },
+        { day:'JUE', num:18, type:'str',  det:'Fuerza ligera + movilidad extendida. Énfasis en cadera y estiramientos profundos.' },
+        { day:'VIE', num:19, type:'bike', kmIdx:0, elev:'llano', det:'Suave Z1–Z2 en llano. Mantener músculos activos sin acumular fatiga.' },
+        { day:'SÁB', num:20, type:'bike', kmIdx:2, elev:'subida', det:'Simulacro completo con desnivel real. Hidratación, nutrición y ritmo como el día 30.' },
+        { day:'DOM', num:21, type:'rest', det:'Nutrición óptima, sueño largo. Sin esfuerzo.' }
+      ],
+      bikeKm:[30,35,45],
+      sessA:{ title:'Sesión A – Mantenimiento de potencia (Martes)', baseSets:4, exs:[{id:'squat_bulgar',reps:'8 reps/pierna'},{id:'deadlift_conv',reps:'8 reps'},{id:'hip_thrust',reps:'10 reps'},{id:'plank_dyn',reps:'10 reps'},{id:'row',reps:'10 reps'}] },
+      sessB:{ title:'Sesión B – Fuerza ligera + Movilidad (Jueves)', baseSets:3, exs:[{id:'squat_bw',reps:'10 reps'},{id:'glute_bridge',reps:'12 reps'},{id:'plank_side',reps:'30 seg/lado'},{id:'movilidad',reps:'12 min'}] },
+      nut:[{ico:'🍝',t:'Pre-45 km (viernes)',i:'Carga máxima de carbohidratos: pasta, arroz, batata.'},{ico:'⚡',t:'Durante los 45 km',i:'Gel cada 12–15 km. Isotónica o agua + sal. No experimentes.'},{ico:'🥗',t:'Antiinflamatorios',i:'Aumentá omega-3, cúrcuma y antioxidantes para recuperar del simulacro.'},{ico:'😴',t:'Sueño como estrategia',i:'8–9 horas esta semana. El sueño es donde realmente mejora el rendimiento.'}]
+    },
+    {
+      label:'Semana 4 – ¡Los 50 km!', finalDay:true,
+      tip:'Taper completo. Hacés poco para llegar al 100% el día 30. El trabajo ya está acumulado en tu cuerpo.',
+      goal:{ icon:'flag', title:'Día 30 – ¡50 km!', text:'Tres semanas de trabajo élite. Hoy solo disfrutás. Salís, rodás y cruzás la meta.' },
+      days:[
+        { day:'LUN', num:22, type:'bike', kmIdx:0, elev:'llano', det:'Suave Z2 en llano. Últimas acumulaciones, sin esfuerzo.' },
+        { day:'MAR', num:23, type:'str',  det:'Mantenimiento mínimo – 2 series. Nada más.' },
+        { day:'MIÉ', num:24, type:'bike', kmIdx:1, elev:'libre', det:'Activación suave. Recorrido tranquilo por donde gustes. Nada de esfuerzo.' },
+        { day:'JUE', num:25, type:'rest', det:'Revisá la bici al detalle: neumáticos, frenos, cadena, sillín.' },
+        { day:'VIE', num:26, type:'rest', det:'Caminata suave 20 min. Gran cena de carga de carbos. Hidratación máxima.' },
+        { day:'SÁB', num:27, type:'rest', det:'Solo caminata suave si querés moverte. Dormí temprano.' },
+        { day:'DOM', num:28, type:'rest', det:'Descanso absoluto. Hoy no hacés nada. Mañana disfrutás.' }
+      ],
+      bikeKm:[25,20,0],
+      sessA:{ title:'Activación mínima (Martes)', baseSets:2, exs:[{id:'squat_bw',reps:'8 reps'},{id:'hip_thrust',reps:'10 reps'},{id:'plank',reps:'25 seg'},{id:'movilidad',reps:'5 min'}] },
+      sessB:null,
+      nut:[{ico:'🍝',t:'Carga de carbos (jueves–viernes)',i:'Supercompensación: pasta, arroz, batata, pan. 9–10g de carbos por kg.'},{ico:'🥣',t:'Desayuno día 30 (90 min antes)',i:'Avena con banana, miel y mantequilla de maní. Café si es habitual.'},{ico:'🚰',t:'Hidratación día 30',i:'600–700 ml al levantarte. 500–700 ml por hora durante los 50 km con electrolitos.'},{ico:'⚡',t:'Estrategia nutricional 50 km',i:'Gel o snack cada 12–15 km desde el km 10. No esperés a tener hambre.'}]
+    }
+  ]
+};
+
+// ════════════════════════════════════
+//  STATE
+// ════════════════════════════════════
+const A = { nombre:'', edad:0, sexo:'', altura:0, peso:0, imc:0, bici:'', nivel:'', salud:[], motiv:[] };
+const MOTIV_LABELS = { salud:'Mejorar mi salud', peso:'Bajar de peso', deporte:'Deporte y aventura', habito:'Crear un hábito' };
+let curStep = 0, curWeek = 1, weekPerf = [];
+
+// ════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════
+// Índice de masa corporal: peso (kg) / altura (m)²
+function calcIMC(pesoKg, alturaCm) {
+  if (!pesoKg || !alturaCm) return 0;
+  const m = alturaCm / 100;
+  return Math.round((pesoKg / (m * m)) * 10) / 10;
+}
+// Categoría según el IMC calculado (referencia OMS)
+function imcCategory(imc) {
+  if (!imc) return '';
+  if (imc < 18.5) return 'bajopeso';
+  if (imc < 25)   return 'normal';
+  if (imc < 30)   return 'sobrepeso';
+  return 'obesidad';
+}
+// Multiplicador según IMC: reduce el impacto y el volumen para cuidar
+// las articulaciones mientras se construye base — nunca por estética.
+function bodyProfile() {
+  const cat = imcCategory(A.imc);
+  if (cat === 'obesidad')  return 0.80;
+  if (cat === 'sobrepeso') return 0.92;
+  return 1.0;
+}
+
+function adaptKm(base, perf) {
+  if (!base || base === 0) return 0;
+  const m = perf === 'alto' ? 1.15 : perf === 'bajo' ? 0.85 : 1.0;
+  return Math.max(3, Math.round(base * m * bodyProfile()));
+}
+// Computes a multiplier based on age + sex that reduces strength volume
+function strengthProfile() {
+  let m = 1.0;
+  if (A.edad >= 50)      m *= 0.65;  // 4 series → 2-3, 3 series → 2
+  else if (A.edad >= 40) m *= 0.83;  // 4 series → 3
+  if (A.sexo === 'F')    m *= 0.90;  // reducción adicional para mujeres
+  m *= bodyProfile();                // cuidado articular según IMC
+  return m;
+}
+
+function adaptSets(base, perf) {
+  const perfD = perf === 'alto' ? 1 : perf === 'bajo' ? -1 : 0;
+  return Math.max(2, Math.round(base * strengthProfile()) + perfD);
+}
+
+// Reduce reps on complex exercises for 50+ o IMC alto (cuidado articular)
+function adaptReps(exId, baseReps) {
+  const cat = imcCategory(A.imc);
+  if (A.edad < 50 && cat !== 'obesidad') return baseReps;
+  const complex = ['squat_bulgar','squat_jump','lunge_walk','deadlift_conv','rdl','core_circ'];
+  if (!complex.includes(exId)) return baseReps;
+  return baseReps
+    .replace(/\b12\b/, '8').replace(/\b10\b/, '8').replace(/\b8\b/, '6')
+    .replace('5 min', '3 min');
+}
+
+// Exercise-specific notes for age/health
+function exNote(exId) {
+  const n50 = {
+    squat_bulgar: '50+: empezá con apoyo (mano en la pared o silla). Si duele la rodilla, usá sentadilla libre en su lugar.',
+    squat_jump:   '50+: reemplazado por sentadilla goblet (sin impacto). El aterrizaje repetido puede dañar las rodillas.',
+    lunge_walk:   '50+: hacéla estacionaria al principio (sin avanzar) hasta consolidar el equilibrio.',
+    deadlift_conv:'50+: empezá sin peso o con mochila muy liviana. La técnica primero, el peso después.',
+    rdl:          '50+: priorizá la postura sobre la profundidad. Ante cualquier tensión lumbar, parás.',
+    core_circ:    '50+: empezá con 2–3 minutos y aumentá progresivamente. No aguantes la respiración.',
+    hip_thrust:   '50+: ¡Ejercicio ideal para tu rango de edad! Sin impacto articular y muy efectivo para el glúteo.',
+  };
+  const nRodillas = {
+    squat_bulgar: 'Rodillas: apoyá el pie trasero más bajo (escalón bajo) para reducir la flexión.',
+    squat_jump:   'Rodillas: reemplazado por sentadilla goblet. Sin impacto.',
+    lunge_walk:   'Rodillas: solo estocada estacionaria, paso corto, sin bajar la rodilla trasera al piso.',
+  };
+  const nEspalda = {
+    deadlift_conv:'Espalda: comenzá sin peso, solo la técnica de bisagra de cadera. Parás ante cualquier molestia.',
+    rdl:          'Espalda: postura neutral absoluta. La profundidad la determina tu espalda, no el ejercicio.',
+    row:          'Espalda: usá poco peso. El remo fortalece la espalda, pero exige buena técnica.',
+  };
+  const nPeso = {
+    squat_jump: 'Cuidado articular: reemplazado por sentadilla goblet mientras se reduce el impacto en rodillas y tobillos.',
+    lunge_walk: 'Cuidado articular: empezamos con la variante estacionaria para proteger las rodillas mientras se construye base.',
+    core_circ:  'Se prioriza la plancha: el mismo trabajo de core con menos exigencia articular.',
+  };
+  const cat = imcCategory(A.imc);
+  if (A.salud.includes('rodillas') && nRodillas[exId]) return nRodillas[exId];
+  if (A.salud.includes('espalda')  && nEspalda[exId])  return nEspalda[exId];
+  if ((cat === 'obesidad' || cat === 'sobrepeso') && nPeso[exId]) return nPeso[exId];
+  if (A.edad >= 50 && n50[exId]) return n50[exId];
+  return '';
+}
+
+// Substitute exercises that are contraindicated
+function healthReplace(exId) {
+  if (A.salud.includes('rodillas')) {
+    const r = { squat_jump:'squat_goblet', lunge_walk:'lunge_front' };
+    if (r[exId]) return r[exId];
+  }
+  if (A.salud.includes('cardiaco')) {
+    const r = { squat_jump:'squat_bw', core_circ:'plank' };
+    if (r[exId]) return r[exId];
+  }
+  if (A.edad >= 50) {
+    const r = { squat_jump:'squat_goblet', core_circ:'plank' };
+    if (r[exId]) return r[exId];
+  }
+  const cat = imcCategory(A.imc);
+  if (cat === 'obesidad' || cat === 'sobrepeso') {
+    const r = { squat_jump:'squat_goblet', lunge_walk:'lunge_front' };
+    if (r[exId]) return r[exId];
+  }
+  return exId;
+}
+
+function esc(id) { return EJ[id] || { name: id, icon:'dumbbell', steps:[], tip:'' }; }
+
+// ════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+  const askBtn = document.getElementById('askmiBtn');
+  if (askBtn) askBtn.classList.toggle('show', id === 'plan');
+  if (id !== 'plan') closeAskMarIA();
+}
+
+// ════════════════════════════════════
+//  PAGO (Mercado Pago Checkout Pro)
+// ════════════════════════════════════
+const PAID_FLAG_KEY = 'desafio50k_paid';
+const PREVIEW_FLAG_KEY = 'desafio50k_preview';
+const TOKEN_KEY = 'desafio50k_token';
+// Palabra secreta para que vos entres a probar/editar sin pagar.
+// Cambiala cuando quieras: buscá "julio50k" acá abajo y en el link que uses.
+const PREVIEW_PASSWORD = 'julio50k';
+
+// Token de acceso personal del alumno (su "cuenta"). Si está seteado, el
+// progreso se guarda en el servidor y no depende de este navegador.
+let myToken = null;
+
+// Intenta recuperar el perfil + progreso guardado en el servidor para un
+// token dado. Devuelve true si lo encontró y restauró, false si no.
+async function restoreFromToken(token) {
+  try {
+    const resp = await fetch(`/api/get-progress?token=${encodeURIComponent(token)}`);
+    if (!resp.ok) return false;
+    const data = await resp.json();
+    if (!data.found) return false;
+
+    Object.assign(A, data.profile);
+    curWeek = data.progress.curWeek || 1;
+    weekPerf = data.progress.weekPerf || [];
+    Object.keys(weekAnswers).forEach(k => delete weekAnswers[k]);
+    Object.assign(weekAnswers, data.progress.weekAnswers || {});
+    Object.keys(ciAnswers).forEach(k => delete ciAnswers[k]);
+    Object.assign(ciAnswers, data.progress.ciAnswers || {});
+
+    myToken = token;
+    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(PAID_FLAG_KEY, '1');
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+// Ya restauramos el perfil/progreso del alumno — lo mandamos a la pantalla
+// que corresponda según qué tan lejos había llegado.
+function routeAfterRestore() {
+  checkPreviewBanner();
+  document.getElementById('progressWrap').classList.remove('visible');
+  const hero = document.querySelector('.hero');
+  if (hero) hero.style.display = 'none';
+
+  if (!A.nombre) {
+    // Pagó pero no había llegado a terminar el cuestionario con Mar IA.
+    updateAccessLinkBox();
+    showScreen('welcome');
+    return;
+  }
+
+  buildPlanHeader();
+  buildAlerts();
+  buildWeek(curWeek, 'normal');
+  showScreen('plan');
+}
+
+// Guarda el perfil y el progreso actual en el servidor (si hay token). Se
+// llama después del cuestionario y después de cada check-in semanal.
+async function saveProgress() {
+  if (!myToken) return;
+  try {
+    await fetch('/api/save-progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: myToken,
+        profile: { nombre: A.nombre, edad: A.edad, sexo: A.sexo, altura: A.altura, peso: A.peso, imc: A.imc, bici: A.bici, nivel: A.nivel, salud: A.salud, motiv: A.motiv },
+        progress: { curWeek, weekPerf, weekAnswers, ciAnswers },
+      }),
+    });
+  } catch (err) {
+    // Falla silenciosa: un problema de red guardando no debe frenarle el
+    // plan al alumno. En el peor caso, esa sesión no quedó sincronizada.
+  }
+}
+
+// Muestra (o esconde) el cuadro con el link de acceso personal en la
+// pantalla de bienvenida.
+function updateAccessLinkBox() {
+  const box = document.getElementById('accessLinkBox');
+  if (!box) return;
+  if (!myToken) { box.style.display = 'none'; return; }
+  const url = `${window.location.origin}${window.location.pathname}?u=${encodeURIComponent(myToken)}`;
+  const input = document.getElementById('accessLinkInput');
+  if (input) input.value = url;
+  box.style.display = 'block';
+}
+
+function copyAccessLink() {
+  const input = document.getElementById('accessLinkInput');
+  if (!input) return;
+  input.select();
+  input.setSelectionRange(0, 99999);
+  const btn = document.getElementById('copyAccessLinkBtn');
+  const done = () => { if (btn) { const t = btn.textContent; btn.textContent = '¡Copiado!'; setTimeout(() => btn.textContent = t, 1600); } };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(input.value).then(done).catch(() => document.execCommand('copy') && done());
+  } else {
+    document.execCommand('copy');
+    done();
+  }
+}
+
+function salirPreview() {
+  localStorage.removeItem(PAID_FLAG_KEY);
+  localStorage.removeItem(PREVIEW_FLAG_KEY);
+  window.location.href = window.location.pathname;
+}
+
+function checkPreviewBanner() {
+  document.getElementById('previewBanner').style.display =
+    localStorage.getItem(PREVIEW_FLAG_KEY) === '1' ? 'block' : 'none';
+}
+
+async function iniciarPago() {
+  const btn = document.getElementById('btnComprar');
+  const errBox = document.getElementById('payError');
+  errBox.classList.remove('show');
+  btn.disabled = true;
+  btn.textContent = 'Redirigiendo a Mercado Pago...';
+  try {
+    const resp = await fetch('/api/create-preference', { method: 'POST' });
+    const data = await resp.json();
+    if (!resp.ok || !data.init_point) throw new Error(data.error || 'Error desconocido');
+    window.location.href = data.init_point;
+  } catch (err) {
+    errBox.textContent = 'No pudimos iniciar el pago. Probá de nuevo en un momento.';
+    errBox.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = 'Comprar ahora →';
+  }
+}
+
+function volverAPagar() {
+  const url = new URL(window.location.href);
+  url.search = '';
+  window.history.replaceState({}, '', url);
+  showScreen('pay');
+}
+
+function mostrarProblemaPago(iconName, titulo, texto) {
+  const iconEl = document.getElementById('problemaIcon');
+  iconEl.innerHTML = ICONS[iconName] || ICONS.alert;
+  document.getElementById('problemaTitulo').textContent = titulo;
+  document.getElementById('problemaTexto').textContent = texto;
+  showScreen('pago-problema');
+}
+
+async function checkPaymentStatus() {
+  checkPreviewBanner();
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get('status');
+  const paymentId = params.get('payment_id') || params.get('collection_id');
+  const collectionStatus = params.get('collection_status');
+
+  // Link personal del alumno (?u=token): funciona desde cualquier
+  // dispositivo — recupera su perfil y en qué semana se quedó.
+  const urlToken = params.get('u');
+  if (urlToken) {
+    const ok = await restoreFromToken(urlToken);
+    window.history.replaceState({}, '', window.location.pathname + '?u=' + encodeURIComponent(urlToken));
+    if (ok) { routeAfterRestore(); return; }
+    // Token inválido o vencido: seguimos con el flujo normal más abajo.
+  } else {
+    const cachedToken = localStorage.getItem(TOKEN_KEY);
+    if (cachedToken) {
+      const ok = await restoreFromToken(cachedToken);
+      if (ok) { routeAfterRestore(); return; }
+    }
+  }
+
+  // Acceso tuyo para probar/editar sin pagar: entrá a
+  // desafio-50km.html?preview=julio50k una vez, y este navegador queda
+  // habilitado hasta que apretes "salir" en el cartel violeta.
+  if (params.get('preview') === PREVIEW_PASSWORD) {
+    localStorage.setItem(PAID_FLAG_KEY, '1');
+    localStorage.setItem(PREVIEW_FLAG_KEY, '1');
+    window.history.replaceState({}, '', window.location.pathname);
+    checkPreviewBanner();
+    showScreen('welcome');
+    return;
+  }
+
+  // Ya se confirmó antes en este mismo navegador (conveniencia, no seguridad:
+  // la verificación real ya se hizo contra Mercado Pago la primera vez,
+  // o entraste con el link de vista previa de arriba).
+  if (localStorage.getItem(PAID_FLAG_KEY) === '1' && !paymentId) {
+    checkPreviewBanner();
+    showScreen('welcome');
+    return;
+  }
+
+  if (status === 'failure') {
+    mostrarProblemaPago('xmark', 'El pago fue rechazado',
+      'No se te cobró nada. Revisá los datos de tu tarjeta o probá con otro medio de pago.');
+    return;
+  }
+
+  if (status === 'pending') {
+    mostrarProblemaPago('clock', 'Tu pago está pendiente',
+      'Algunos medios de pago tardan en confirmarse. Te va a llegar la confirmación y podés volver a entrar a este mismo link.');
+    return;
+  }
+
+  if (paymentId && (status === 'approved' || collectionStatus === 'approved' || status === null)) {
+    showScreen('verificando');
+    try {
+      const resp = await fetch(`/api/verify-payment?payment_id=${encodeURIComponent(paymentId)}`);
+      const data = await resp.json();
+      if (data.approved) {
+        localStorage.setItem(PAID_FLAG_KEY, '1');
+        if (data.token) {
+          myToken = data.token;
+          localStorage.setItem(TOKEN_KEY, data.token);
+          window.history.replaceState({}, '', window.location.pathname + '?u=' + encodeURIComponent(data.token));
+        } else {
+          window.history.replaceState({}, '', window.location.pathname);
+        }
+        updateAccessLinkBox();
+        showScreen('welcome');
+      } else {
+        mostrarProblemaPago('alert', 'Todavía no pudimos confirmar tu pago',
+          'Si ya pagaste, esperá un minuto y volvé a entrar al link. Si no, podés intentarlo de nuevo.');
+      }
+    } catch (err) {
+      mostrarProblemaPago('alert', 'No pudimos verificar tu pago', 'Probá recargar la página en unos segundos.');
+    }
+    return;
+  }
+
+  showScreen('pay');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', checkPaymentStatus);
+} else {
+  checkPaymentStatus();
+}
+
+function startQuiz() {
+  // Instant feedback: change button so user knows tap registered
+  var btn = document.getElementById('btnEmpezar');
+  if (btn) { btn.textContent = '¡Listo! Cargando...'; btn.disabled = true; }
+  // Hide hero so transition is unmistakable
+  var hero = document.querySelector('.hero');
+  if (hero) hero.style.display = 'none';
+  showScreen('quiz');
+  document.getElementById('progressWrap').classList.add('visible');
+  initChat();
+  window.scrollTo(0, 0);
+}
+
+// Mobile: touchend fires startQuiz (prevents delayed click; CSS :active handles visual feedback)
+function bindStartButton() {
+  var btn = document.getElementById('btnEmpezar');
+  if (btn) {
+    btn.addEventListener('touchend', function(e) {
+      e.preventDefault(); // suppress the synthetic click on iOS
+      if (!btn.disabled) startQuiz();
+    }, false);
+  }
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bindStartButton);
+} else {
+  bindStartButton();
+}
+
+// ════════════════════════════════════
+//  CHAT CON MAR IA (avatar coach)
+// ════════════════════════════════════
+const CHAT_FLOW = [
+  { key:'intro', bot:[
+      '¡Hola! 👋 Soy <strong>Mar IA</strong>, tu coach virtual para este desafío.',
+      'Te voy a acompañar día a día armando y ajustando tu plan según cómo vengas evolucionando.',
+      'Antes de arrancar necesito conocerte un poco — son 7 preguntas cortas. ¿Vamos? 🚴'
+    ], input:{ type:'confirm', label:'Dale, empecemos →' } },
+  { key:'nombre', bot:['¿Cómo te llamás?'],
+    input:{ type:'text', field:'nombre', placeholder:'Tu nombre' } },
+  { key:'edadsexo', bot:['¡Un gusto, {nombre}! ¿Cuántos años tenés y cuál es tu sexo?'],
+    input:{ type:'agesex' } },
+  { key:'alturapeso', bot:['Ahora tu altura y peso — con eso calculo tu índice de masa corporal y ajusto el plan a tu cuerpo, cuidando tus articulaciones.'],
+    input:{ type:'heightweight' } },
+  { key:'bici', bot:['¿Contás con una bicicleta?'],
+    input:{ type:'chips', field:'bici', options:[
+      { v:'si', icon:'bike', label:'Sí, tengo bici' },
+      { v:'no', icon:'cart', label:'Todavía no' }
+    ] } },
+  { key:'nivel', bot:['¿Cómo describirías tu nivel de forma física actual?'],
+    input:{ type:'chips-wide', field:'nivel', options:[
+      { v:'principiante', icon:'level1', label:'Principiante', desc:'Sedentario/a o poco activo/a. Me canso rápido andando en bici.' },
+      { v:'intermedio', icon:'level2', label:'Intermedio', desc:'Ejercicio regular. Puedo andar 15–20 km sin problemas.' },
+      { v:'avanzado', icon:'level3', label:'Avanzado', desc:'Entreno con frecuencia. La bici es parte de mi rutina.' }
+    ] } },
+  { key:'salud', bot:['¿Tenés alguna condición de salud a considerar?', 'Podés elegir más de una.'],
+    input:{ type:'chips', field:'salud', multi:true, exclusive:'ninguna', options:[
+      { v:'ninguna', icon:'check', label:'Ninguna' },
+      { v:'rodillas', icon:'knee', label:'Rodillas' },
+      { v:'espalda', icon:'spine', label:'Espalda / columna' },
+      { v:'cardiaco', icon:'heart', label:'Cardíaco' }
+    ] } },
+  { key:'motiv', bot:['Última pregunta: ¿cuál es tu motivación principal?', 'Elegí todas las que apliquen.'],
+    input:{ type:'chips', field:'motiv', multi:true, options:[
+      { v:'salud', icon:'heart', label:'Mejorar mi salud' },
+      { v:'peso', icon:'scale', label:'Bajar de peso' },
+      { v:'deporte', icon:'medal', label:'Deporte y aventura' },
+      { v:'habito', icon:'calendar', label:'Crear un hábito' }
+    ] } },
+  { key:'end', bot:['¡Genial, {nombre}! Ya tengo todo lo que necesito 🙌', 'Estoy armando tu plan personalizado...'],
+    input:{ type:'none' } }
+];
+
+let chatIdx = 0;
+let chatMultiSel = [];
+let chatMultiOptions = [];
+
+function interp(s) { return s.replace(/\{nombre\}/g, A.nombre || ''); }
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function chatScrollBottom() {
+  const box = document.getElementById('chatMessages');
+  box.scrollTop = box.scrollHeight;
+}
+
+function appendBotBubble(html) {
+  const box = document.getElementById('chatMessages');
+  const row = document.createElement('div');
+  row.className = 'msg-row bot';
+  row.innerHTML = `<div class="msg-mini-avatar">${ic('coach')}</div><div class="msg-bubble">${html}</div>`;
+  box.appendChild(row);
+  chatScrollBottom();
+}
+
+function appendUserBubble(text) {
+  const box = document.getElementById('chatMessages');
+  const row = document.createElement('div');
+  row.className = 'msg-row user';
+  row.innerHTML = `<div class="msg-bubble">${escHtml(text)}</div>`;
+  box.appendChild(row);
+  chatScrollBottom();
+}
+
+function showTyping() {
+  const box = document.getElementById('chatMessages');
+  const row = document.createElement('div');
+  row.className = 'msg-row bot typing-row';
+  row.id = 'typingRow';
+  row.innerHTML = `<div class="msg-mini-avatar">${ic('coach')}</div><div class="msg-bubble"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`;
+  box.appendChild(row);
+  chatScrollBottom();
+}
+
+function hideTyping() {
+  const row = document.getElementById('typingRow');
+  if (row) row.remove();
+}
+
+function playBotMessages(msgs, i, done) {
+  if (i >= msgs.length) { done(); return; }
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    appendBotBubble(msgs[i]);
+    setTimeout(() => playBotMessages(msgs, i + 1, done), 300);
+  }, 550 + Math.random() * 350);
+}
+
+function updateChatProgress() {
+  let n = chatIdx;
+  if (n > 7) n = 7;
+  const pct = Math.round(n / 7 * 100);
+  document.getElementById('pFill').style.width = pct + '%';
+  document.getElementById('pText').textContent = n === 0 ? 'Conociéndote' : `Paso ${n} de 7`;
+  document.getElementById('pPct').textContent = pct + '%';
+}
+
+function clearChatDock() {
+  document.getElementById('chatInputDock').innerHTML = '';
+}
+
+function initChat() {
+  chatIdx = 0;
+  document.getElementById('chatMessages').innerHTML = '';
+  clearChatDock();
+  nextChatStep();
+}
+
+function nextChatStep() {
+  if (chatIdx >= CHAT_FLOW.length) { finishChatAndLaunch(); return; }
+  const step = CHAT_FLOW[chatIdx];
+  updateChatProgress();
+  clearChatDock();
+  playBotMessages(step.bot.map(interp), 0, () => renderChatInput(step));
+}
+
+function renderChatInput(step) {
+  const dock = document.getElementById('chatInputDock');
+  const inp = step.input;
+
+  if (inp.type === 'none') {
+    // Final step: no input needed, auto-advance to the plan after a short pause
+    setTimeout(finishChatAndLaunch, 900);
+    return;
+  }
+
+  if (inp.type === 'confirm') {
+    dock.innerHTML = `<button class="btn btn-p btn-lg chat-start-btn" onclick="chatConfirmStart()">${inp.label}</button>`;
+    return;
+  }
+
+  if (inp.type === 'text') {
+    dock.innerHTML = `
+      <div class="chat-text-row">
+        <input type="text" id="chatTextInput" placeholder="${inp.placeholder}" oninput="chatCheckText()" onkeydown="if(event.key==='Enter')chatSubmitText('${inp.field}')">
+        <button class="chat-send-btn" id="chatSendBtn" onclick="chatSubmitText('${inp.field}')" disabled>Enviar</button>
+      </div>`;
+    document.getElementById('chatTextInput').focus();
+    return;
+  }
+
+  if (inp.type === 'agesex') {
+    dock.innerHTML = `
+      <div class="chat-text-row">
+        <input type="number" id="chatEdadInput" min="10" max="99" placeholder="Edad" oninput="chatCheckAgeSex()" onkeydown="if(event.key==='Enter')chatSubmitAgeSex()" style="max-width:90px">
+        <select id="chatSexoSelect" onchange="chatCheckAgeSex()">
+          <option value="">Sexo</option>
+          <option value="M">Masculino</option>
+          <option value="F">Femenino</option>
+          <option value="O">Prefiero no decir</option>
+        </select>
+        <button class="chat-send-btn" id="chatAgeSexBtn" onclick="chatSubmitAgeSex()" disabled>Enviar</button>
+      </div>`;
+    return;
+  }
+
+  if (inp.type === 'heightweight') {
+    dock.innerHTML = `
+      <div class="chat-text-row">
+        <input type="number" id="chatAlturaInput" min="120" max="230" placeholder="Altura (cm)" oninput="chatCheckHW()" onkeydown="if(event.key==='Enter')chatSubmitHW()" style="max-width:120px">
+        <input type="number" id="chatPesoInput" min="30" max="250" placeholder="Peso (kg)" oninput="chatCheckHW()" onkeydown="if(event.key==='Enter')chatSubmitHW()" style="max-width:110px">
+        <button class="chat-send-btn" id="chatHWBtn" onclick="chatSubmitHW()" disabled>Enviar</button>
+      </div>`;
+    return;
+  }
+
+  if (inp.type === 'chips' || inp.type === 'chips-wide') {
+    const wide = inp.type === 'chips-wide';
+
+    if (inp.multi) {
+      chatMultiSel = [];
+      chatMultiOptions = inp.options;
+      const exclusive = inp.exclusive || null;
+      const chips = inp.options.map(o => `
+        <button type="button" class="chat-chip" data-val="${o.v}" onclick="chatToggleChip('${inp.field}','${o.v}', this, ${exclusive ? `'${exclusive}'` : 'null'})">
+          ${ic(o.icon, 'chip-ic')}${escHtml(o.label)}${wide && o.desc ? `<span class="chip-desc">${escHtml(o.desc)}</span>` : ''}
+        </button>`).join('');
+      dock.innerHTML = `<div class="chat-quick-opts${wide ? ' wide' : ''}">${chips}</div>
+        <button class="btn btn-p btn-lg" id="chatMultiBtn" onclick="chatSubmitMulti('${inp.field}')" disabled style="margin-top:10px">Continuar →</button>`;
+      return;
+    }
+
+    const chips = inp.options.map(o => `
+      <button type="button" class="chat-chip" onclick="chatPick('${inp.field}','${o.v}', this)">
+        ${ic(o.icon, 'chip-ic')}${escHtml(o.label)}${wide && o.desc ? `<span class="chip-desc">${escHtml(o.desc)}</span>` : ''}
+      </button>`).join('');
+    dock.innerHTML = `<div class="chat-quick-opts${wide ? ' wide' : ''}">${chips}</div>`;
+    return;
+  }
+}
+
+function chatToggleChip(field, val, el, exclusive) {
+  const idx = chatMultiSel.indexOf(val);
+  const dock = document.getElementById('chatInputDock');
+
+  if (idx >= 0) {
+    // deselect
+    chatMultiSel.splice(idx, 1);
+    el.classList.remove('sel');
+  } else if (exclusive && val === exclusive) {
+    // selecting the "none of the above" option clears every other selection
+    chatMultiSel = [val];
+    dock.querySelectorAll('.chat-chip').forEach(b => b.classList.remove('sel'));
+    el.classList.add('sel');
+  } else {
+    // selecting a real option clears the "none of the above" one, if present
+    if (exclusive) {
+      const exIdx = chatMultiSel.indexOf(exclusive);
+      if (exIdx >= 0) {
+        chatMultiSel.splice(exIdx, 1);
+        const exEl = dock.querySelector(`.chat-chip[data-val="${exclusive}"]`);
+        if (exEl) exEl.classList.remove('sel');
+      }
+    }
+    chatMultiSel.push(val);
+    el.classList.add('sel');
+  }
+
+  const btn = document.getElementById('chatMultiBtn');
+  if (btn) btn.disabled = chatMultiSel.length === 0;
+}
+
+function chatSubmitMulti(field) {
+  if (chatMultiSel.length === 0) return;
+  A[field] = chatMultiSel.slice();
+  const labels = chatMultiOptions.filter(o => chatMultiSel.includes(o.v)).map(o => o.label);
+  appendUserBubble(labels.join(' · '));
+  clearChatDock();
+  chatIdx++;
+  nextChatStep();
+}
+
+function chatConfirmStart() {
+  appendUserBubble('¡Vamos! 🚴');
+  clearChatDock();
+  chatIdx++;
+  nextChatStep();
+}
+
+function chatCheckText() {
+  const val = document.getElementById('chatTextInput').value.trim();
+  document.getElementById('chatSendBtn').disabled = val.length === 0;
+}
+
+function chatSubmitText(field) {
+  const inputEl = document.getElementById('chatTextInput');
+  const val = inputEl.value.trim();
+  if (!val) return;
+  A[field] = val;
+  appendUserBubble(val);
+  clearChatDock();
+  chatIdx++;
+  nextChatStep();
+}
+
+function chatCheckAgeSex() {
+  const edad = document.getElementById('chatEdadInput').value;
+  const sexo = document.getElementById('chatSexoSelect').value;
+  document.getElementById('chatAgeSexBtn').disabled = !(edad > 0 && sexo !== '');
+}
+
+function chatSubmitAgeSex() {
+  const edadEl = document.getElementById('chatEdadInput');
+  const sexoEl = document.getElementById('chatSexoSelect');
+  const edad = parseInt(edadEl.value);
+  const sexo = sexoEl.value;
+  if (!(edad > 0 && sexo !== '')) return;
+  A.edad = edad;
+  A.sexo = sexo;
+  const sexLabel = { M:'Masculino', F:'Femenino', O:'prefiero no decir' }[sexo] || sexo;
+  appendUserBubble(`${edad} años · ${sexLabel}`);
+  clearChatDock();
+  chatIdx++;
+  nextChatStep();
+}
+
+function chatCheckHW() {
+  const altura = document.getElementById('chatAlturaInput').value;
+  const peso = document.getElementById('chatPesoInput').value;
+  document.getElementById('chatHWBtn').disabled = !(altura > 0 && peso > 0);
+}
+
+function chatSubmitHW() {
+  const alturaEl = document.getElementById('chatAlturaInput');
+  const pesoEl = document.getElementById('chatPesoInput');
+  const altura = parseInt(alturaEl.value);
+  const peso = parseFloat(pesoEl.value);
+  if (!(altura > 0 && peso > 0)) return;
+  A.altura = altura;
+  A.peso = peso;
+  A.imc = calcIMC(peso, altura);
+  appendUserBubble(`${altura} cm · ${peso} kg`);
+  clearChatDock();
+  chatIdx++;
+  nextChatStep();
+}
+
+function chatPick(field, val, el) {
+  A[field] = val;
+  appendUserBubble(el.textContent.trim());
+  clearChatDock();
+  chatIdx++;
+  nextChatStep();
+}
+
+function finishChatAndLaunch() {
+  document.getElementById('progressWrap').classList.remove('visible');
+  saveProgress(); // guarda el perfil recién completado (no bloquea la navegación)
+  if (A.bici === 'no') { showScreen('nobici'); return; }
+  initPlan();
+}
+
+function toggleFitting() {
+  const body = document.getElementById('fitting-body');
+  const cta  = document.getElementById('fitting-cta');
+  body.classList.toggle('open');
+  cta.textContent = body.classList.contains('open') ? 'Cerrar ▴' : 'Ver tips ▾';
+}
+function toggleFitting2() {
+  const body = document.getElementById('fitting-body2');
+  const cta  = document.getElementById('fitting-cta2');
+  body.classList.toggle('open');
+  cta.textContent = body.classList.contains('open') ? 'Cerrar ▴' : 'Ver tips ▾';
+}
+
+function goToPlan() { A.bici = 'si'; saveProgress(); initPlan(); }
+
+function initPlan() {
+  curWeek = 1; weekPerf = [];
+  buildPlanHeader();
+  buildAlerts();
+  buildWeek(1, 'normal');
+  showScreen('plan');
+}
+
+// ════════════════════════════════════
+//  PLAN HEADER + ALERTS
+// ════════════════════════════════════
+function buildPlanHeader() {
+  const lvl = { principiante:'Principiante 🐢', intermedio:'Intermedio 🏃', avanzado:'Avanzado 🏆' };
+  const sx  = { M:'Masculino', F:'Femenino', O:'—' };
+  document.getElementById('planHdr').innerHTML = `
+    <div class="greeting">¡Hola, ${A.nombre}! Tu plan está listo 🎉</div>
+    <h2>Desafío 50 km en 30 días</h2>
+    <span class="chip">${lvl[A.nivel]}</span>
+    <span class="chip">👤 ${A.edad} años · ${sx[A.sexo] || '—'}</span>
+    <span class="chip">🎯 ${A.motiv.length ? A.motiv.map(m => MOTIV_LABELS[m] || m).join(' · ') : '—'}</span>
+  `;
+}
+
+function buildAlerts() {
+  const sa = document.getElementById('alertSalud');
+  const msgs = {
+    espalda :'⚠️ <strong>Espalda/columna:</strong> Revisá la postura en la bici (manubrio no muy bajo). Reforzamos el trabajo de core en cada sesión. Hacé pausas cada 10–15 km en salidas largas.',
+    cardiaco:'⚠️ <strong>Antecedente cardíaco:</strong> Consultá con tu médico antes de comenzar. Trabajá siempre en frecuencia cardíaca moderada. Nunca salgas solo/a en recorridos largos.'
+  };
+  const saludMsgs = A.salud.map(s => msgs[s]).filter(Boolean);
+  if (saludMsgs.length) { sa.innerHTML = saludMsgs.join('<br><br>'); sa.classList.add('show'); }
+
+  const ea = document.getElementById('alertEdad');
+  if (A.edad >= 50) {
+    ea.innerHTML = '💜 <strong>Mayores de 50:</strong> Tu plan incluye énfasis extra en movilidad articular antes de cada sesión y recuperación. La constancia vale más que la intensidad.';
+    ea.classList.add('show');
+  }
+
+  const ia = document.getElementById('alertIMC');
+  const cat = imcCategory(A.imc);
+  const imcMsgs = {
+    bajopeso: `💙 <strong>IMC ${A.imc}:</strong> Vas a necesitar buena energía disponible para sostener el plan — priorizá comer lo suficiente en los días de entrenamiento, no solo después.`,
+    obesidad: `💙 <strong>Cuidado articular:</strong> Ajustamos la progresión de kilómetros y el impacto de algunos ejercicios de fuerza para cuidar rodillas y tobillos mientras construís base. La constancia importa más que la velocidad.`,
+  };
+  if (imcMsgs[cat]) { ia.innerHTML = imcMsgs[cat]; ia.classList.add('show'); }
+}
+
+// ════════════════════════════════════
+//  BUILD WEEK
+// ════════════════════════════════════
+function buildWeek(weekNum, perf) {
+  curWeek = weekNum;
+  const wd = PLANS[A.nivel][weekNum - 1];
+  const km = wd.bikeKm.map(b => adaptKm(b, perf));
+  const dayOffset = (weekNum - 1) * 7;
+
+  let html = '';
+
+  // Performance result message (from check-in)
+  if (weekNum > 1 && weekAnswers[weekNum - 1]) {
+    const wa = weekAnswers[weekNum - 1];
+    const m = buildCheckinMessage(weekNum - 1, wa.q1, wa.q2, wa.q3, wa.q4, wa.perf);
+    html += `<div class="ci-feedback ${m.cls}" style="margin-bottom:18px">
+      <div class="cif-head"><div class="cif-avatar">${ic('coach')}</div><div class="cif-name">Mar IA</div></div>
+      <div style="font-size:2rem;margin-bottom:8px">${m.icon}</div>
+      <div style="font-size:1.1rem;font-weight:800;margin-bottom:10px">${m.title}</div>
+      <div class="cif-body">${m.body}</div>
+    </div>`;
+  }
+
+  // Week label
+  html += `<div class="week-bar"><div class="week-num">${weekNum}</div><div class="week-bar-text"><div class="wbt">${wd.label}</div><div class="wbd">${wd.tip}</div></div></div>`;
+
+  // Personalization notice
+  {
+    const adj = [];
+    if (A.edad >= 50) adj.push(`series y repeticiones reducidas para ${A.edad} años`);
+    else if (A.edad >= 40) adj.push(`volumen ajustado para 40+`);
+    if (A.sexo === 'F') adj.push('adaptación para mujeres');
+    if (A.salud.includes('rodillas')) adj.push('ejercicios de rodilla modificados');
+    if (A.salud.includes('espalda'))  adj.push('carga lumbar reducida');
+    if (A.salud.includes('cardiaco')) adj.push('intensidad reducida y calentamiento extendido');
+    { const cat = imcCategory(A.imc);
+      if (cat === 'obesidad') adj.push('progresión de kilómetros e impacto articular ajustados a tu IMC');
+      else if (cat === 'sobrepeso') adj.push('volumen levemente ajustado a tu IMC'); }
+    if (adj.length > 0) {
+      html += `<div class="pers-box">✨ <strong>Plan ajustado para vos:</strong> ${adj.join(' · ')}. Los números de series y repeticiones que ves ya reflejan estos ajustes.</div>`;
+    }
+  }
+
+  // Goal
+  html += `<div class="goal-box"><div class="gi">${ic(wd.goal.icon)}</div><h3>${wd.goal.title}</h3><p>${wd.goal.text}</p></div>`;
+
+  // Days
+  html += `<div class="sec-title">${ic('calendar')} Programa diario</div>`;
+  let strCount = 0;
+  wd.days.forEach((d, i) => {
+    const isLast = i === wd.days.length - 1;
+    const bdgCls = d.type === 'bike' ? 'bdg-bike' : d.type === 'str' ? 'bdg-str' : 'bdg-rest';
+    const bdgTxt = d.type === 'bike' ? ic('bike')+' Bici' : d.type === 'str' ? ic('dumbbell')+' Fuerza' : ic('leaf')+' Descanso';
+    let mainTxt = '';
+    if (d.type === 'bike' && d.kmIdx !== undefined && km[d.kmIdx]) {
+      const elevData = {
+        llano:     { lbl:'Terreno plano',          hint:'Sin subidas significativas',                svg:'<polyline points="2,10 46,10" stroke="#15803d" stroke-width="2.5" fill="none" stroke-linecap="round"/>' },
+        ondulado:  { lbl:'Terreno ondulado',        hint:'Subidas y bajas suaves',                   svg:'<polyline points="2,10 10,5 18,10 26,5 34,10 42,5 46,8" stroke="#a16207" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' },
+        subida:    { lbl:'Con subida real',          hint:'Una cuesta de 5–15 min en la ruta',        svg:'<polyline points="2,12 20,12 40,3 46,3" stroke="#c2410c" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' },
+        intervalos:{ lbl:'Repeticiones en cuesta',  hint:'Subís fuerte, bajás recuperando',          svg:'<polyline points="2,12 8,12 8,3 14,3 14,12 22,12 22,3 28,3 28,12 36,12 36,3 42,3 42,12 46,12" stroke="#b91c1c" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' },
+        libre:     { lbl:'Recorrido libre',          hint:'Elegís el terreno según las ganas',        svg:'<polyline points="2,10 10,7 18,11 26,6 34,10 46,10" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3,3"/>' }
+      };
+      const ev = d.elev ? elevData[d.elev] : null;
+      mainTxt = `${km[d.kmIdx]} km`;
+      if (ev) mainTxt += `<div class="elev-row elev-${d.elev}"><svg viewBox="0 0 48 14" width="48" height="14">${ev.svg}</svg><span class="elev-row-label">${ev.lbl}</span><span class="elev-row-hint">— ${ev.hint}</span></div>`;
+    } else if (d.type === 'bike' && (!d.kmIdx || !km[d.kmIdx])) {
+      mainTxt = 'Descanso activo';
+    } else if (d.type === 'str') {
+      mainTxt = 'Sesión de fuerza';
+    } else {
+      mainTxt = 'Descanso';
+    }
+
+    if (d.type === 'str') {
+      const sessTarget = strCount === 0 ? 'A' : 'B';
+      strCount++;
+      html += `<div class="day-card day-card-str" onclick="document.getElementById('strength-${sessTarget}').scrollIntoView({behavior:'smooth',block:'start'});this.classList.add('str-flash')">
+        <div class="day-num-col"><div class="dname">${d.day}</div><div class="dnum">${d.num}</div></div>
+        <div class="day-body">
+          <span class="day-bdg ${bdgCls}">${bdgTxt}</span>
+          <div class="day-main">${mainTxt}</div>
+          <div class="day-det">${d.det}</div>
+        </div>
+        <div class="str-arrow">Ver ejercicios ↓</div>
+      </div>`;
+    } else {
+      html += `<div class="day-card"><div class="day-num-col"><div class="dname">${d.day}</div><div class="dnum">${d.num}</div></div><div class="day-body"><span class="day-bdg ${bdgCls}">${bdgTxt}</span><div class="day-main">${mainTxt}</div><div class="day-det">${d.det}</div></div></div>`;
+    }
+  });
+
+  // Final day card (week 4)
+  if (wd.finalDay) {
+    html += `<div class="day30-card"><div class="d30i">${ic('medal')}</div><h3>Día 30 – ¡LOS 50 KM!</h3><p>Hoy es el gran día. Salís con todo lo que construiste en 4 semanas. Ruta planificada, equipo listo, mente enfocada.<br><strong style="color:var(--azul-md)">¡Esto es para lo que entrenaste!</strong></p></div>`;
+  }
+
+  // Strength sessions
+  html += `<div class="sec-title">${ic('dumbbell')} Sesiones de fuerza</div>`;
+  html += renderStrength(wd.sessA, perf, 'A');
+  if (wd.sessB) html += renderStrength(wd.sessB, perf, 'B');
+
+  // Nutrition
+  html += `<div class="sec-title">${ic('leaf')} Nutrición de la semana</div>`;
+  html += `<div class="card">`;
+  wd.nut.forEach(n => {
+    html += `<div class="nut-row"><div class="nut-ico">${n.ico}</div><div><div class="nut-title">${n.t}</div><div class="nut-items">${n.i}</div></div></div>`;
+  });
+  // Sex note
+  if (A.sexo === 'F' && weekNum >= 2) html += `<div class="nut-row"><div class="nut-ico">👩</div><div><div class="nut-title">Nota para mujeres</div><div class="nut-items">Si coincide con tu período, en días de alta fatiga podés reducir la intensidad a la mitad. La recuperación hormonal es parte del entrenamiento inteligente.</div></div></div>`;
+  html += `</div>`;
+
+  // Check-in (not on final week)
+  if (!wd.finalDay) {
+    html += renderCheckin(weekNum);
+  } else {
+    html += `<div class="card" style="text-align:center;padding:20px"><div style="font-size:2rem;margin-bottom:8px">🎉</div><p style="color:var(--celeste);font-size:13px;line-height:1.5">Al terminar los 50 km, volvé acá y contanos cómo te fue.<br><strong style="color:#fff">¡Vas a poder hacerlo!</strong></p></div>`;
+  }
+
+  document.getElementById('weekContent').innerHTML = html;
+}
+
+function renderStrength(sess, perf, id) {
+  if (!sess) return '';
+  const sets = adaptSets(sess.baseSets, perf);
+  let h = `<div class="card" id="strength-${id}"><div style="font-size:13px;font-weight:700;color:var(--azul-md);margin-bottom:12px">${sess.title}</div>`;
+
+  // Warmup block for 50+ or cardiac
+  if (A.edad >= 50 || A.salud.includes('cardiaco')) {
+    h += `<div class="warmup-box">⚡ <strong>Calentamiento obligatorio (10–12 min antes de empezar):</strong> 3 min caminata activa → círculos de tobillo y rodilla → 10 sentadillas muy suaves → estiramientos de cadera. Solo después comenzás con los ejercicios.</div>`;
+  }
+
+  // Rest period guidance for 50+
+  if (A.edad >= 50) {
+    h += `<div class="rest-note">⏱️ <strong>Descansá 90–120 segundos entre series.</strong> A partir de los 50, el sistema nervioso y las articulaciones necesitan más tiempo de recuperación. No es debilidad: es inteligencia.</div>`;
+  }
+
+  sess.exs.forEach((ex, i) => {
+    const realId = healthReplace(ex.id);
+    const e = esc(realId);
+    const reps = adaptReps(realId, ex.reps);
+    const wasReplaced = realId !== ex.id;
+    h += `<div class="ex-card" style="cursor:pointer" onclick="openExModal('${realId}')">
+      <div class="ex-hdr">
+        <span class="ex-ico">${ic(e.icon)}</span>
+        <div class="ex-info">
+          <div class="ex-name">${e.name}${wasReplaced ? ' <span style="font-size:10px;color:var(--azul-md);font-weight:600">(adaptado)</span>' : ''}</div>
+          <div style="font-size:11px;color:var(--texto-2);margin-top:2px">Tocá para ver cómo se hace →</div>
+        </div>
+        <span class="ex-sets-chip">${sets} × ${reps}</span>
+      </div>
+    </div>`;
+  });
+  h += `</div>`;
+  return h;
+}
+
+// ════════════════════════════════════
+//  EXERCISE MODAL
+// ════════════════════════════════════
+function openExModal(exId) {
+  const e = esc(exId);
+  const note = exNote(exId);
+  const modal = document.getElementById('exModal');
+  document.getElementById('exModalBody').innerHTML = `
+    <div class="ex-modal-inner">
+      <div class="ex-modal-close"><button onclick="closeModal()">✕ Cerrar</button></div>
+      <div style="font-size:2.8rem;margin-bottom:10px;color:var(--azul-dk)">${ic(e.icon)}</div>
+      <div class="ex-modal-title">${e.name}</div>
+      ${note ? `<div class="ex-modal-subtitle">⚠️ ${note}</div>` : '<div style="margin-bottom:18px"></div>'}
+      <div class="ex-steps-label">Paso a paso:</div>
+      <ul class="ex-steps">
+        ${e.steps.map(s => `<li>${s}</li>`).join('')}
+      </ul>
+      ${e.tip ? `<div class="ex-tip" style="margin-top:18px">💡 ${e.tip}</div>` : ''}
+    </div>`;
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('exModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function toggleEx(cardId) {
+  const card = document.getElementById(cardId);
+  if (!card) return;
+  const body = card.querySelector('.ex-body');
+  const btn  = card.querySelector('.ex-toggle');
+  const open = body.classList.toggle('open');
+  if (btn) btn.textContent = open ? '¿Cómo? ▴' : '¿Cómo? ▾';
+}
+
+// ════════════════════════════════════
+//  CHECK-IN
+// ════════════════════════════════════
+function renderCheckin(weekNum) {
+  return `
+  <div class="checkin-wrap" id="checkin-w${weekNum}">
+    <h3>${ic('check')} Check-in de la semana ${weekNum}</h3>
+    <div class="ci-sub">Respondé honestamente. Tu próxima semana se ajustará según tu progreso real.</div>
+
+    <div class="ci-q-block">
+      <div class="ci-q-text">1. ¿Cuántos entrenamientos en bici completaste esta semana?</div>
+      <div class="ci-opts" id="ci-q1-${weekNum}">
+        <div class="ci-opt" data-val="3" onclick="ciPick(${weekNum},1,3,this)">Todos (3 de 3)</div>
+        <div class="ci-opt" data-val="2" onclick="ciPick(${weekNum},1,2,this)">La mayoría (2 de 3)</div>
+        <div class="ci-opt" data-val="1" onclick="ciPick(${weekNum},1,1,this)">Solo uno</div>
+        <div class="ci-opt" data-val="0" onclick="ciPick(${weekNum},1,0,this)">Ninguno</div>
+      </div>
+    </div>
+
+    <div class="ci-q-block">
+      <div class="ci-q-text">2. ¿Cómo te fue en la salida larga del sábado?</div>
+      <div class="ci-opts" id="ci-q2-${weekNum}">
+        <div class="ci-opt" data-val="3" onclick="ciPick(${weekNum},2,3,this)">La hice completa y con energía de sobra</div>
+        <div class="ci-opt" data-val="2" onclick="ciPick(${weekNum},2,2,this)">La completé, pero al límite</div>
+        <div class="ci-opt" data-val="1" onclick="ciPick(${weekNum},2,1,this)">La hice a medias</div>
+        <div class="ci-opt" data-val="0" onclick="ciPick(${weekNum},2,0,this)">No pude hacerla</div>
+      </div>
+    </div>
+
+    <div class="ci-q-block">
+      <div class="ci-q-text">3. ¿Completaste las sesiones de fuerza?</div>
+      <div class="ci-opts" id="ci-q3-${weekNum}" style="grid-template-columns:1fr 1fr 1fr">
+        <div class="ci-opt" data-val="2" onclick="ciPick(${weekNum},3,2,this)">Las dos ✅</div>
+        <div class="ci-opt" data-val="1" onclick="ciPick(${weekNum},3,1,this)">Una de dos</div>
+        <div class="ci-opt" data-val="0" onclick="ciPick(${weekNum},3,0,this)">Ninguna</div>
+      </div>
+    </div>
+
+    <div class="ci-q-block">
+      <div class="ci-q-text">4. ¿Cómo respondió tu cuerpo durante la semana?</div>
+      <div class="ci-opts" id="ci-q4-${weekNum}">
+        <div class="ci-opt" data-val="2" onclick="ciPick(${weekNum},4,2,this)">Bien, recuperado y sin dolor</div>
+        <div class="ci-opt" data-val="1" onclick="ciPick(${weekNum},4,1,this)">Algo cansado/a pero sin molestias</div>
+        <div class="ci-opt" data-val="0" onclick="ciPick(${weekNum},4,0,this)">Cansancio alto</div>
+        <div class="ci-opt" data-val="-1" onclick="ciPick(${weekNum},4,-1,this)">Tuve dolor o molestia</div>
+      </div>
+    </div>
+
+    <button class="btn btn-p btn-lg" id="ci-submit-${weekNum}" onclick="submitCheckin(${weekNum})" disabled style="margin-top:4px">
+      Ver mi plan de la semana ${weekNum + 1} →
+    </button>
+  </div>`;
+}
+
+const ciAnswers = {};
+const weekAnswers = {}; // stores {q1,q2,q3,q4} per week for message building
+function ciPick(week, q, val, el) {
+  const key = `w${week}-q${q}`;
+  ciAnswers[key] = val;
+  const grid = document.getElementById(`ci-q${q}-${week}`);
+  if (grid) grid.querySelectorAll('.ci-opt').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+
+  // check if all 4 answered
+  const all = [1,2,3,4].every(i => ciAnswers[`w${week}-q${i}`] !== undefined);
+  const btn = document.getElementById(`ci-submit-${week}`);
+  if (btn) btn.disabled = !all;
+}
+
+function buildCheckinMessage(week, q1, q2, q3, q4, perf) {
+  const nombre = A.nombre || 'Amiga/o';
+  const pain = q4 === -1;
+  const nextWeek = week + 1; // the week the student is about to start
+
+  // Pain case: supportive, not scolding — Mar IA hablando en primera persona
+  if (pain) {
+    return {
+      icon: '🩵',
+      cls: 'cif-pain',
+      title: `${nombre}, lo más importante es que estés bien`,
+      body: `Te leo, y esto también es parte del desafío: aprender a cuidarte para poder llegar. El cuerpo habló y hay que escucharlo — eso ya es inteligencia deportiva, no un retroceso. Antes de arrancar la semana ${nextWeek}, identificá bien qué dolió y cuándo. Si fue muscular (eso es normal), descansá 48 h. Si fue articular o punzante, consultá antes de continuar. Esta semana reducimos el volumen y priorizamos la movilidad. Tu meta del día 30 sigue en pie — solo la llegada queda un poco más adelante, y yo ajusto el plan con vos para que llegues bien. 💪`
+    };
+  }
+
+  // Build specific comments per question — Mar IA habla en primera persona, reconociendo el esfuerzo
+  let parts = [];
+
+  // Q1: bike sessions
+  if (q1 === 3) parts.push(`Te vi completar los 3 entrenamientos en bici — eso es constancia de verdad, y la constancia es exactamente lo que te va a llevar hasta el día 30.`);
+  else if (q1 === 2) parts.push(`Hiciste 2 de 3 salidas en bici, y eso ya suma. Faltó una — ¿sabés cuál fue el obstáculo? Identificarlo esta semana evita que se repita.`);
+  else if (q1 === 1) parts.push(`Solo 1 entreno en bici, ${nombre}, pero fue uno más que ninguno, y eso también cuenta. La bici no pedala sola 😅. Esta semana: agendá los días como si fueran una cita médica — no se cancelan.`);
+  else parts.push(`Ningún entreno en bici esta semana. Sin kilómetros en las piernas, los 50 km del día 30 van a ser muy difíciles — pero todavía hay tiempo. Esta semana arrancamos de nuevo, sin culpa y sin excusas.`);
+
+  // Q2: long ride
+  if (q2 === 3) parts.push(`La salida larga la hiciste volando — ese ritmo es exactamente lo que construye la base aeróbica que necesitás.`);
+  else if (q2 === 2) parts.push(`La salida larga la completaste pero al límite. Eso está bien — significa que encontraste el borde y lo empujaste. Esta semana trabajamos en que ese mismo recorrido se sienta más cómodo.`);
+  else if (q2 === 1) parts.push(`La salida larga quedó a medias, y aun así la intentaste — eso vale. La mitad de los kilómetros equivale a la mitad de la adaptación, así que esta semana la hacemos completa aunque sea más despacio.`);
+  else if (q1 > 0) parts.push(`La salida larga no llegó a completarse esta vez. Es la sesión más importante de la semana — sin ella el cuerpo no aprende a sostener el esfuerzo. Esta semana es prioridad número uno, y vamos a lograrlo juntos.`);
+
+  // Q3: strength
+  if (q3 === 2) parts.push(`Las dos sesiones de fuerza completadas — las piernas te van a agradecer ese esfuerzo el día 30.`);
+  else if (q3 === 1) parts.push(`Una sola sesión de fuerza, pero la hiciste. Los músculos que estabilizarán la bici en los últimos 20 km necesitan las dos sesiones — esta semana no dejes ninguna en el tintero.`);
+  else parts.push(`Las sesiones de fuerza no se hicieron esta vez. Sin trabajo muscular, la bici cansa mucho más rápido. Esta semana son innegociables — te las voy a recordar.`);
+
+  // Q4: fatigue
+  if (q4 === 2) parts.push(`El cuerpo respondió bien — sin dolor y con buena recuperación. Esa es la señal de que el esfuerzo que estás poniendo está bien calibrado.`);
+  else if (q4 === 1) parts.push(`Algo de cansancio acumulado — es normal cuando se está construyendo el hábito. Esta semana priorizá dormir 7–8 h y tomá proteína dentro de los 30 minutos después de cada sesión.`);
+  else parts.push(`El cansancio fue alto, y aun así seguiste presentándote. Revisá el sueño y la hidratación — son los dos factores de recuperación más subestimados.`);
+
+  // Overall tone based on perf — siempre con la mirada puesta en llegar al día 30
+  let icon, cls, title;
+  if (perf === 'alto') {
+    icon = '🔥'; cls = 'cif-ok';
+    title = `¡Semana de 10, ${nombre}! Así se llega al día 30`;
+  } else if (perf === 'normal') {
+    icon = '⭐'; cls = 'cif-ok';
+    title = `Buen trabajo, ${nombre} — vas construyendo el desafío semana a semana`;
+  } else {
+    icon = '💙'; cls = 'cif-warn';
+    title = `${nombre}, esta semana costó — y aun así seguís acá`;
+  }
+
+  // Recordatorio de cuánto falta para la meta — se dice siempre, no solo cuando rinde bajo
+  if (nextWeek >= 4) {
+    parts.push(`La semana ${nextWeek} es la última antes de los 50 km — literal, la recta final. Lo que sea que pase, no la abandones sin al menos intentarla.`);
+  } else {
+    const faltan = 4 - nextWeek;
+    parts.push(`Después de la semana ${nextWeek} ${faltan === 1 ? 'queda 1 semana más' : `quedan ${faltan} semanas más`} para llegar al día 30. Cada semana que sumás, aunque no sea perfecta, te acerca a esa meta.`);
+  }
+
+  // Cierre motivacional ligado al "por qué" de cada alumno — siempre presente, con distinto tono según el desempeño
+  const motivEncourage = {
+    salud:   'Seguís sumando semanas a favor de tu salud — eso es exactamente lo que viniste a construir.',
+    peso:    'Esto es lo que realmente cambia el cuerpo: la suma de semanas como esta, no una semana perfecta y ya.',
+    deporte: 'Estás viviendo la aventura que viniste a buscar, kilómetro a kilómetro.',
+    habito:  'Ya estás repitiendo el hábito — eso, más que cualquier semana perfecta, es la victoria real.',
+  };
+  const motivPush = {
+    salud:   'Recordá por qué empezaste: tu salud vale más que cualquier excusa.',
+    peso:    'Viniste a bajar de peso — la constancia de esta semana es lo que realmente marca la diferencia.',
+    deporte: 'Viniste a vivir la aventura de la bici. Esta semana es tu oportunidad de demostrarte que podés.',
+    habito:  'Un hábito se construye repitiendo, no siendo perfecto/a. Esta semana es tu chance de retomarlo.',
+  };
+  const motivMap = perf === 'bajo' ? motivPush : motivEncourage;
+  const chosen = A.motiv.map(m => motivMap[m]).filter(Boolean);
+  parts.push(chosen[0] || (perf === 'bajo'
+    ? 'Esta semana es tu oportunidad de revertir la historia. Empezás mañana, no el lunes.'
+    : 'Cada semana completa te acerca un poco más a cruzar esa meta el día 30.'));
+
+  return { icon, cls, title, body: parts.join(' ') };
+}
+
+function submitCheckin(week) {
+  const q1 = ciAnswers[`w${week}-q1`] !== undefined ? ciAnswers[`w${week}-q1`] : 0;
+  const q2 = ciAnswers[`w${week}-q2`] !== undefined ? ciAnswers[`w${week}-q2`] : 0;
+  const q3 = ciAnswers[`w${week}-q3`] !== undefined ? ciAnswers[`w${week}-q3`] : 0;
+  const q4 = ciAnswers[`w${week}-q4`] !== undefined ? ciAnswers[`w${week}-q4`] : 0;
+
+  // Pain detection: Q4=-1 counts as 0 for scoring
+  const q4score = q4 === -1 ? 0 : q4;
+  const score = q1 + q2 + q3 + q4score;
+  const perf  = score >= 8 ? 'alto' : score >= 4 ? 'normal' : 'bajo';
+
+  // Store answers for message building
+  weekAnswers[week] = { q1, q2, q3, q4, perf };
+  weekPerf.push(perf);
+
+  window.scrollTo(0, 0);
+  setTimeout(() => { buildWeek(week + 1, perf); saveProgress(); }, 100);
+}
+
+// ════════════════════════════════════
+//  POLÍTICA DE REEMBOLSO
+// ════════════════════════════════════
+function openRefundModal() {
+  document.getElementById('refundModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeRefundModal() {
+  document.getElementById('refundModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ════════════════════════════════════
+//  ASK MAR IA (chat de dudas puntuales)
+// ════════════════════════════════════
+let askmiBusy = false;
+
+function openAskMarIA() {
+  document.getElementById('askmiPanel').classList.add('open');
+  document.getElementById('askmiInput').focus();
+}
+function closeAskMarIA() {
+  document.getElementById('askmiPanel').classList.remove('open');
+}
+function askmiCheck() {
+  const val = document.getElementById('askmiInput').value.trim();
+  document.getElementById('askmiSendBtn').disabled = val.length === 0 || askmiBusy;
+}
+function askmiScrollBottom() {
+  const box = document.getElementById('askmiMsgs');
+  box.scrollTop = box.scrollHeight;
+}
+function askmiAppend(role, text) {
+  const empty = document.getElementById('askmiEmpty');
+  if (empty) empty.remove();
+  const box = document.getElementById('askmiMsgs');
+  const row = document.createElement('div');
+  row.className = `msg-row ${role}`;
+  row.innerHTML = role === 'bot'
+    ? `<div class="msg-mini-avatar">${ic('coach')}</div><div class="msg-bubble">${escHtml(text)}</div>`
+    : `<div class="msg-bubble">${escHtml(text)}</div>`;
+  box.appendChild(row);
+  askmiScrollBottom();
+}
+function askmiAppendTyping() {
+  const box = document.getElementById('askmiMsgs');
+  const row = document.createElement('div');
+  row.className = 'msg-row bot typing-row';
+  row.id = 'askmiTyping';
+  row.innerHTML = `<div class="msg-mini-avatar">${ic('coach')}</div><div class="msg-bubble"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`;
+  box.appendChild(row);
+  askmiScrollBottom();
+}
+function askmiRemoveTyping() {
+  const row = document.getElementById('askmiTyping');
+  if (row) row.remove();
+}
+
+async function askmiSend() {
+  const inputEl = document.getElementById('askmiInput');
+  const question = inputEl.value.trim();
+  if (!question || askmiBusy) return;
+
+  askmiBusy = true;
+  document.getElementById('askmiSendBtn').disabled = true;
+  askmiAppend('user', question);
+  inputEl.value = '';
+  askmiAppendTyping();
+
+  const wd = (A.nivel && PLANS[A.nivel]) ? PLANS[A.nivel][Math.min(curWeek, 4) - 1] : null;
+
+  try {
+    const resp = await fetch('/api/ask-mar-ia', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question,
+        context: {
+          nombre: A.nombre,
+          edad: A.edad,
+          sexo: A.sexo,
+          altura: A.altura,
+          peso: A.peso,
+          imc: A.imc,
+          bici: A.bici,
+          nivel: A.nivel,
+          semana: curWeek,
+          diaLabel: wd ? wd.label : '',
+          bikeKm: wd ? wd.bikeKm : [],
+          motiv: A.motiv,
+          salud: A.salud,
+          checkins: Object.keys(weekAnswers).map(k => ({ semana: Number(k), ...weekAnswers[k] })),
+        },
+      }),
+    });
+    const data = await resp.json();
+    askmiRemoveTyping();
+    if (resp.ok && data.answer) {
+      askmiAppend('bot', data.answer);
+    } else {
+      askmiAppend('bot', data.error || 'No pude responder ahora mismo — probá de nuevo en un rato.');
+    }
+  } catch (err) {
+    askmiRemoveTyping();
+    askmiAppend('bot', 'No pude conectarme ahora mismo — probá de nuevo en un rato.');
+  }
+
+  askmiBusy = false;
+  askmiCheck();
+}
+</script>
+
+<!-- EXERCISE MODAL -->
+<div class="ex-modal" id="exModal" onclick="if(event.target===this)closeModal()">
+  <div id="exModalBody"></div>
+</div>
+
+<!-- REFUND POLICY MODAL -->
+<div class="ex-modal" id="refundModal" onclick="if(event.target===this)closeRefundModal()">
+  <div class="ex-modal-inner">
+    <div class="ex-modal-close"><button onclick="closeRefundModal()">Cerrar ✕</button></div>
+    <div class="ex-modal-title">Política de reembolso</div>
+    <div class="ex-modal-subtitle">Desafío 50 km en 30 días</div>
+    <div style="font-size:14px;line-height:1.7;color:var(--texto)">
+      <p>Este es un desafío, no una promesa mágica: los resultados dependen de que cumplas el plan. Por eso, la devolución del dinero solo aplica en un caso concreto:</p>
+      <p style="background:var(--card-bg);border:1px solid var(--card-brd);border-radius:12px;padding:14px 16px;margin:16px 0">
+        <strong>Si completaste todo lo que propone el plan</strong> — los entrenamientos en bici, las sesiones de fuerza y los check-ins semanales de las 4 semanas — <strong>y aun así no llegaste a completar los 50 km el día 30</strong>, te devolvemos el pago completo.
+      </p>
+      <p>Esto no cubre el abandono del desafío, saltearse semanas o entrenamientos, ni el simple arrepentimiento de la compra. Sí cubre el caso en el que pusiste el esfuerzo real y el plan no te llevó a la meta — ahí la responsabilidad es nuestra, no tuya.</p>
+      <p>Para pedirlo, escribinos a <a href="mailto:contactodesafio50km@gmail.com" style="color:var(--azul-dk);font-weight:700">contactodesafio50km@gmail.com</a> contando tu caso — tu check-in semanal ya queda registrado en tu cuenta, así que podemos confirmar fácilmente que cumpliste el plan.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ASK MAR IA (floating Q&A widget) -->
+<button class="askmi-btn" id="askmiBtn" onclick="openAskMarIA()">
+  <span class="icn" data-icon="chatbubble"></span> Preguntale a Mar IA
+</button>
+
+<div class="askmi-panel" id="askmiPanel">
+  <div class="askmi-hdr">
+    <div class="chat-avatar"><span class="icn" data-icon="coach" style="font-size:1.05rem"></span></div>
+    <div class="askmi-hdr-txt">
+      <div class="askmi-hdr-name">Mar IA</div>
+      <div class="askmi-hdr-sub">Dudas puntuales de tu semana</div>
+    </div>
+    <button class="askmi-close" onclick="closeAskMarIA()">✕</button>
+  </div>
+  <div class="askmi-msgs" id="askmiMsgs">
+    <div class="askmi-empty" id="askmiEmpty">Preguntame algo puntual de tu semana — por ejemplo "hoy llueve, ¿puedo hacer fuerza hoy y bici mañana?"</div>
+  </div>
+  <div class="askmi-dock">
+    <div class="askmi-row">
+      <input type="text" id="askmiInput" placeholder="Escribí tu duda..." oninput="askmiCheck()" onkeydown="if(event.key==='Enter')askmiSend()">
+      <button id="askmiSendBtn" onclick="askmiSend()" disabled>Enviar</button>
+    </div>
+    <div class="askmi-note">Para dudas médicas serias, siempre consultá a un profesional.</div>
+  </div>
+</div>
+<script>renderIcons();</script>
+
+</body>
+</html>
