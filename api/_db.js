@@ -37,7 +37,7 @@ function generateToken() {
 // (cuando Mercado Pago avisa aunque el navegador no vuelva) — así nunca
 // se crea una cuenta duplicada para el mismo pago, sin importar cuál de
 // los dos caminos llegue primero.
-async function findOrCreateStudent(externalReference, paymentId) {
+async function findOrCreateStudent(externalReference, paymentId, email) {
   const sql = getSql();
 
   const existing = await sql`
@@ -49,16 +49,35 @@ async function findOrCreateStudent(externalReference, paymentId) {
     const candidate = generateToken();
     try {
       await sql`
-        INSERT INTO students (token, external_reference, payment_id)
-        VALUES (${candidate}, ${externalReference}, ${paymentId})
+        INSERT INTO students (token, external_reference, payment_id, email)
+        VALUES (${candidate}, ${externalReference}, ${paymentId}, ${email || ''})
       `;
       return candidate;
     } catch (err) {
-      // Choque de token o de external_reference (carrera entre dos
-      // llamadas simultáneas para el mismo pago) — reintentamos.
+      // Si ya existe una cuenta para este external_reference (la creó la
+      // otra vía — verify-payment o webhook — justo antes), la usamos.
+      const existingNow = await sql`
+        SELECT token FROM students WHERE external_reference = ${externalReference}
+      `;
+      if (existingNow.length > 0) return existingNow[0].token;
+      // Si fue solo choque de token, reintentamos con uno nuevo.
       if (attempt === 4) throw err;
     }
   }
 }
 
-module.exports = { getSql, generateToken, findOrCreateStudent };
+// Marca "email de bienvenida enviado" para un alumno, pero SOLO si todavía
+// no se había marcado — así, aunque verify-payment.js y webhook.js lleguen
+// casi al mismo tiempo, el email se manda una única vez. Devuelve true
+// solo a quien "gana" el derecho de mandarlo.
+async function claimWelcomeEmail(token) {
+  const sql = getSql();
+  const rows = await sql`
+    UPDATE students SET welcome_email_sent = true
+    WHERE token = ${token} AND welcome_email_sent = false
+    RETURNING token
+  `;
+  return rows.length > 0;
+}
+
+module.exports = { getSql, generateToken, findOrCreateStudent, claimWelcomeEmail };
