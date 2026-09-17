@@ -62,4 +62,4 @@ En tu proyecto de Vercel: **Settings → Environment Variables**. Cargá una por
 
 ## Listo
 
-A partir de acá el sitio queda funcionando solo, todo el tiempo, sin que dependa de tu computadora. Cualquier cambio que hagamos después en el código, se sube de nuevo a GitHub y Vercel lo publica solo en un par de minutos.
+A partir de acá el sitio queda funcionando solo, todo el tiempo, sin que dependa de tu computadora. Cualquier cambio que hagamos después en el código, se sube de nuevo a GitHub y Vercel lo publica solo en un par de minutos..
