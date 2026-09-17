@@ -15,7 +15,8 @@
 // y copiá la "Clave secreta" a la variable de entorno MP_WEBHOOK_SECRET.
 
 const { MercadoPagoConfig, Payment, WebhookSignatureValidator } = require('mercadopago');
-const { findOrCreateStudent } = require('./_db');
+const { findOrCreateStudent, claimWelcomeEmail } = require('./_db');
+const { sendWelcomeEmail } = require('./_email');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -55,10 +56,29 @@ module.exports = async (req, res) => {
       console.log(`[webhook] pago ${dataId} → estado: ${info.status} · referencia: ${info.external_reference}`);
 
       if (info.status === 'approved') {
+        const payerEmail = info.payer && info.payer.email;
+        const payerNombre = info.payer && info.payer.first_name;
+        let token = null;
         try {
-          await findOrCreateStudent(info.external_reference, String(dataId));
+          token = await findOrCreateStudent(info.external_reference, String(dataId), payerEmail);
         } catch (dbErr) {
           console.error('No se pudo crear/recuperar la cuenta del alumno desde el webhook:', dbErr);
+        }
+
+        if (token) {
+          try {
+            const puedeMandar = await claimWelcomeEmail(token);
+            if (puedeMandar) {
+              const siteUrl = process.env.SITE_URL || `https://${req.headers.host}`;
+              await sendWelcomeEmail({
+                to: payerEmail,
+                nombre: payerNombre,
+                link: `${siteUrl}/desafio-50km.html?u=${token}`,
+              });
+            }
+          } catch (mailErr) {
+            console.error('No se pudo enviar el email de bienvenida desde el webhook:', mailErr);
+          }
         }
       }
     } catch (err) {
