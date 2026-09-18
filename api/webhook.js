@@ -56,7 +56,11 @@ module.exports = async (req, res) => {
       console.log(`[webhook] pago ${dataId} → estado: ${info.status} · referencia: ${info.external_reference}`);
 
       if (info.status === 'approved') {
-        const payerEmail = info.payer && info.payer.email;
+        // Preferimos el email que el comprador escribió en nuestra propia
+        // página (guardado en metadata al crear la preferencia) — es el que
+        // él eligió para recibir el acceso. Si por algún motivo no está
+        // disponible, usamos el de su cuenta de Mercado Pago como respaldo.
+        const payerEmail = (info.metadata && info.metadata.buyer_email) || (info.payer && info.payer.email);
         const payerNombre = info.payer && info.payer.first_name;
         let token = null;
         try {
