@@ -5,6 +5,13 @@
 // al comprador. El precio se define ACÁ, en el servidor — nunca confíes
 // en un precio que venga del navegador.
 //
+// El comprador ya nos dio su email en la propia página (antes de ir a
+// pagar) — lo guardamos en "metadata" de la preferencia para poder
+// recuperarlo después en verify-payment.js / webhook.js. Así, el email al
+// que le mandamos el link de acceso es el que el comprador eligió en
+// nuestro sitio, y no depende de cuál tenga cargado en su cuenta de
+// Mercado Pago (que puede ser un correo viejo o de otro uso).
+//
 // Requiere la variable de entorno MERCADOPAGO_ACCESS_TOKEN (Access Token
 // de PRODUCCIÓN de tu cuenta de Mercado Pago).
 
@@ -21,6 +28,13 @@ module.exports = async (req, res) => {
   const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
   if (!accessToken) {
     res.status(500).json({ error: 'Falta configurar MERCADOPAGO_ACCESS_TOKEN en el servidor.' });
+    return;
+  }
+
+  const emailComprador = (req.body && req.body.email || '').trim();
+  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailComprador);
+  if (!emailValido) {
+    res.status(400).json({ error: 'Falta un email válido para continuar con el pago.' });
     return;
   }
 
@@ -51,6 +65,9 @@ module.exports = async (req, res) => {
         auto_return: 'approved',
         external_reference: externalReference,
         statement_descriptor: 'DESAFIO50K',
+        metadata: {
+          buyer_email: emailComprador,
+        },
       },
     });
 
