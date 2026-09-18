@@ -43,7 +43,11 @@ module.exports = async (req, res) => {
 
     let token = null;
     if (approved) {
-      const payerEmail = info.payer && info.payer.email;
+      // Preferimos el email que el comprador escribió en nuestra propia
+      // página (guardado en metadata al crear la preferencia) — es el que
+      // él eligió para recibir el acceso. Si por algún motivo no está
+      // disponible, usamos el de su cuenta de Mercado Pago como respaldo.
+      const payerEmail = (info.metadata && info.metadata.buyer_email) || (info.payer && info.payer.email);
       const payerNombre = info.payer && info.payer.first_name;
       try {
         token = await findOrCreateStudent(info.external_reference, String(paymentId), payerEmail);
