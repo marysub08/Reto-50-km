@@ -494,6 +494,11 @@ window.onerror = function(msg, src, line) {
       <p style="color:var(--celeste);font-size:14px;line-height:1.6;margin-bottom:20px">Plan personalizado de 30 días + coaching de <strong style="color:var(--texto)">Mar IA</strong>, ajustándose semana a semana a tu progreso real.</p>
       <div style="font-size:2.2rem;font-weight:900;color:var(--azul-dk);margin-bottom:2px">$20.000 <span style="font-size:.85rem;font-weight:600;color:var(--celeste)">ARS</span></div>
       <div style="font-size:12px;color:var(--celeste);margin-bottom:24px">Pago único · acceso inmediato</div>
+      <div style="text-align:left;margin-bottom:16px">
+        <label for="buyerEmail" style="display:block;font-size:13px;font-weight:700;color:var(--texto);margin-bottom:6px">Tu email (ahí te mandamos tu acceso)</label>
+        <input type="email" id="buyerEmail" placeholder="tu@email.com" autocomplete="email" style="width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid #d6e4f0;font-size:15px;box-sizing:border-box">
+        <div style="font-size:11px;color:var(--celeste);margin-top:6px">Usamos este email para mandarte tu link de acceso — puede ser distinto al que uses en Mercado Pago.</div>
+      </div>
       <button class="btn btn-p btn-lg" id="btnComprar" onclick="iniciarPago()">Comprar ahora →</button>
       <div id="payError" class="alert alert-warn" style="margin-top:14px;text-align:left"></div>
       <div style="margin-top:16px;font-size:12px">
@@ -1282,11 +1287,26 @@ function checkPreviewBanner() {
 async function iniciarPago() {
   const btn = document.getElementById('btnComprar');
   const errBox = document.getElementById('payError');
+  const emailInput = document.getElementById('buyerEmail');
+  const email = (emailInput.value || '').trim();
   errBox.classList.remove('show');
+
+  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if (!emailValido) {
+    errBox.textContent = 'Ingresá un email válido — ahí te vamos a mandar tu acceso.';
+    errBox.classList.add('show');
+    emailInput.focus();
+    return;
+  }
+
   btn.disabled = true;
   btn.textContent = 'Redirigiendo a Mercado Pago...';
   try {
-    const resp = await fetch('/api/create-preference', { method: 'POST' });
+    const resp = await fetch('/api/create-preference', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
     const data = await resp.json();
     if (!resp.ok || !data.init_point) throw new Error(data.error || 'Error desconocido');
     window.location.href = data.init_point;
