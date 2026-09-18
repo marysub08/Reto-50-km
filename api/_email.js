@@ -45,6 +45,7 @@ async function sendWelcomeEmail({ to, nombre, link }) {
       },
       body: JSON.stringify({
         from: process.env.RESEND_FROM_EMAIL || 'Desafío 50 km <onboarding@resend.dev>',
+        reply_to: process.env.RESEND_REPLY_TO || undefined,
         to: [to],
         subject: 'Tu acceso al Desafío 50 km — guardá este email',
         html,
