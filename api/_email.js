@@ -64,4 +64,59 @@ async function sendWelcomeEmail({ to, nombre, link }) {
   }
 }
 
-module.exports = { sendWelcomeEmail };
+// Le avisa al coach (FEEDBACK_TO_EMAIL, por defecto el gmail de contacto)
+// cuando un alumno completa la encuesta de cierre del Desafío — llegue o
+// no a los 120 km. Así se enteran de cómo le fue sin depender de que el
+// alumno decida escribirles por su cuenta.
+async function sendFeedbackEmail({ nombre, rating, comment, reached, kmTotal, link }) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn('RESEND_API_KEY no configurado: no se envió el aviso de encuesta de cierre.');
+    return false;
+  }
+
+  const to = process.env.FEEDBACK_TO_EMAIL || 'contactodesafio50km@gmail.com';
+  const nombreAlumno = (nombre || 'Un alumno').trim();
+  const estado = reached ? '✅ Llegó a los 120 km' : '⚠️ No llegó a los 120 km';
+  const ratingLabels = { 5: 'Buenísima', 4: 'Buena', 3: 'Regular', 2: 'Difícil' };
+  const ratingTxt = ratingLabels[rating] || String(rating || '—');
+
+  const html = `
+    <div style="font-family: -apple-system, Segoe UI, Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 24px; color: #0f172a;">
+      <h1 style="font-size: 18px; margin-bottom: 12px;">Encuesta de cierre — Desafío 120 km</h1>
+      <p style="font-size: 14px;"><strong>Alumno/a:</strong> ${nombreAlumno}</p>
+      <p style="font-size: 14px;"><strong>Resultado:</strong> ${estado} (sumó ${kmTotal} km)</p>
+      <p style="font-size: 14px;"><strong>Calificación de la experiencia:</strong> ${ratingTxt}</p>
+      <p style="font-size: 14px;"><strong>Comentario:</strong><br>${comment ? comment.replace(/\n/g, '<br>') : '(sin comentario)'}</p>
+      ${link ? `<p style="font-size: 12px; color: #64748b;">Link del alumno: ${link}</p>` : ''}
+    </div>
+  `;
+
+  try {
+    const resp = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: process.env.RESEND_FROM_EMAIL || 'Desafío 120 km <onboarding@resend.dev>',
+        to: [to],
+        subject: `${estado} — ${nombreAlumno}`,
+        html,
+      }),
+    });
+
+    if (!resp.ok) {
+      const errText = await resp.text();
+      console.error('Resend devolvió un error al enviar el aviso de encuesta de cierre:', resp.status, errText);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('No se pudo enviar el aviso de encuesta de cierre:', err);
+    return false;
+  }
+}
+
+module.exports = { sendWelcomeEmail, sendFeedbackEmail };
