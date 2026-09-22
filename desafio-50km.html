@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Desafío 50 km en 30 días – Plan Personalizado</title>
+<title>Desafío 120 km en 30 días – Plan Personalizado</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="apple-touch-icon" href="favicon-180.png">
@@ -141,6 +141,25 @@ window.onerror = function(msg, src, line) {
   .plan-hdr .greeting { font-size: 12px; color: var(--celeste); margin-bottom: 4px; }
   .plan-hdr h2 { font-size: 1.35rem; font-weight: 800; color: var(--texto); margin-bottom: 10px; }
   .chip { display: inline-block; background: rgba(14,165,233,.1); border: 1px solid rgba(56,189,248,.2); border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 600; color: var(--celeste-lt); margin-right: 6px; margin-bottom: 4px; }
+
+  /* ── KM COUNTER (siempre visible, arriba del plan) ── */
+  .km-counter { background: var(--card-bg); border: 1px solid var(--card-brd); border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; }
+  .km-counter-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .km-counter-label { font-size: 12px; font-weight: 700; color: var(--celeste); text-transform: uppercase; letter-spacing: .5px; }
+  .km-counter-num { font-size: 1.1rem; font-weight: 900; color: var(--texto); }
+  .km-counter-num span { font-size: .8rem; font-weight: 600; color: var(--celeste); }
+  .km-counter-track { height: 10px; border-radius: 6px; background: rgba(14,165,233,.12); overflow: hidden; }
+  .km-counter-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--azul-dk), var(--azul)); transition: width .4s ease; }
+  .km-counter-msg { font-size: 11px; color: var(--celeste); margin-top: 6px; }
+
+  /* ── CARGA DE KM POR SALIDA ── */
+  .km-log-box { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--card-brd); }
+  .km-log-done { font-size: 12.5px; font-weight: 700; color: #16a34a; display: flex; align-items: center; gap: 6px; }
+  .km-log-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .km-log-form input { width: 90px; padding: 8px 10px; border-radius: 8px; border: 1.5px solid var(--card-brd); font-size: 14px; background: var(--fondo); color: var(--texto); }
+  .km-log-form button { padding: 8px 14px; border: none; border-radius: 8px; background: var(--azul-dk); color: #fff; font-weight: 700; font-size: 12.5px; cursor: pointer; }
+  .km-log-form button:disabled { opacity: .5; cursor: default; }
+  .km-log-note { font-size: 10.5px; color: var(--celeste); margin-top: 4px; width: 100%; }
 
   /* ── WEEK LABEL ── */
   .week-bar { display: flex; align-items: center; gap: 12px; background: rgba(14,165,233,.07); border: 1px solid var(--card-brd); border-radius: 12px; padding: 14px 16px; margin-bottom: 18px; }
@@ -474,8 +493,8 @@ window.onerror = function(msg, src, line) {
 
 <div class="hero">
   <div class="hero-badge"><span class="icn" data-icon="bike"></span> Programa oficial</div>
-  <h1>Desafío <span>50 km</span><br>en 30 días</h1>
-  <p>Completá tu perfil y recibí tu plan semana a semana, adaptado a tu progreso real</p>
+  <h1>Desafío <span>120 km</span><br>en 30 días</h1>
+  <p>Completá tu perfil y recibí tu plan semana a semana, sumando kilómetros reales día a día</p>
 </div>
 
 <div class="progress-wrap" id="progressWrap">
@@ -490,7 +509,7 @@ window.onerror = function(msg, src, line) {
   <div class="container">
     <div class="card-glow" style="text-align:center;padding:32px 20px">
       <div class="icn" data-icon="bike" style="font-size:3rem;margin-bottom:12px;color:var(--azul-dk)"></div>
-      <h2 style="font-size:1.35rem;font-weight:800;color:var(--texto);margin-bottom:10px">Sumate al Desafío 50 km</h2>
+      <h2 style="font-size:1.35rem;font-weight:800;color:var(--texto);margin-bottom:10px">Sumate al Desafío 120 km</h2>
       <p style="color:var(--celeste);font-size:14px;line-height:1.6;margin-bottom:20px">Plan personalizado de 30 días + coaching de <strong style="color:var(--texto)">Mar IA</strong>, ajustándose semana a semana a tu progreso real.</p>
       <div style="font-size:2.2rem;font-weight:900;color:var(--azul-dk);margin-bottom:2px">$20.000 <span style="font-size:.85rem;font-weight:600;color:var(--celeste)">ARS</span></div>
       <div style="font-size:12px;color:var(--celeste);margin-bottom:24px">Pago único · acceso inmediato</div>
@@ -581,14 +600,14 @@ window.onerror = function(msg, src, line) {
 <!-- ══ NO BICI ══ -->
 <div class="screen" id="screen-nobici">
   <div class="container">
-    <div class="bike-hero"><div class="icn" data-icon="bike" style="font-size:3rem;margin-bottom:10px;color:var(--azul-dk)"></div><h2>Primero, elegí tu bici</h2><p>Para el desafío de 50 km necesitás una. Te ayudamos a elegir la mejor opción según tus posibilidades.</p></div>
+    <div class="bike-hero"><div class="icn" data-icon="bike" style="font-size:3rem;margin-bottom:10px;color:var(--azul-dk)"></div><h2>Primero, elegí tu bici</h2><p>Para el desafío de 120 km necesitás una. Te ayudamos a elegir la mejor opción según tus posibilidades.</p></div>
     <div class="tip-box">💡 <strong>¿Cuál elegir?</strong> Depende del terreno donde vas a entrenar. Los precios varían mucho dentro de cada categoría — lo importante es la calidad del componente, no el tipo de bici.</div>
 
     <div class="bike-opt"><div class="bike-opt-dot" style="background:#22c55e"></div><div><h3>MTB – Mountain Bike</h3><p>La opción más versátil. Te permite andar en asfalto, tierra, ripio y caminos irregulares. Las ruedas anchas generan algo más de resistencia en ruta comparada con una híbrida o de ruta, lo que hace el desafío un poco más exigente físicamente — pero perfectamente realizable. Si querés una sola bici para todo tipo de terreno, esta es tu opción.</p><span class="bike-tag">Todo terreno</span><span class="bike-tag">Máxima versatilidad</span><span class="bike-tag">Más exigente en asfalto</span></div></div>
 
     <div class="bike-opt"><div class="bike-opt-dot" style="background:var(--azul)"></div><div><h3>Híbrida</h3><p>El punto medio ideal para este desafío. Ruedas más finas que la MTB (menos resistencia en asfalto) pero más anchas que una bici de ruta (mayor estabilidad en tierra). Con cambios y frenos a disco, te da buen control en superficies mixtas. Recomendada si la mayor parte del recorrido es pavimento o ciclovía.</p><span class="bike-tag">Asfalto y tierra</span><span class="bike-tag">Equilibrada</span></div></div>
 
-    <div class="bike-opt"><div class="bike-opt-dot" style="background:#f59e0b"></div><div><h3>Ruta / Cicloturismo</h3><p>La más eficiente en pavimento. Más liviana y aerodinámica: los 50 km se sienten notablemente más fáciles que con una MTB. Si te gustan los recorridos asfaltados y ya sabés que el ciclismo va a ser parte de tu vida, esa es la mejor inversión.</p><span class="bike-tag">Asfalto</span><span class="bike-tag">Máxima eficiencia</span></div></div>
+    <div class="bike-opt"><div class="bike-opt-dot" style="background:#f59e0b"></div><div><h3>Ruta / Cicloturismo</h3><p>La más eficiente en pavimento. Más liviana y aerodinámica: sumar los 120 km del mes se siente notablemente más fácil que con una MTB. Si te gustan los recorridos asfaltados y ya sabés que el ciclismo va a ser parte de tu vida, esa es la mejor inversión.</p><span class="bike-tag">Asfalto</span><span class="bike-tag">Máxima eficiencia</span></div></div>
 
     <div class="tip-box">🔧 <strong>No olvidés:</strong> casco, lentes, guantes y luces. Son esenciales para entrenar seguro. El candado es opcional, si querés.</div>
 
@@ -612,7 +631,7 @@ window.onerror = function(msg, src, line) {
           <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="knee"></span><div><strong>Altura del sillín</strong><br>En el punto más bajo del pedaleo, la pierna debe quedar casi extendida (10–15° de flexión de rodilla). Si el sillín está muy bajo, las rodillas se sobrecargan. Muy alto y el talón pierde contacto al pedalear.</div></div>
           <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="arrows"></span><div><strong>Avance/retroceso del sillín</strong><br>Poné el pedal a las 3 en punto (horizontal hacia adelante). La rótula de la rodilla debe quedar justo sobre el eje del pedal. Un sillín muy adelantado genera presión en rodilla; muy atrás, tensión en cadera.</div></div>
           <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="grip"></span><div><strong>Distancia al manubrio</strong><br>Brazos ligeramente flexionados al tomar el manubrio, sin tensión en hombros ni cuello. Si estirás demasiado o te encogés, hay algo mal. El largo del potencia es clave acá.</div></div>
-          <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="ruler"></span><div><strong>Altura del manubrio</strong><br>Una postura más erguida es más cómoda para principiantes y para recorridos largos. Bajar el manubrio es más aerodinámico pero exige más de la espalda baja. Para 50 km, priorizá la comodidad.</div></div>
+          <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="ruler"></span><div><strong>Altura del manubrio</strong><br>Una postura más erguida es más cómoda para principiantes y para recorridos largos. Bajar el manubrio es más aerodinámico pero exige más de la espalda baja. Para sumar kilómetros sin sufrir, priorizá la comodidad.</div></div>
           <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="tilt"></span><div><strong>Inclinación del sillín</strong><br>El sillín debe estar horizontal o con una inclinación mínima hacia adelante (1–2°). Si duele la zona perineal, probá inclinarlo levemente hacia adelante. Nunca hacia atrás — genera deslizamiento y presión lumbar.</div></div>
         </div>
       </div>
@@ -627,6 +646,7 @@ window.onerror = function(msg, src, line) {
 <div class="screen" id="screen-plan">
   <div class="container">
     <div id="planHdr" class="plan-hdr"></div>
+    <div id="kmCounterBar" class="km-counter"></div>
     <div id="alertSalud" class="alert alert-warn"></div>
     <div id="alertEdad" class="alert alert-info"></div>
     <div id="alertIMC" class="alert alert-info"></div>
@@ -650,7 +670,7 @@ window.onerror = function(msg, src, line) {
           <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="knee"></span><div><strong>Altura del sillín</strong><br>En el punto más bajo del pedaleo, la pierna debe quedar casi extendida (10–15° de flexión de rodilla). Muy bajo sobrecarga las rodillas; muy alto pierde potencia y estabilidad.</div></div>
           <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="arrows"></span><div><strong>Avance/retroceso del sillín</strong><br>Pedal a las 3 en punto: la rótula debe quedar justo sobre el eje del pedal. Muy adelante → presión en rodilla. Muy atrás → tensión en cadera.</div></div>
           <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="grip"></span><div><strong>Distancia al manubrio</strong><br>Brazos ligeramente flexionados, sin tensión en hombros ni cuello. Si estirás demasiado o te encogés, algo está mal.</div></div>
-          <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="ruler"></span><div><strong>Altura del manubrio</strong><br>Postura más erguida = más cómoda para recorridos largos. Para 50 km, priorizá la comodidad sobre la aerodinámica.</div></div>
+          <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="ruler"></span><div><strong>Altura del manubrio</strong><br>Postura más erguida = más cómoda para recorridos largos. Para sumar los 120 km del mes, priorizá la comodidad sobre la aerodinámica.</div></div>
           <div class="fitting-tip"><span class="fitting-tip-ico icn" data-icon="tilt"></span><div><strong>Inclinación del sillín</strong><br>Horizontal o con 1–2° hacia adelante. Si duele la zona perineal, probá inclinarlo levemente. Nunca hacia atrás.</div></div>
         </div>
       </div>
@@ -806,230 +826,80 @@ const EJ = {
 // ════════════════════════════════════
 //  PLAN DATA  (base values, adapted at render time)
 // ════════════════════════════════════
-const PLANS = {
-  principiante: [
-    {
-      label:'Semana 1 – Activación',
-      tip:'Esta semana es de adaptación. Priorizá la técnica y la postura sobre la velocidad. Si sentís molestias, reducí el km sin culpa.',
-      goal:{ icon:'target', title:'Meta de la semana', text:'Completar los 3 recorridos en bici y las 2 sesiones de fuerza sin lesionarte. Establecer el hábito.' },
-      days:[
-        { day:'LUN', num:1, type:'bike', kmIdx:0, elev:'llano', det:'Terreno plano. Explorá el recorrido sin presión: enfocate en la postura, los apoyos en el manubrio y cómo sentís la bici.' },
-        { day:'MAR', num:2, type:'str',  det:'Sesión de fuerza A – Piernas + Core (ver ejercicios abajo).' },
-        { day:'MIÉ', num:3, type:'bike', kmIdx:1, elev:'llano', det:'Llano o muy suave. Mantené la cadencia constante y controlá la respiración. Sin apuros.' },
-        { day:'JUE', num:4, type:'rest', det:'Caminata 20–30 min + estiramientos de cuádriceps, isquiotibiales y cadera.' },
-        { day:'VIE', num:5, type:'str',  det:'Sesión de fuerza B – Glúteos + Estabilidad (ver ejercicios abajo).' },
-        { day:'SÁB', num:6, type:'bike', kmIdx:2, elev:'llano', det:'La salida más larga de la semana. Buscá un recorrido plano. Llevá agua y anotá cómo te sentiste.' },
-        { day:'DOM', num:7, type:'rest', det:'Estiramientos suaves. Tu cuerpo está construyendo la base.' }
-      ],
-      bikeKm:[5,6,8],
-      sessA:{ title:'Sesión A – Piernas + Core (Martes)', baseSets:3, exs:[{id:'squat_bw',reps:'12 reps'},{id:'lunge_front',reps:'10 reps/pierna'},{id:'glute_bridge',reps:'15 reps'},{id:'plank',reps:'25 seg'},{id:'superman',reps:'12 reps'}] },
-      sessB:{ title:'Sesión B – Glúteos + Estabilidad (Viernes)', baseSets:3, exs:[{id:'glute_bridge_1',reps:'10 reps/pierna'},{id:'lunge_lateral',reps:'10 reps/pierna'},{id:'plank_side',reps:'20 seg/lado'},{id:'bird_dog',reps:'10 reps/lado'},{id:'row',reps:'12 reps'}] },
-      nut:[{ico:'🥣',t:'Antes del entreno',i:'Banana, avena con leche o tostadas con palta. Comé 1 hora antes.'},{ico:'💧',t:'Hidratación',i:'Mínimo 2 litros de agua por día. Siempre con botella en la bici.'},{ico:'🍗',t:'Post-entreno',i:'Pollo, huevos, yogur griego, legumbres. Proteínas para recuperarse.'},{ico:'🍊',t:'Antioxidantes',i:'Naranja, kiwi, frutillas. Reducen la inflamación muscular post-esfuerzo.'}]
-    },
-    {
-      label:'Semana 2 – Progresión',
-      tip:'Tu cuerpo ya se adaptó al movimiento. Empezarás a sentir los cambios en resistencia.',
-      goal:{ icon:'trend', title:'Meta de la semana', text:'Completar la salida del sábado sin detenciones largas. El ritmo conversacional es la clave.' },
-      days:[
-        { day:'LUN', num:8,  type:'bike', kmIdx:0, elev:'ondulado', det:'Buscá un recorrido con 1–2 subidas suaves. Al subir: bajá la marcha y mantené el ritmo. No te cuelgues de los brazos.' },
-        { day:'MAR', num:9,  type:'str',  det:'Sesión A – Intentá sumar 1–2 repeticiones más que la semana pasada.' },
-        { day:'MIÉ', num:10, type:'bike', kmIdx:1, elev:'ondulado', det:'Incluí una subida de 2–3 min. Al llegar arriba, recuperate y continuás. Primera práctica real de pendiente.' },
-        { day:'JUE', num:11, type:'rest', det:'Caminata 25 min. Foam roller en cuádriceps y glúteos si tenés.' },
-        { day:'VIE', num:12, type:'str',  det:'Sesión B – Sumá 5 min de movilidad de cadera al final.' },
-        { day:'SÁB', num:13, type:'bike', kmIdx:2, elev:'ondulado', det:'Ruta con ondulaciones suaves. Ritmo conversacional todo el tiempo, incluso en las subidas. Llevá snack y agua.' },
-        { day:'DOM', num:14, type:'rest', det:'Revisá cómo responden piernas y rodillas. Eso es información valiosa.' }
-      ],
-      bikeKm:[8,10,12],
-      sessA:{ title:'Sesión A – Piernas + Core (Martes)', baseSets:3, exs:[{id:'squat_goblet',reps:'12 reps'},{id:'lunge_walk',reps:'10 reps/pierna'},{id:'hip_thrust',reps:'12 reps'},{id:'plank_tap',reps:'12 reps'},{id:'superman',reps:'12 reps'}] },
-      sessB:{ title:'Sesión B – Glúteos + Estabilidad (Viernes)', baseSets:3, exs:[{id:'glute_bridge_1',reps:'12 reps/pierna'},{id:'lunge_lateral',reps:'12 reps/pierna'},{id:'plank_side',reps:'25 seg/lado'},{id:'bird_dog',reps:'12 reps/lado'},{id:'movilidad',reps:'5 min'}] },
-      nut:[{ico:'🍠',t:'Carbohidratos de calidad',i:'Batata, arroz integral, pasta. Tu combustible principal.'},{ico:'🥜',t:'Snack pre-salida larga',i:'Almendras o nueces + banana 30 min antes del sábado.'},{ico:'🥩',t:'Proteínas',i:'Aumentá un poco: pechuga, atún, huevos, legumbres en almuerzo y cena.'},{ico:'💊',t:'Magnesio natural',i:'Espinaca, semillas de zapallo, chocolate negro >70%. Reduce calambres.'}]
-    },
-    {
-      label:'Semana 3 – Consolidación',
-      tip:'La salida del sábado es el gran hito de esta semana. Planeá la ruta de antemano y llevá todo lo que necesitás.',
-      goal:{ icon:'rocket', title:'Meta de la semana', text:'Completar la salida del sábado. Ya podés ver los 50 km como algo posible.' },
-      days:[
-        { day:'LUN', num:15, type:'bike', kmIdx:0, elev:'ondulado', det:'Terreno variado con ondulaciones. Practicá la respiración abdominal al subir: profunda y continua, sin aguantar el aire.' },
-        { day:'MAR', num:16, type:'str',  det:'Sesión A – Aumentamos a 4 series. Descansá 60 seg entre series.' },
-        { day:'MIÉ', num:17, type:'bike', kmIdx:1, elev:'intervalos', det:'Buscá una cuesta de 1–2 min. Subí fuerte × 3, recuperate bajando. Más 3 km suaves antes y después.' },
-        { day:'JUE', num:18, type:'rest', det:'Yoga o movilidad 30 min. Cadera, isquiotibiales y zona lumbar.' },
-        { day:'VIE', num:19, type:'str',  det:'Sesión B – Énfasis en core. La columna te lo va a agradecer el sábado.' },
-        { day:'SÁB', num:20, type:'bike', kmIdx:2, elev:'subida', det:'Incluí una subida de 5–10 min en la ruta. Planeala de antemano. Llevá agua, snack y ganas.' },
-        { day:'DOM', num:21, type:'rest', det:'Comé bien, dormí 8h. Tu cuerpo está construyendo resistencia real.' }
-      ],
-      bikeKm:[12,15,20],
-      sessA:{ title:'Sesión A – Piernas + Core (Martes)', baseSets:4, exs:[{id:'squat_bulgar',reps:'10 reps/pierna'},{id:'lunge_walk',reps:'12 reps/pierna'},{id:'hip_thrust',reps:'12 reps'},{id:'plank',reps:'35 seg'},{id:'rdl',reps:'10 reps'}] },
-      sessB:{ title:'Sesión B – Glúteos + Core (Viernes)', baseSets:3, exs:[{id:'glute_bridge_1',reps:'12 reps/pierna'},{id:'plank_tap',reps:'14 reps'},{id:'bird_dog',reps:'12 reps/lado'},{id:'row',reps:'12 reps'},{id:'movilidad',reps:'8 min'}] },
-      nut:[{ico:'🍝',t:'Carga de carbos (viernes)',i:'Pasta, arroz, pan integral la noche previa a la salida larga.'},{ico:'🍬',t:'Durante la bici (+45 min)',i:'Dátiles, banana o frutos secos cada 15–20 km.'},{ico:'🥗',t:'Antiinflamatorio natural',i:'Cúrcuma con pimienta, jengibre en el té, aceite de oliva.'},{ico:'🐟',t:'Omega-3',i:'Salmón, atún, sardinas 2–3 veces/semana. Reduce inflamación muscular.'}]
-    },
-    {
-      label:'Semana 4 – ¡Los 50 km!', finalDay:true,
-      tip:'Esta semana reducimos el volumen para llegar al 100% el día 30. No hagas más de lo indicado: la clave es el descanso.',
-      goal:{ icon:'flag', title:'Día 30 – ¡50 km!', text:'Todo el trabajo ya está hecho. Solo tenés que salir y disfrutar cada kilómetro.' },
-      days:[
-        { day:'LUN', num:22, type:'bike', kmIdx:0, elev:'libre', det:'Últimos km de entrenamiento real. Sin presión: plano o lo que tengas ganas.' },
-        { day:'MAR', num:23, type:'str',  det:'Fuerza ligera – 2 series de cada ejercicio. Mantener, no exigirse.' },
-        { day:'MIÉ', num:24, type:'bike', kmIdx:1, elev:'ondulado', det:'Hacé el recorrido que más disfrutás. Si tiene alguna subida, mejor: ya la manejás bien.' },
-        { day:'JUE', num:25, type:'rest', det:'Revisá la bici: neumáticos, cadena, frenos. Preparate tácticamente.' },
-        { day:'VIE', num:26, type:'str',  det:'Activación ligera: sentadillas, puente, plancha. Nada más. Guardá energía.' },
-        { day:'SÁB', num:27, type:'rest', det:'Revisá la ruta de los 50 km. Dejá todo listo.' },
-        { day:'DOM', num:28, type:'rest', det:'Cena de carga de carbos: pasta o arroz con pollo. Dormí mínimo 8h.' }
-      ],
-      bikeKm:[15,20,0],
-      sessA:{ title:'Fuerza de mantenimiento (Martes + Viernes)', baseSets:2, exs:[{id:'squat_bw',reps:'10 reps'},{id:'glute_bridge',reps:'12 reps'},{id:'plank',reps:'25 seg'},{id:'movilidad',reps:'5 min'}] },
-      sessB:null,
-      nut:[{ico:'🍝',t:'Noche previa al día 30',i:'Plato grande de pasta o arroz con pollo. Sin picante ni grasa en exceso.'},{ico:'🥣',t:'Desayuno día 30 (1h antes)',i:'Avena con banana y miel. Café si lo tomás habitualmente.'},{ico:'🚰',t:'Hidratación día 30',i:'500 ml antes de salir. Al menos 1 litro en la bici. Bebé cada 20 min.'},{ico:'🍬',t:'Durante los 50 km',i:'Snack o dátiles cada 15–20 km. Practicaste esto en los entrenos: aplicalo igual.'}]
-    }
-  ],
-  intermedio: [
-    {
-      label:'Semana 1 – Base progresiva',
-      tip:'Tu cuerpo ya tiene base. Esta semana establecemos el volumen y ajustamos la postura y cadencia en bici.',
-      goal:{ icon:'target', title:'Meta de la semana', text:'Completar la salida del sábado a buen ritmo sin agotarte. Dejá un 20% de energía en reserva.' },
-      days:[
-        { day:'LUN', num:1,  type:'bike', kmIdx:0, elev:'llano', det:'Z2 en llano. Podés hablar con facilidad. Calentamiento 10 min suave, cierre suave.' },
-        { day:'MAR', num:2,  type:'str',  det:'Sesión A – Fuerza media. 3–4 series. Ver ejercicios.' },
-        { day:'MIÉ', num:3,  type:'bike', kmIdx:1, elev:'ondulado', det:'5 km suave → 5 km moderado-alto en terreno ondulado → 5 km suave. Las subidas son parte del trabajo.' },
-        { day:'JUE', num:4,  type:'rest', det:'Movilidad 30 min. Cadera, cuádriceps, espalda baja. Foam roller si tenés.' },
-        { day:'VIE', num:5,  type:'str',  det:'Sesión B – Cuerpo completo. Cadena posterior + core.' },
-        { day:'SÁB', num:6,  type:'bike', kmIdx:2, elev:'ondulado', det:'Ruta con desnivel moderado. Ritmo constante: no te fundas en la primera subida. Llevá agua y snack.' },
-        { day:'DOM', num:7,  type:'rest', det:'Dormí bien, hidratate, comé proteínas.' }
-      ],
-      bikeKm:[12,15,18],
-      sessA:{ title:'Sesión A – Piernas + Core (Martes)', baseSets:4, exs:[{id:'squat_bulgar',reps:'10 reps/pierna'},{id:'rdl',reps:'10 reps'},{id:'hip_thrust',reps:'12 reps'},{id:'plank',reps:'30 seg'},{id:'row',reps:'12 reps'}] },
-      sessB:{ title:'Sesión B – Cuerpo completo (Viernes)', baseSets:3, exs:[{id:'lunge_walk',reps:'12 reps/pierna'},{id:'glute_bridge_1',reps:'12 reps/pierna'},{id:'plank_tap',reps:'12 reps'},{id:'bird_dog',reps:'12 reps/lado'},{id:'movilidad',reps:'8 min'}] },
-      nut:[{ico:'🥣',t:'Pre-entreno',i:'Avena con frutas 1–1.5h antes. Dátiles si es salida corta.'},{ico:'🍠',t:'Carbohidratos de calidad',i:'Batata, arroz integral, pasta. Priorizalos antes de entrenar.'},{ico:'🥩',t:'Proteínas post-entreno',i:'1.6–2g por kg de peso corporal. Pollo, huevos, legumbres.'},{ico:'💧',t:'Hidratación',i:'2.5 litros/día. 500 ml por hora de ejercicio en entreno.'}]
-    },
-    {
-      label:'Semana 2 – Volumen',
-      tip:'Esta semana el volumen sube. Planeá la ruta del sábado con anticipación y con puntos de agua identificados.',
-      goal:{ icon:'trend', title:'Meta de la semana', text:'Completar la salida del sábado sin detenciones por fatiga. Los 50 km ya se ven reales.' },
-      days:[
-        { day:'LUN', num:8,  type:'bike', kmIdx:0, elev:'ondulado', det:'Zona aeróbica con terreno variado. Mantené cadencia 80–90 RPM incluso en subidas, aunque cueste más esfuerzo.' },
-        { day:'MAR', num:9,  type:'str',  det:'Sesión A + 5 min de movilidad de cadera al cierre.' },
-        { day:'MIÉ', num:10, type:'bike', kmIdx:1, elev:'intervalos', det:'Buscá una cuesta de 2–3 min. 5 × (sube fuerte + baja recuperando). Calentamiento y enfriamiento de 5 km cada uno.' },
-        { day:'JUE', num:11, type:'rest', det:'Caminata 30 min + estiramientos de piernas y espalda 15 min.' },
-        { day:'VIE', num:12, type:'str',  det:'Sesión B con énfasis en core y cadena posterior.' },
-        { day:'SÁB', num:13, type:'bike', kmIdx:2, elev:'subida', det:'Ruta con 1–2 subidas reales de 5–8 min. Llevá GPS y snack. El desnivel entrena lo que los km planos no pueden.' },
-        { day:'DOM', num:14, type:'rest', det:'Revisá piernas, espalda y niveles de energía. Anotalos.' }
-      ],
-      bikeKm:[15,20,25],
-      sessA:{ title:'Sesión A – Piernas + Potencia (Martes)', baseSets:4, exs:[{id:'squat_bulgar',reps:'12 reps/pierna'},{id:'rdl',reps:'10 reps'},{id:'hip_thrust',reps:'12 reps'},{id:'plank_updown',reps:'10 reps'},{id:'row',reps:'12 reps'}] },
-      sessB:{ title:'Sesión B – Core + Glúteos (Viernes)', baseSets:3, exs:[{id:'squat_jump',reps:'8 reps'},{id:'lunge_walk',reps:'12 reps/pierna'},{id:'plank_tap',reps:'14 reps'},{id:'hip_thrust_1',reps:'10 reps/pierna'},{id:'movilidad',reps:'8 min'}] },
-      nut:[{ico:'🍝',t:'Carga previa a salida larga',i:'El viernes a la noche: pasta, arroz o batata. Más carbos de lo habitual.'},{ico:'🥜',t:'Snack durante la salida',i:'Banana o dátiles. Comé algo cada 20 km para mantener el glucógeno.'},{ico:'🐟',t:'Omega-3 y antiinflamatorio',i:'Salmón, atún. O suplemento de omega-3 si no consumís pescado regularmente.'},{ico:'🍊',t:'Potasio',i:'Banana, naranja, kiwi. Previene calambres en salidas largas.'}]
-    },
-    {
-      label:'Semana 3 – Intensidad',
-      tip:'Semana de mayor exigencia. La salida del sábado es tu ensayo general. Equipate como si fueran los 50 km reales.',
-      goal:{ icon:'fire', title:'Meta de la semana', text:'Completar la salida del sábado. Eso demostrará que los 50 km son un hecho.' },
-      days:[
-        { day:'LUN', num:15, type:'bike', kmIdx:0, elev:'ondulado', det:'Ritmo aeróbico-tempo con terreno ondulado. Subidas: elevá el ritmo cardíaco. Bajas: recuperate y preparate para la siguiente.' },
-        { day:'MAR', num:16, type:'str',  det:'Sesión A – Alta intensidad. 4 series en todos los ejercicios. Descanso: 60 seg.' },
-        { day:'MIÉ', num:17, type:'bike', kmIdx:1, elev:'intervalos', det:'Alternás zona 2 y zona 3 cada 5 km. Si hay subida, usala para el bloque Z3. Técnica: cadencia alta, no fuerza bruta.' },
-        { day:'JUE', num:18, type:'rest', det:'Yoga o natación suave 30 min. Recuperación activa crucial esta semana.' },
-        { day:'VIE', num:19, type:'str',  det:'Sesión B + 15 min de movilidad y estiramientos profundos.' },
-        { day:'SÁB', num:20, type:'bike', kmIdx:2, elev:'subida', det:'Ruta con desnivel acumulado. Equipate como el día 30. Las subidas ya son tuyas.' },
-        { day:'DOM', num:21, type:'rest', det:'Dormí bien, comé proteínas y carbohidratos. Hidratate mucho.' }
-      ],
-      bikeKm:[20,25,35],
-      sessA:{ title:'Sesión A – Potencia máxima (Martes)', baseSets:4, exs:[{id:'squat_bulgar',reps:'12 reps/pierna'},{id:'rdl',reps:'10 reps'},{id:'hip_thrust',reps:'12 reps'},{id:'plank_dyn',reps:'10 reps'},{id:'core_circ',reps:'5 min'}] },
-      sessB:{ title:'Sesión B – Core + Movilidad (Viernes)', baseSets:3, exs:[{id:'squat_jump',reps:'8 reps'},{id:'deadlift_1',reps:'10 reps/pierna'},{id:'plank_side',reps:'30 seg/lado'},{id:'hip_thrust_1',reps:'10 reps/pierna'},{id:'movilidad',reps:'10 min'}] },
-      nut:[{ico:'🍝',t:'Pre-salida larga (viernes noche)',i:'Plato grande de pasta o arroz con proteína magra. Hidratate bien.'},{ico:'🍬',t:'Durante la salida',i:'Gel o snack real cada 15 km. No experimentes con alimentos nuevos.'},{ico:'🥤',t:'Post-entreno',i:'Proteína + carbohidratos simples en los 30 min post-entreno.'},{ico:'💊',t:'Recuperación',i:'Magnesio y zinc (semillas de zapallo, cacao puro). Reducen calambres y mejoran el sueño.'}]
-    },
-    {
-      label:'Semana 4 – ¡Los 50 km!', finalDay:true,
-      tip:'Taper week: reducimos el volumen para llegar frescos al día 30. No hagas más de lo indicado.',
-      goal:{ icon:'flag', title:'Día 30 – ¡50 km!', text:'Todo el trabajo está hecho. Solo tenés que disfrutarlo y cruzar la meta.' },
-      days:[
-        { day:'LUN', num:22, type:'bike', kmIdx:0, elev:'ondulado', det:'Sin esfuerzo máximo. Terreno variado tranquilo: disfrutá el movimiento.' },
-        { day:'MAR', num:23, type:'str',  det:'Fuerza de mantenimiento – 2 series. Sin fatigar.' },
-        { day:'MIÉ', num:24, type:'bike', kmIdx:1, elev:'libre', det:'Tu último entrenamiento. Hacé el recorrido que más disfrutás. Confiá en el trabajo acumulado.' },
-        { day:'JUE', num:25, type:'rest', det:'Revisá neumáticos, frenos y cadena. Preparate tácticamente.' },
-        { day:'VIE', num:26, type:'str',  det:'Activación 20 min máximo. Guardá energía.' },
-        { day:'SÁB', num:27, type:'rest', det:'Cena de carga de carbos: pasta o arroz con pollo.' },
-        { day:'DOM', num:28, type:'rest', det:'Descanso absoluto. Visualizá la ruta. Mañana es el día.' }
-      ],
-      bikeKm:[20,25,0],
-      sessA:{ title:'Fuerza de mantenimiento (Martes + Viernes)', baseSets:2, exs:[{id:'squat_bw',reps:'10 reps'},{id:'glute_bridge',reps:'12 reps'},{id:'plank',reps:'25 seg'},{id:'movilidad',reps:'5 min'}] },
-      sessB:null,
-      nut:[{ico:'🍝',t:'Sábado – carga de carbos',i:'Pasta, arroz, pan integral. La mejor cena previa al gran día.'},{ico:'🥣',t:'Desayuno día 30 (1h–1.5h antes)',i:'Avena con banana y miel. Nada nuevo en el día de la carrera.'},{ico:'🚰',t:'Hidratación día 30',i:'500 ml al levantarte. Al menos 1.5L durante los 50 km. Bebé antes de tener sed.'},{ico:'🍬',t:'Durante los 50 km',i:'Snack o gel cada 15–20 km. Practicaste esto en entrenos: aplicalo igual.'}]
-    }
-  ],
-  avanzado: [
-    {
-      label:'Semana 1 – Carga base fuerte',
-      tip:'Como ciclista avanzado/a, el reto es mantener la intensidad sin sobrecargarte. Evaluamos puntos débiles y ajustamos.',
-      goal:{ icon:'target', title:'Meta de la semana', text:'Completar la salida del sábado a ritmo Z3–Z4. Evaluar resistencia de piernas y espalda.' },
-      days:[
-        { day:'LUN', num:1,  type:'bike', kmIdx:0, elev:'llano', det:'Z2 en llano. Cadencia alta 90–95 RPM, piñón pequeño. Recuperación activa.' },
-        { day:'MAR', num:2,  type:'str',  det:'Fuerza + potencia. Alta intensidad, descanso 45 seg entre series.' },
-        { day:'MIÉ', num:3,  type:'bike', kmIdx:1, elev:'subida', det:'15 min calentamiento + subida de 10–15 min a tempo Z3 + cierre suave. Z3 sostenible: podés hablar con frases cortas.' },
-        { day:'JUE', num:4,  type:'str',  det:'Fuerza específica + 15 min movilidad de cadera.' },
-        { day:'VIE', num:5,  type:'bike', kmIdx:0, elev:'llano', det:'Z1–Z2 en llano. Sin forzar. El cuerpo asimila la carga de la semana.' },
-        { day:'SÁB', num:6,  type:'bike', kmIdx:2, elev:'ondulado', det:'Z3 con terreno ondulado. Evaluá tus zonas y cómo responde el cuerpo en cada repecho.' },
-        { day:'DOM', num:7,  type:'rest', det:'Descanso total. Recuperación del sistema nervioso central.' }
-      ],
-      bikeKm:[20,25,30],
-      sessA:{ title:'Sesión A – Potencia (Martes)', baseSets:4, exs:[{id:'squat_bulgar',reps:'12 reps/pierna'},{id:'deadlift_conv',reps:'10 reps'},{id:'hip_thrust',reps:'12 reps'},{id:'plank_dyn',reps:'10 reps'},{id:'row',reps:'12 reps'}] },
-      sessB:{ title:'Sesión B – Fuerza específica (Jueves)', baseSets:4, exs:[{id:'shoulder_press',reps:'10 reps'},{id:'lunge_walk',reps:'12 reps/pierna'},{id:'plank_updown',reps:'10 reps'},{id:'hip_thrust_1',reps:'10 reps/pierna'},{id:'movilidad',reps:'10 min'}] },
-      nut:[{ico:'⚡',t:'Periodización nutricional',i:'Más carbohidratos en días de bici. Más proteína en días de fuerza.'},{ico:'🥣',t:'Pre-entreno largo',i:'Avena con dátiles y nueces. Carbohidratos de liberación rápida 30 min antes.'},{ico:'🥩',t:'Proteínas elevadas',i:'2g por kg de peso. Necesario para mantener masa muscular con alto volumen.'},{ico:'💊',t:'Suplementación básica',i:'Creatina monohidrato (3–5g/día), magnesio y vitamina D si no te da suficiente el sol.'}]
-    },
-    {
-      label:'Semana 2 – Volumen alto',
-      tip:'El mayor volumen de todo el plan. La salida del sábado es el verdadero test de resistencia.',
-      goal:{ icon:'trend', title:'Meta de la semana', text:'Completar la salida del sábado a Z3 promedio. Si lo lográs, los 50 km son un hecho.' },
-      days:[
-        { day:'LUN', num:8,  type:'bike', kmIdx:0, elev:'ondulado', det:'Tempo Z3 en terreno ondulado. Medí FC o potencia. Las subidas deben sostenerse en Z3–Z4.' },
-        { day:'MAR', num:9,  type:'str',  det:'Fuerza máxima – series pesadas. 5×5. Descanso 2 min.' },
-        { day:'MIÉ', num:10, type:'bike', kmIdx:1, elev:'intervalos', det:'8 × (3 min Z5 subiendo + 2 min recuperando bajando). Muy exigente. Hidratate antes, durante y después.' },
-        { day:'JUE', num:11, type:'rest', det:'Movilidad + baño frío opcional. Foam roller completo.' },
-        { day:'VIE', num:12, type:'str',  det:'Circuito funcional 3 rondas + 15 min de movilidad extendida.' },
-        { day:'SÁB', num:13, type:'bike', kmIdx:2, elev:'subida', det:'Recorrido largo con desnivel acumulado. Planeá los puntos de subida y calculá la nutrición según km, no tiempo.' },
-        { day:'DOM', num:14, type:'rest', det:'Sueño, nutrición y relax. Tu cuerpo hace el trabajo ahora.' }
-      ],
-      bikeKm:[25,30,40],
-      sessA:{ title:'Sesión A – Fuerza máxima (Martes)', baseSets:5, exs:[{id:'squat_bulgar',reps:'5 reps/pierna (pesado)'},{id:'deadlift_conv',reps:'5 reps (pesado)'},{id:'hip_thrust',reps:'10 reps (pesado)'},{id:'plank_dyn',reps:'12 reps'},{id:'row',reps:'10 reps (pesado)'}] },
-      sessB:{ title:'Sesión B – Funcional + Movilidad (Viernes)', baseSets:3, exs:[{id:'squat_jump',reps:'8 reps'},{id:'deadlift_1',reps:'10 reps/pierna'},{id:'core_circ',reps:'5 min'},{id:'hip_thrust_1',reps:'10 reps/pierna'},{id:'movilidad',reps:'10 min'}] },
-      nut:[{ico:'🍝',t:'Carga de carbos (viernes)',i:'2–3 tazas de pasta o arroz. Hidratación elevada el día previo.'},{ico:'🥤',t:'Intra-entreno (salida larga)',i:'Bebida isotónica: agua + pizca de sal + limón + miel. O isotónica comercial.'},{ico:'🥤',t:'Recuperación post-salida',i:'Batido de proteínas + carbohidratos simples en los primeros 30 min.'},{ico:'💊',t:'Antiinflamatorios naturales',i:'Cúrcuma con pimienta negra, jengibre, cerezas. No dependas del ibuprofeno.'}]
-    },
-    {
-      label:'Semana 3 – Pico + descarga inicial',
-      tip:'Empezamos el taper. Mantenemos la intensidad pero bajamos el volumen. Tu cuerpo consolida las mejoras.',
-      goal:{ icon:'fire', title:'Meta de la semana', text:'Los 45 km del sábado se van a sentir más fáciles que los 40 de la semana pasada. Ese es el taper.' },
-      days:[
-        { day:'LUN', num:15, type:'bike', kmIdx:0, elev:'ondulado', det:'Z2–Z3 en terreno ondulado. Técnica en subidas: cadencia alta, respiración controlada, nunca fuerza bruta.' },
-        { day:'MAR', num:16, type:'str',  det:'Sesión A – Peso similar a semana 2 pero 1 serie menos.' },
-        { day:'MIÉ', num:17, type:'bike', kmIdx:1, elev:'subida', det:'Practicá el ritmo exacto del día 30. Si la ruta final tiene subidas, recorrélas hoy y aprendé cómo responde tu cuerpo.' },
-        { day:'JUE', num:18, type:'str',  det:'Fuerza ligera + movilidad extendida. Énfasis en cadera y estiramientos profundos.' },
-        { day:'VIE', num:19, type:'bike', kmIdx:0, elev:'llano', det:'Suave Z1–Z2 en llano. Mantener músculos activos sin acumular fatiga.' },
-        { day:'SÁB', num:20, type:'bike', kmIdx:2, elev:'subida', det:'Simulacro completo con desnivel real. Hidratación, nutrición y ritmo como el día 30.' },
-        { day:'DOM', num:21, type:'rest', det:'Nutrición óptima, sueño largo. Sin esfuerzo.' }
-      ],
-      bikeKm:[30,35,45],
-      sessA:{ title:'Sesión A – Mantenimiento de potencia (Martes)', baseSets:4, exs:[{id:'squat_bulgar',reps:'8 reps/pierna'},{id:'deadlift_conv',reps:'8 reps'},{id:'hip_thrust',reps:'10 reps'},{id:'plank_dyn',reps:'10 reps'},{id:'row',reps:'10 reps'}] },
-      sessB:{ title:'Sesión B – Fuerza ligera + Movilidad (Jueves)', baseSets:3, exs:[{id:'squat_bw',reps:'10 reps'},{id:'glute_bridge',reps:'12 reps'},{id:'plank_side',reps:'30 seg/lado'},{id:'movilidad',reps:'12 min'}] },
-      nut:[{ico:'🍝',t:'Pre-45 km (viernes)',i:'Carga máxima de carbohidratos: pasta, arroz, batata.'},{ico:'⚡',t:'Durante los 45 km',i:'Gel cada 12–15 km. Isotónica o agua + sal. No experimentes.'},{ico:'🥗',t:'Antiinflamatorios',i:'Aumentá omega-3, cúrcuma y antioxidantes para recuperar del simulacro.'},{ico:'😴',t:'Sueño como estrategia',i:'8–9 horas esta semana. El sueño es donde realmente mejora el rendimiento.'}]
-    },
-    {
-      label:'Semana 4 – ¡Los 50 km!', finalDay:true,
-      tip:'Taper completo. Hacés poco para llegar al 100% el día 30. El trabajo ya está acumulado en tu cuerpo.',
-      goal:{ icon:'flag', title:'Día 30 – ¡50 km!', text:'Tres semanas de trabajo élite. Hoy solo disfrutás. Salís, rodás y cruzás la meta.' },
-      days:[
-        { day:'LUN', num:22, type:'bike', kmIdx:0, elev:'llano', det:'Suave Z2 en llano. Últimas acumulaciones, sin esfuerzo.' },
-        { day:'MAR', num:23, type:'str',  det:'Mantenimiento mínimo – 2 series. Nada más.' },
-        { day:'MIÉ', num:24, type:'bike', kmIdx:1, elev:'libre', det:'Activación suave. Recorrido tranquilo por donde gustes. Nada de esfuerzo.' },
-        { day:'JUE', num:25, type:'rest', det:'Revisá la bici al detalle: neumáticos, frenos, cadena, sillín.' },
-        { day:'VIE', num:26, type:'rest', det:'Caminata suave 20 min. Gran cena de carga de carbos. Hidratación máxima.' },
-        { day:'SÁB', num:27, type:'rest', det:'Solo caminata suave si querés moverte. Dormí temprano.' },
-        { day:'DOM', num:28, type:'rest', det:'Descanso absoluto. Hoy no hacés nada. Mañana disfrutás.' }
-      ],
-      bikeKm:[25,20,0],
-      sessA:{ title:'Activación mínima (Martes)', baseSets:2, exs:[{id:'squat_bw',reps:'8 reps'},{id:'hip_thrust',reps:'10 reps'},{id:'plank',reps:'25 seg'},{id:'movilidad',reps:'5 min'}] },
-      sessB:null,
-      nut:[{ico:'🍝',t:'Carga de carbos (jueves–viernes)',i:'Supercompensación: pasta, arroz, batata, pan. 9–10g de carbos por kg.'},{ico:'🥣',t:'Desayuno día 30 (90 min antes)',i:'Avena con banana, miel y mantequilla de maní. Café si es habitual.'},{ico:'🚰',t:'Hidratación día 30',i:'600–700 ml al levantarte. 500–700 ml por hora durante los 50 km con electrolitos.'},{ico:'⚡',t:'Estrategia nutricional 50 km',i:'Gel o snack cada 12–15 km desde el km 10. No esperés a tener hambre.'}]
-    }
-  ]
-};
+const PLANS = [
+  {
+    label:'Semana 1 – Activación',
+    tip:'Esta semana es de adaptación. Priorizá la técnica y la postura sobre la velocidad. Si sentís molestias, reducí el km sin culpa. Lo que importa es que empieces a sumar.',
+    goal:{ icon:'target', title:'Meta de la semana', text:'Completar los 3 recorridos en bici y las 2 sesiones de fuerza sin lesionarte. Sumar tus primeros kilómetros del reto.' },
+    days:[
+      { day:'LUN', num:1, type:'bike', kmIdx:0, elev:'llano', det:'Terreno plano. Explorá el recorrido sin presión: enfocate en la postura, los apoyos en el manubrio y cómo sentís la bici.' },
+      { day:'MAR', num:2, type:'str',  det:'Sesión de fuerza A – Piernas + Core (ver ejercicios abajo).' },
+      { day:'MIÉ', num:3, type:'bike', kmIdx:1, elev:'llano', det:'Llano o muy suave. Mantené la cadencia constante y controlá la respiración. Sin apuros.' },
+      { day:'JUE', num:4, type:'rest', det:'Caminata 20–30 min + estiramientos de cuádriceps, isquiotibiales y cadera.' },
+      { day:'VIE', num:5, type:'str',  det:'Sesión de fuerza B – Glúteos + Estabilidad (ver ejercicios abajo).' },
+      { day:'SÁB', num:6, type:'bike', kmIdx:2, elev:'llano', det:'La salida más larga de la semana. Buscá un recorrido plano. Llevá agua y anotá cómo te sentiste.' },
+      { day:'DOM', num:7, type:'rest', det:'Estiramientos suaves. Tu cuerpo está construyendo la base.' }
+    ],
+    bikeKm:[6,8,10],
+    sessA:{ title:'Sesión A – Piernas + Core (Martes)', baseSets:3, exs:[{id:'squat_bw',reps:'12 reps'},{id:'lunge_front',reps:'10 reps/pierna'},{id:'glute_bridge',reps:'15 reps'},{id:'plank',reps:'25 seg'},{id:'superman',reps:'12 reps'}] },
+    sessB:{ title:'Sesión B – Glúteos + Estabilidad (Viernes)', baseSets:3, exs:[{id:'glute_bridge_1',reps:'10 reps/pierna'},{id:'lunge_lateral',reps:'10 reps/pierna'},{id:'plank_side',reps:'20 seg/lado'},{id:'bird_dog',reps:'10 reps/lado'},{id:'row',reps:'12 reps'}] },
+    nut:[{ico:'🥣',t:'Antes del entreno',i:'Banana, avena con leche o tostadas con palta. Comé 1 hora antes.'},{ico:'💧',t:'Hidratación',i:'Mínimo 2 litros de agua por día. Siempre con botella en la bici.'},{ico:'🍗',t:'Post-entreno',i:'Pollo, huevos, yogur griego, legumbres. Proteínas para recuperarse.'},{ico:'🍊',t:'Antioxidantes',i:'Naranja, kiwi, frutillas. Reducen la inflamación muscular post-esfuerzo.'}]
+  },
+  {
+    label:'Semana 2 – Progresión',
+    tip:'Tu cuerpo ya se adaptó al movimiento. Empezarás a sentir los cambios en resistencia, y el contador de km ya se va a notar.',
+    goal:{ icon:'trend', title:'Meta de la semana', text:'Completar la salida del sábado sin detenciones largas. El ritmo conversacional es la clave.' },
+    days:[
+      { day:'LUN', num:8,  type:'bike', kmIdx:0, elev:'ondulado', det:'Buscá un recorrido con 1–2 subidas suaves. Al subir: bajá la marcha y mantené el ritmo. No te cuelgues de los brazos.' },
+      { day:'MAR', num:9,  type:'str',  det:'Sesión A – Intentá sumar 1–2 repeticiones más que la semana pasada.' },
+      { day:'MIÉ', num:10, type:'bike', kmIdx:1, elev:'ondulado', det:'Incluí una subida de 2–3 min. Al llegar arriba, recuperate y continuás. Primera práctica real de pendiente.' },
+      { day:'JUE', num:11, type:'rest', det:'Caminata 25 min. Foam roller en cuádriceps y glúteos si tenés.' },
+      { day:'VIE', num:12, type:'str',  det:'Sesión B – Sumá 5 min de movilidad de cadera al final.' },
+      { day:'SÁB', num:13, type:'bike', kmIdx:2, elev:'ondulado', det:'Ruta con ondulaciones suaves. Ritmo conversacional todo el tiempo, incluso en las subidas. Llevá snack y agua.' },
+      { day:'DOM', num:14, type:'rest', det:'Revisá cómo responden piernas y rodillas. Eso es información valiosa.' }
+    ],
+    bikeKm:[8,10,12],
+    sessA:{ title:'Sesión A – Piernas + Core (Martes)', baseSets:3, exs:[{id:'squat_goblet',reps:'12 reps'},{id:'lunge_walk',reps:'10 reps/pierna'},{id:'hip_thrust',reps:'12 reps'},{id:'plank_tap',reps:'12 reps'},{id:'superman',reps:'12 reps'}] },
+    sessB:{ title:'Sesión B – Glúteos + Estabilidad (Viernes)', baseSets:3, exs:[{id:'glute_bridge_1',reps:'12 reps/pierna'},{id:'lunge_lateral',reps:'12 reps/pierna'},{id:'plank_side',reps:'25 seg/lado'},{id:'bird_dog',reps:'12 reps/lado'},{id:'movilidad',reps:'5 min'}] },
+    nut:[{ico:'🍝',t:'Carga previa a salida larga',i:'El viernes a la noche: pasta, arroz o batata. Más carbos de lo habitual.'},{ico:'🥜',t:'Snack durante la salida',i:'Banana o dátiles. Comé algo cada 15–20 km para mantener el glucógeno.'},{ico:'🐟',t:'Omega-3 y antiinflamatorio',i:'Salmón, atún. O suplemento de omega-3 si no consumís pescado regularmente.'},{ico:'🍊',t:'Potasio',i:'Banana, naranja, kiwi. Previene calambres en salidas largas.'}]
+  },
+  {
+    label:'Semana 3 – Volumen',
+    tip:'Esta es la semana de mayor volumen del plan. Planeá la ruta del sábado con anticipación y con puntos de agua identificados.',
+    goal:{ icon:'fire', title:'Meta de la semana', text:'Completar la salida del sábado sin detenciones por fatiga. Ya vas a llevar más de la mitad de tus 120 km.' },
+    days:[
+      { day:'LUN', num:15, type:'bike', kmIdx:0, elev:'ondulado', det:'Ritmo aeróbico-tempo con terreno ondulado. Subidas: elevá el ritmo cardíaco. Bajas: recuperate y preparate para la siguiente.' },
+      { day:'MAR', num:16, type:'str',  det:'Sesión A – Intentá sostener la técnica aunque suba el esfuerzo.' },
+      { day:'MIÉ', num:17, type:'bike', kmIdx:1, elev:'intervalos', det:'Buscá una cuesta de 1–2 min. Subí fuerte × 3, recuperate bajando. Más algunos km suaves antes y después.' },
+      { day:'JUE', num:18, type:'rest', det:'Yoga o natación suave 30 min. Recuperación activa esta semana.' },
+      { day:'VIE', num:19, type:'str',  det:'Sesión B + 10 min de movilidad y estiramientos.' },
+      { day:'SÁB', num:20, type:'bike', kmIdx:2, elev:'subida', det:'Incluí una subida de 5–10 min en la ruta. Planeala de antemano. Llevá agua, snack y ganas.' },
+      { day:'DOM', num:21, type:'rest', det:'Dormí bien, comé proteínas y carbohidratos. Hidratate mucho.' }
+    ],
+    bikeKm:[9,11,13],
+    sessA:{ title:'Sesión A – Piernas + Potencia (Martes)', baseSets:4, exs:[{id:'squat_bulgar',reps:'10 reps/pierna'},{id:'rdl',reps:'10 reps'},{id:'hip_thrust',reps:'12 reps'},{id:'plank_updown',reps:'10 reps'},{id:'row',reps:'12 reps'}] },
+    sessB:{ title:'Sesión B – Core + Glúteos (Viernes)', baseSets:3, exs:[{id:'lunge_walk',reps:'12 reps/pierna'},{id:'plank_tap',reps:'14 reps'},{id:'hip_thrust_1',reps:'10 reps/pierna'},{id:'bird_dog',reps:'12 reps/lado'},{id:'movilidad',reps:'8 min'}] },
+    nut:[{ico:'🍝',t:'Pre-salida larga (viernes noche)',i:'Plato grande de pasta o arroz con proteína magra. Hidratate bien.'},{ico:'🍬',t:'Durante la salida',i:'Snack real cada 12–15 km. No experimentes con alimentos nuevos.'},{ico:'🥤',t:'Post-entreno',i:'Proteína + carbohidratos simples en los 30 min post-entreno.'},{ico:'💊',t:'Recuperación',i:'Magnesio y zinc (semillas de zapallo, cacao puro). Reducen calambres y mejoran el sueño.'}]
+  },
+  {
+    label:'Semana 4 – ¡A los 120 km!', finalDay:true,
+    tip:'Última semana. El volumen se mantiene similar al de la semana pasada — no hace falta un pico enorme, solo cerrar lo que ya construiste. Cada salida te acerca a la meta.',
+    goal:{ icon:'flag', title:'Semana 4 – Cerrá tus 120 km', text:'Todo el trabajo de base ya está hecho. Completá estas 3 salidas y vas a llegar a los 120 km del reto.' },
+    days:[
+      { day:'LUN', num:22, type:'bike', kmIdx:0, elev:'ondulado', det:'Sin esfuerzo máximo. Terreno variado tranquilo: disfrutá el movimiento.' },
+      { day:'MAR', num:23, type:'str',  det:'Fuerza de mantenimiento – 2–3 series. Sin fatigar de más.' },
+      { day:'MIÉ', num:24, type:'bike', kmIdx:1, elev:'libre', det:'Hacé el recorrido que más disfrutás. Confiá en el trabajo acumulado.' },
+      { day:'JUE', num:25, type:'rest', det:'Revisá neumáticos, frenos y cadena. Preparate para la última salida.' },
+      { day:'VIE', num:26, type:'str',  det:'Activación 20 min. Guardá energía para el sábado.' },
+      { day:'SÁB', num:27, type:'bike', kmIdx:2, elev:'llano', det:'La salida que cierra el mes. Con esta, si veniste sumando bien, llegás (o te acercás mucho) a los 120 km totales.' },
+      { day:'DOM', num:28, type:'rest', det:'Descanso. Repasá cuántos km sumaste en total — ese número es tu logro.' }
+    ],
+    bikeKm:[10,11,12],
+    sessA:{ title:'Fuerza de mantenimiento (Martes + Viernes)', baseSets:2, exs:[{id:'squat_bw',reps:'10 reps'},{id:'glute_bridge',reps:'12 reps'},{id:'plank',reps:'25 seg'},{id:'movilidad',reps:'5 min'}] },
+    sessB:null,
+    nut:[{ico:'🍝',t:'Carga de carbos (viernes)',i:'Pasta, arroz, pan integral antes de la última salida larga.'},{ico:'🥣',t:'Desayuno día de la última salida',i:'Avena con banana y miel. Nada nuevo el día de una salida importante.'},{ico:'🚰',t:'Hidratación',i:'500 ml antes de salir. Al menos 1 litro en la bici. Bebé cada 20 min.'},{ico:'🍬',t:'Durante la salida',i:'Snack o dátiles si la ruta se extiende. Practicaste esto en los entrenos: aplicalo igual.'}]
+  }
+];
 
 // ════════════════════════════════════
 //  STATE
@@ -1195,6 +1065,8 @@ async function restoreFromToken(token) {
     Object.assign(weekAnswers, data.progress.weekAnswers || {});
     Object.keys(ciAnswers).forEach(k => delete ciAnswers[k]);
     Object.assign(ciAnswers, data.progress.ciAnswers || {});
+    Object.keys(kmLog).forEach(k => delete kmLog[k]);
+    Object.assign(kmLog, data.progress.kmLog || {});
 
     myToken = token;
     localStorage.setItem(TOKEN_KEY, token);
@@ -1222,8 +1094,91 @@ function routeAfterRestore() {
 
   buildPlanHeader();
   buildAlerts();
+  renderKmCounter();
   buildWeek(curWeek, 'normal');
   showScreen('plan');
+}
+
+// ════════════════════════════════════
+//  CONTADOR DE KM ACUMULADOS
+// ════════════════════════════════════
+function kmTotalSum() {
+  return Object.values(kmLog).reduce((sum, v) => sum + (Number(v) || 0), 0);
+}
+
+function renderKmCounter() {
+  const box = document.getElementById('kmCounterBar');
+  if (!box) return;
+  const total = Math.round(kmTotalSum() * 10) / 10;
+  const pct = Math.max(0, Math.min(100, (total / KM_TARGET) * 100));
+  const falta = Math.max(0, Math.round((KM_TARGET - total) * 10) / 10);
+  const msg = total >= KM_TARGET
+    ? '🎉 ¡Llegaste a los 120 km! Esto es lo que veníamos a buscar.'
+    : `Te faltan ${falta} km para completar el reto.`;
+  box.innerHTML = `
+    <div class="km-counter-top">
+      <span class="km-counter-label">${ic('bike')} Km acumulados</span>
+      <span class="km-counter-num">${total} <span>/ ${KM_TARGET} km</span></span>
+    </div>
+    <div class="km-counter-track"><div class="km-counter-fill" style="width:${pct}%"></div></div>
+    <div class="km-counter-msg">${msg}</div>
+  `;
+}
+
+// Guarda en el servidor los km reales que el alumno cargó para una salida
+// puntual (identificada por su número de día dentro del plan de 30 días).
+async function submitKmLog(dayNum, plannedKm) {
+  const input = document.getElementById(`km-input-${dayNum}`);
+  const btn = document.getElementById(`km-btn-${dayNum}`);
+  if (!input) return;
+  const km = Number(String(input.value).replace(',', '.'));
+  if (!Number.isFinite(km) || km < 0 || km > 300) {
+    input.focus();
+    return;
+  }
+  if (btn) { btn.disabled = true; btn.textContent = 'Guardando...'; }
+  try {
+    if (myToken) {
+      await fetch('/api/log-km', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: myToken, dayNum, km }),
+      });
+    }
+    kmLog[dayNum] = km;
+  } catch (err) {
+    // Falla silenciosa de red: igual reflejamos el km cargado localmente
+    // para no frenarle la experiencia al alumno.
+    kmLog[dayNum] = km;
+  }
+  const holder = document.getElementById(`km-log-${dayNum}`);
+  if (holder) holder.outerHTML = kmLogBoxHtml(dayNum, plannedKm);
+  renderKmCounter();
+}
+
+function editKmLog(dayNum, plannedKm) {
+  const holder = document.getElementById(`km-log-${dayNum}`);
+  if (holder) holder.outerHTML = kmLogBoxHtml(dayNum, plannedKm, true);
+}
+
+// HTML del cuadrito de carga de km para un día de bici puntual. Si ya tiene
+// un valor cargado, muestra el resultado con opción de editar; si no,
+// muestra el campo para cargarlo (prellenado con el km planificado).
+function kmLogBoxHtml(dayNum, plannedKm, forceEdit) {
+  const logged = kmLog[dayNum];
+  if (logged !== undefined && !forceEdit) {
+    return `<div class="km-log-box" id="km-log-${dayNum}">
+      <div class="km-log-done">${ic('check')} Cargaste ${logged} km <span style="font-weight:400;color:var(--celeste);cursor:pointer;text-decoration:underline;margin-left:4px" onclick="editKmLog(${dayNum}, ${plannedKm})">editar</span></div>
+    </div>`;
+  }
+  const startVal = logged !== undefined ? logged : plannedKm;
+  return `<div class="km-log-box" id="km-log-${dayNum}">
+    <div class="km-log-form">
+      <input type="number" min="0" max="300" step="0.1" id="km-input-${dayNum}" value="${startVal}">
+      <button id="km-btn-${dayNum}" onclick="submitKmLog(${dayNum}, ${plannedKm})">Cargar km</button>
+    </div>
+    <div class="km-log-note">Cargá los km reales que hiciste — no hace falta que sea exacto al plan.</div>
+  </div>`;
 }
 
 // Guarda el perfil y el progreso actual en el servidor (si hay token). Se
@@ -1473,12 +1428,6 @@ const CHAT_FLOW = [
       { v:'si', icon:'bike', label:'Sí, tengo bici' },
       { v:'no', icon:'cart', label:'Todavía no' }
     ] } },
-  { key:'nivel', bot:['¿Cómo describirías tu nivel de forma física actual?'],
-    input:{ type:'chips-wide', field:'nivel', options:[
-      { v:'principiante', icon:'level1', label:'Principiante', desc:'Sedentario/a o poco activo/a. Me canso rápido andando en bici.' },
-      { v:'intermedio', icon:'level2', label:'Intermedio', desc:'Ejercicio regular. Puedo andar 15–20 km sin problemas.' },
-      { v:'avanzado', icon:'level3', label:'Avanzado', desc:'Entreno con frecuencia. La bici es parte de mi rutina.' }
-    ] } },
   { key:'salud', bot:['¿Tenés alguna condición de salud a considerar?', 'Podés elegir más de una.'],
     input:{ type:'chips', field:'salud', multi:true, exclusive:'ninguna', options:[
       { v:'ninguna', icon:'check', label:'Ninguna' },
@@ -1557,7 +1506,7 @@ function updateChatProgress() {
   if (n > 7) n = 7;
   const pct = Math.round(n / 7 * 100);
   document.getElementById('pFill').style.width = pct + '%';
-  document.getElementById('pText').textContent = n === 0 ? 'Conociéndote' : `Paso ${n} de 7`;
+  document.getElementById('pText').textContent = n === 0 ? 'Conociéndote' : `Paso ${n} de 6`;
   document.getElementById('pPct').textContent = pct + '%';
 }
 
@@ -1803,12 +1752,10 @@ function initPlan() {
 //  PLAN HEADER + ALERTS
 // ════════════════════════════════════
 function buildPlanHeader() {
-  const lvl = { principiante:'Principiante 🐢', intermedio:'Intermedio 🏃', avanzado:'Avanzado 🏆' };
   const sx  = { M:'Masculino', F:'Femenino', O:'—' };
   document.getElementById('planHdr').innerHTML = `
     <div class="greeting">¡Hola, ${A.nombre}! Tu plan está listo 🎉</div>
-    <h2>Desafío 50 km en 30 días</h2>
-    <span class="chip">${lvl[A.nivel]}</span>
+    <h2>Desafío 120 km en 30 días</h2>
     <span class="chip">👤 ${A.edad} años · ${sx[A.sexo] || '—'}</span>
     <span class="chip">🎯 ${A.motiv.length ? A.motiv.map(m => MOTIV_LABELS[m] || m).join(' · ') : '—'}</span>
   `;
@@ -1843,7 +1790,8 @@ function buildAlerts() {
 // ════════════════════════════════════
 function buildWeek(weekNum, perf) {
   curWeek = weekNum;
-  const wd = PLANS[A.nivel][weekNum - 1];
+  renderKmCounter();
+  const wd = PLANS[weekNum - 1];
   const km = wd.bikeKm.map(b => adaptKm(b, perf));
   const dayOffset = (weekNum - 1) * 7;
 
@@ -1911,6 +1859,10 @@ function buildWeek(weekNum, perf) {
       mainTxt = 'Descanso';
     }
 
+    const kmLogHtml = (d.type === 'bike' && d.kmIdx !== undefined && km[d.kmIdx])
+      ? kmLogBoxHtml(d.num, km[d.kmIdx])
+      : '';
+
     if (d.type === 'str') {
       const sessTarget = strCount === 0 ? 'A' : 'B';
       strCount++;
@@ -1924,13 +1876,13 @@ function buildWeek(weekNum, perf) {
         <div class="str-arrow">Ver ejercicios ↓</div>
       </div>`;
     } else {
-      html += `<div class="day-card"><div class="day-num-col"><div class="dname">${d.day}</div><div class="dnum">${d.num}</div></div><div class="day-body"><span class="day-bdg ${bdgCls}">${bdgTxt}</span><div class="day-main">${mainTxt}</div><div class="day-det">${d.det}</div></div></div>`;
+      html += `<div class="day-card"><div class="day-num-col"><div class="dname">${d.day}</div><div class="dnum">${d.num}</div></div><div class="day-body"><span class="day-bdg ${bdgCls}">${bdgTxt}</span><div class="day-main">${mainTxt}</div><div class="day-det">${d.det}</div>${kmLogHtml}</div></div>`;
     }
   });
 
   // Final day card (week 4)
   if (wd.finalDay) {
-    html += `<div class="day30-card"><div class="d30i">${ic('medal')}</div><h3>Día 30 – ¡LOS 50 KM!</h3><p>Hoy es el gran día. Salís con todo lo que construiste en 4 semanas. Ruta planificada, equipo listo, mente enfocada.<br><strong style="color:var(--azul-md)">¡Esto es para lo que entrenaste!</strong></p></div>`;
+    html += `<div class="day30-card"><div class="d30i">${ic('medal')}</div><h3>¡Última semana del reto!</h3><p>Completá estas salidas y cargá tus km reales en cada una. Con eso vas a cerrar (o acercarte mucho a) los 120 km totales.<br><strong style="color:var(--azul-md)">¡Esto es para lo que entrenaste!</strong></p></div>`;
   }
 
   // Strength sessions
@@ -1952,7 +1904,7 @@ function buildWeek(weekNum, perf) {
   if (!wd.finalDay) {
     html += renderCheckin(weekNum);
   } else {
-    html += `<div class="card" style="text-align:center;padding:20px"><div style="font-size:2rem;margin-bottom:8px">🎉</div><p style="color:var(--celeste);font-size:13px;line-height:1.5">Al terminar los 50 km, volvé acá y contanos cómo te fue.<br><strong style="color:#fff">¡Vas a poder hacerlo!</strong></p></div>`;
+    html += `<div class="card" style="text-align:center;padding:20px"><div style="font-size:2rem;margin-bottom:8px">🎉</div><p style="color:var(--celeste);font-size:13px;line-height:1.5">Al llegar a tus 120 km, volvé acá y contanos cómo te fue.<br><strong style="color:#fff">¡Vas a poder hacerlo!</strong></p></div>`;
   }
 
   document.getElementById('weekContent').innerHTML = html;
@@ -2085,6 +2037,8 @@ function renderCheckin(weekNum) {
 
 const ciAnswers = {};
 const weekAnswers = {}; // stores {q1,q2,q3,q4} per week for message building
+const kmLog = {}; // stores { [dayNum]: kmReales } — kilómetros que el alumno cargó por cada salida en bici
+const KM_TARGET = 120;
 function ciPick(week, q, val, el) {
   const key = `w${week}-q${q}`;
   ciAnswers[key] = val;
@@ -2120,7 +2074,7 @@ function buildCheckinMessage(week, q1, q2, q3, q4, perf) {
   if (q1 === 3) parts.push(`Te vi completar los 3 entrenamientos en bici — eso es constancia de verdad, y la constancia es exactamente lo que te va a llevar hasta el día 30.`);
   else if (q1 === 2) parts.push(`Hiciste 2 de 3 salidas en bici, y eso ya suma. Faltó una — ¿sabés cuál fue el obstáculo? Identificarlo esta semana evita que se repita.`);
   else if (q1 === 1) parts.push(`Solo 1 entreno en bici, ${nombre}, pero fue uno más que ninguno, y eso también cuenta. La bici no pedala sola 😅. Esta semana: agendá los días como si fueran una cita médica — no se cancelan.`);
-  else parts.push(`Ningún entreno en bici esta semana. Sin kilómetros en las piernas, los 50 km del día 30 van a ser muy difíciles — pero todavía hay tiempo. Esta semana arrancamos de nuevo, sin culpa y sin excusas.`);
+  else parts.push(`Ningún entreno en bici esta semana. Sin kilómetros sumados, los 120 km del reto van a ser muy difíciles de alcanzar — pero todavía hay tiempo. Esta semana arrancamos de nuevo, sin culpa y sin excusas.`);
 
   // Q2: long ride
   if (q2 === 3) parts.push(`La salida larga la hiciste volando — ese ritmo es exactamente lo que construye la base aeróbica que necesitás.`);
@@ -2153,7 +2107,7 @@ function buildCheckinMessage(week, q1, q2, q3, q4, perf) {
 
   // Recordatorio de cuánto falta para la meta — se dice siempre, no solo cuando rinde bajo
   if (nextWeek >= 4) {
-    parts.push(`La semana ${nextWeek} es la última antes de los 50 km — literal, la recta final. Lo que sea que pase, no la abandones sin al menos intentarla.`);
+    parts.push(`La semana ${nextWeek} es la última del reto — literal, la recta final para llegar a los 120 km. Lo que sea que pase, no la abandones sin al menos intentarla.`);
   } else {
     const faltan = 4 - nextWeek;
     parts.push(`Después de la semana ${nextWeek} ${faltan === 1 ? 'queda 1 semana más' : `quedan ${faltan} semanas más`} para llegar al día 30. Cada semana que sumás, aunque no sea perfecta, te acerca a esa meta.`);
@@ -2269,7 +2223,7 @@ async function askmiSend() {
   inputEl.value = '';
   askmiAppendTyping();
 
-  const wd = (A.nivel && PLANS[A.nivel]) ? PLANS[A.nivel][Math.min(curWeek, 4) - 1] : null;
+  const wd = PLANS[Math.min(curWeek, 4) - 1] || null;
 
   try {
     const resp = await fetch('/api/ask-mar-ia', {
@@ -2285,7 +2239,6 @@ async function askmiSend() {
           peso: A.peso,
           imc: A.imc,
           bici: A.bici,
-          nivel: A.nivel,
           semana: curWeek,
           diaLabel: wd ? wd.label : '',
           bikeKm: wd ? wd.bikeKm : [],
@@ -2322,11 +2275,11 @@ async function askmiSend() {
   <div class="ex-modal-inner">
     <div class="ex-modal-close"><button onclick="closeRefundModal()">Cerrar ✕</button></div>
     <div class="ex-modal-title">Política de reembolso</div>
-    <div class="ex-modal-subtitle">Desafío 50 km en 30 días</div>
+    <div class="ex-modal-subtitle">Desafío 120 km en 30 días</div>
     <div style="font-size:14px;line-height:1.7;color:var(--texto)">
       <p>Este es un desafío, no una promesa mágica: los resultados dependen de que cumplas el plan. Por eso, la devolución del dinero solo aplica en un caso concreto:</p>
       <p style="background:var(--card-bg);border:1px solid var(--card-brd);border-radius:12px;padding:14px 16px;margin:16px 0">
-        <strong>Si completaste todo lo que propone el plan</strong> — los entrenamientos en bici, las sesiones de fuerza y los check-ins semanales de las 4 semanas — <strong>y aun así no llegaste a completar los 50 km el día 30</strong>, te devolvemos el pago completo.
+        <strong>Si completaste todo lo que propone el plan</strong> — los entrenamientos en bici, las sesiones de fuerza y los check-ins semanales de las 4 semanas — <strong>y aun así no llegaste a sumar los 120 km del mes</strong>, te devolvemos el pago completo.
       </p>
       <p>Esto no cubre el abandono del desafío, saltearse semanas o entrenamientos, ni el simple arrepentimiento de la compra. Sí cubre el caso en el que pusiste el esfuerzo real y el plan no te llevó a la meta — ahí la responsabilidad es nuestra, no tuya.</p>
       <p>Para pedirlo, escribinos a <a href="mailto:contactodesafio50km@gmail.com" style="color:var(--azul-dk);font-weight:700">contactodesafio50km@gmail.com</a> contando tu caso — tu check-in semanal ya queda registrado en tu cuenta, así que podemos confirmar fácilmente que cumpliste el plan.</p>
