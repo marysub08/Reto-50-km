@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS students (
   week_perf           JSONB DEFAULT '[]',
   week_answers        JSONB DEFAULT '{}',
   ci_answers          JSONB DEFAULT '{}',
+  km_log              JSONB DEFAULT '{}',  -- { "<numero de dia>": km reales cargados }
 
   created_at          TIMESTAMPTZ DEFAULT now(),
   updated_at          TIMESTAMPTZ DEFAULT now()
@@ -38,5 +39,8 @@ CREATE TABLE IF NOT EXISTS students (
 ALTER TABLE students ADD COLUMN IF NOT EXISTS altura INTEGER DEFAULT 0;
 ALTER TABLE students ADD COLUMN IF NOT EXISTS peso NUMERIC DEFAULT 0;
 ALTER TABLE students ADD COLUMN IF NOT EXISTS imc NUMERIC DEFAULT 0;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS email TEXT DEFAULT '';
+ALTER TABLE students ADD COLUMN IF NOT EXISTS welcome_email_sent BOOLEAN DEFAULT false;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS km_log JSONB DEFAULT '{}';
 
 CREATE INDEX IF NOT EXISTS students_external_reference_idx ON students (external_reference);
