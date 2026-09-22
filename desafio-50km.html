@@ -934,10 +934,11 @@ function bodyProfile() {
   return 1.0;
 }
 
-function adaptKm(base, perf) {
+function adaptKm(base, perf, comp) {
   if (!base || base === 0) return 0;
   const m = perf === 'alto' ? 1.15 : perf === 'bajo' ? 0.85 : 1.0;
-  return Math.max(3, Math.round(base * m * bodyProfile()));
+  const c = comp || 1;
+  return Math.max(3, Math.round(base * m * bodyProfile() * c));
 }
 // Computes a multiplier based on age + sex that reduces strength volume
 function strengthProfile() {
@@ -1106,22 +1107,79 @@ function kmTotalSum() {
   return Object.values(kmLog).reduce((sum, v) => sum + (Number(v) || 0), 0);
 }
 
+// Km base (sin ajustar por rendimiento) de las 12 salidas del plan, en
+// orden cronológico — sirve para saber "si hubieras hecho exactamente lo
+// planificado hasta ahora, ¿cuánto llevarías sumado?" y así medir el ritmo
+// real del alumno contra el ritmo necesario para llegar a los 120 km.
+function flatBaseKm() {
+  return PLANS.flatMap(w => w.bikeKm);
+}
+
+// Cuántas salidas ya tienen un km cargado (sin importar el valor).
+function loggedRideCount() {
+  return Object.keys(kmLog).length;
+}
+
+// Compara lo que el alumno ya sumó contra lo que "debería" llevar sumado
+// según el plan base, a esta altura (misma cantidad de salidas realizadas).
+// gap > 0 significa que va atrasado respecto al ritmo necesario.
+function paceStatusInfo() {
+  const flat = flatBaseKm();
+  const loggedCount = Math.min(loggedRideCount(), flat.length);
+  const expectedSoFar = flat.slice(0, loggedCount).reduce((a, b) => a + b, 0);
+  const actual = kmTotalSum();
+  return { gap: expectedSoFar - actual, loggedCount, actual, expectedSoFar };
+}
+
+// Factor de compensación para las salidas que todavía faltan: si el alumno
+// viene atrasado, sube un poco el km sugerido de las próximas salidas para
+// que siga siendo matemáticamente posible llegar a los 120 km el día 30. Si
+// viene adelantado, lo relaja un poco. Se limita a un rango razonable
+// (0.6x–1.5x) para no pedirle saltos imposibles de un día para el otro.
+function computeCompensationFactor() {
+  const flat = flatBaseKm();
+  const loggedCount = Math.min(loggedRideCount(), flat.length);
+  const remainingBase = flat.slice(loggedCount).reduce((a, b) => a + b, 0);
+  if (remainingBase <= 0) return 1;
+  const remainingNeeded = KM_TARGET - kmTotalSum();
+  let factor = remainingNeeded / remainingBase;
+  if (!Number.isFinite(factor) || factor <= 0) factor = 0.6;
+  return Math.max(0.6, Math.min(1.5, factor));
+}
+
 function renderKmCounter() {
   const box = document.getElementById('kmCounterBar');
   if (!box) return;
   const total = Math.round(kmTotalSum() * 10) / 10;
   const pct = Math.max(0, Math.min(100, (total / KM_TARGET) * 100));
   const falta = Math.max(0, Math.round((KM_TARGET - total) * 10) / 10);
-  const msg = total >= KM_TARGET
-    ? '🎉 ¡Llegaste a los 120 km! Esto es lo que veníamos a buscar.'
-    : `Te faltan ${falta} km para completar el reto.`;
+
+  let msg, msgColor = '';
+  if (total >= KM_TARGET) {
+    msg = '🎉 ¡Llegaste a los 120 km! Esto es lo que veníamos a buscar.';
+  } else {
+    const { gap, loggedCount } = paceStatusInfo();
+    if (loggedCount === 0) {
+      msg = `Te faltan ${falta} km para completar el reto.`;
+    } else if (gap > 8) {
+      msg = `⚠️ Vas atrasado/a respecto al ritmo para llegar a los 120 km. Si no sumás un poco más esta semana, corrés riesgo de no completar el reto a tiempo — todavía estás a tiempo de recuperar el ritmo.`;
+      msgColor = 'color:#b45309;font-weight:700';
+    } else if (gap > 3) {
+      msg = `💪 Vas un poco atrasado/a. Un esfuerzo extra esta semana te pone de nuevo en ritmo para los 120 km.`;
+      msgColor = 'color:#b45309;font-weight:600';
+    } else {
+      msg = `✅ Vas en buen ritmo para llegar a los 120 km el día 30. Te faltan ${falta} km.`;
+      msgColor = 'color:#15803d;font-weight:600';
+    }
+  }
+
   box.innerHTML = `
     <div class="km-counter-top">
       <span class="km-counter-label">${ic('bike')} Km acumulados</span>
       <span class="km-counter-num">${total} <span>/ ${KM_TARGET} km</span></span>
     </div>
     <div class="km-counter-track"><div class="km-counter-fill" style="width:${pct}%"></div></div>
-    <div class="km-counter-msg">${msg}</div>
+    <div class="km-counter-msg" style="${msgColor}">${msg}</div>
   `;
 }
 
@@ -1793,7 +1851,8 @@ function buildWeek(weekNum, perf) {
   curWeek = weekNum;
   renderKmCounter();
   const wd = PLANS[weekNum - 1];
-  const km = wd.bikeKm.map(b => adaptKm(b, perf));
+  const kmComp = computeCompensationFactor();
+  const km = wd.bikeKm.map(b => adaptKm(b, perf, kmComp));
   const dayOffset = (weekNum - 1) * 7;
 
   let html = '';
@@ -1905,7 +1964,7 @@ function buildWeek(weekNum, perf) {
   if (!wd.finalDay) {
     html += renderCheckin(weekNum);
   } else {
-    html += `<div class="card" style="text-align:center;padding:20px"><div style="font-size:2rem;margin-bottom:8px">🎉</div><p style="color:var(--celeste);font-size:13px;line-height:1.5">Al llegar a tus 120 km, volvé acá y contanos cómo te fue.<br><strong style="color:#fff">¡Vas a poder hacerlo!</strong></p></div>`;
+    html += `<div class="card" style="text-align:center;padding:20px"><div style="font-size:2rem;margin-bottom:8px">🎉</div><p style="color:var(--celeste);font-size:13px;line-height:1.5">Al llegar a tus 120 km, escribinos y contanos cómo te fue.<br><strong style="color:#fff">¡Vas a poder hacerlo!</strong></p><a href="mailto:contactodesafio50km@gmail.com?subject=${encodeURIComponent('¡Completé el Desafío 120 km!')}&body=${encodeURIComponent('Hola, quiero contarles cómo me fue con el Desafío 120 km en 30 días.')}" class="btn btn-p" style="display:inline-block;margin-top:14px;text-decoration:none">Escribirnos por email</a></div>`;
   }
 
   document.getElementById('weekContent').innerHTML = html;
