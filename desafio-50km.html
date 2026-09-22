@@ -209,6 +209,7 @@ window.onerror = function(msg, src, line) {
   .day-card-str:active { transform: scale(.99); }
   .str-arrow { font-size: 11px; font-weight: 700; color: var(--azul-md); white-space: nowrap; align-self: center; flex-shrink: 0; padding-left: 6px; }
   @keyframes str-pulse { 0%,100%{border-color:var(--card-brd)} 50%{border-color:var(--azul)} }
+  @keyframes confetti-fall { to { transform: translateY(110vh) rotate(720deg); opacity: .25; } }
   .str-flash { animation: str-pulse .6s ease; }
   .ex-body.open { display: block; }
   .ex-steps-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--azul-md); margin: 10px 0 7px; }
@@ -1195,6 +1196,7 @@ async function submitKmLog(dayNum, plannedKm) {
     return;
   }
   if (btn) { btn.disabled = true; btn.textContent = 'Guardando...'; }
+  const totalAntes = kmTotalSum();
   try {
     if (myToken) {
       await fetch('/api/log-km', {
@@ -1208,6 +1210,10 @@ async function submitKmLog(dayNum, plannedKm) {
     // Falla silenciosa de red: igual reflejamos el km cargado localmente
     // para no frenarle la experiencia al alumno.
     kmLog[dayNum] = km;
+  }
+  // Si esta carga es justo la que lo hace cruzar los 120 km, festejamos en el momento.
+  if (totalAntes < KM_TARGET && kmTotalSum() >= KM_TARGET) {
+    celebrateConfetti();
   }
   const holder = document.getElementById(`km-log-${dayNum}`);
   if (holder) holder.outerHTML = kmLogBoxHtml(dayNum, plannedKm);
@@ -1960,14 +1966,19 @@ function buildWeek(weekNum, perf) {
   if (A.sexo === 'F' && weekNum >= 2) html += `<div class="nut-row"><div class="nut-ico">👩</div><div><div class="nut-title">Nota para mujeres</div><div class="nut-items">Si coincide con tu período, en días de alta fatiga podés reducir la intensidad a la mitad. La recuperación hormonal es parte del entrenamiento inteligente.</div></div></div>`;
   html += `</div>`;
 
-  // Check-in (not on final week)
+  // Check-in (not en la semana final: ahí va la encuesta de cierre)
   if (!wd.finalDay) {
     html += renderCheckin(weekNum);
   } else {
-    html += `<div class="card" style="text-align:center;padding:20px"><div style="font-size:2rem;margin-bottom:8px">🎉</div><p style="color:var(--celeste);font-size:13px;line-height:1.5">Al llegar a tus 120 km, escribinos y contanos cómo te fue.<br><strong style="color:#fff">¡Vas a poder hacerlo!</strong></p><a href="mailto:contactodesafio50km@gmail.com?subject=${encodeURIComponent('¡Completé el Desafío 120 km!')}&body=${encodeURIComponent('Hola, quiero contarles cómo me fue con el Desafío 120 km en 30 días.')}" class="btn btn-p" style="display:inline-block;margin-top:14px;text-decoration:none">Escribirnos por email</a></div>`;
+    html += renderFinalFeedback();
   }
 
   document.getElementById('weekContent').innerHTML = html;
+
+  // Si esta es la semana final y ya llegó a los 120 km, festejamos.
+  if (wd.finalDay && kmTotalSum() >= KM_TARGET) {
+    celebrateConfetti();
+  }
 }
 
 function renderStrength(sess, perf, id) {
@@ -2039,6 +2050,98 @@ function toggleEx(cardId) {
   const btn  = card.querySelector('.ex-toggle');
   const open = body.classList.toggle('open');
   if (btn) btn.textContent = open ? '¿Cómo? ▴' : '¿Cómo? ▾';
+}
+
+// ════════════════════════════════════
+//  CONFETTI (al llegar a los 120 km)
+// ════════════════════════════════════
+function celebrateConfetti() {
+  const colors = ['#0ea5e9', '#f59e0b', '#22c55e', '#ef4444', '#a855f7', '#eab308'];
+  const container = document.createElement('div');
+  container.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden';
+  document.body.appendChild(container);
+  for (let i = 0; i < 90; i++) {
+    const piece = document.createElement('div');
+    const size = 6 + Math.random() * 6;
+    const duration = 2.2 + Math.random() * 1.6;
+    const delay = Math.random() * 0.4;
+    piece.style.cssText = `
+      position:absolute; top:-20px; left:${Math.random() * 100}%;
+      width:${size}px; height:${size * 1.6}px;
+      background:${colors[i % colors.length]};
+      opacity:.9; border-radius:2px;
+      transform:rotate(${Math.random() * 360}deg);
+      animation: confetti-fall ${duration}s linear ${delay}s forwards;
+    `;
+    container.appendChild(piece);
+  }
+  setTimeout(() => container.remove(), 4500);
+}
+
+// ════════════════════════════════════
+//  ENCUESTA DE CIERRE (semana final, llegue o no a los 120 km)
+// ════════════════════════════════════
+function renderFinalFeedback() {
+  const total = Math.round(kmTotalSum() * 10) / 10;
+  const reached = total >= KM_TARGET;
+  const headline = reached
+    ? `<div class="day30-card"><div class="d30i">${ic('medal')}</div><h3>🎉 ¡Llegaste a tus 120 km!</h3><p>Completaste el Desafío entero. ¡Estamos re orgullosos de vos!</p></div>`
+    : `<div class="day30-card"><div class="d30i">${ic('flag')}</div><h3>Llegaste al final de los 30 días</h3><p>Sumaste ${total} km. No llegaste a los 120, pero completaste el recorrido — eso también vale, y nos importa saber cómo te fue.</p></div>`;
+  return `
+  <div class="checkin-wrap" id="final-feedback-box">
+    ${headline}
+    <h3 style="margin-top:16px">${ic('check')} Contanos cómo te fue</h3>
+    <div class="ci-sub">Llegues o no a los 120 km, tu experiencia nos sirve para mejorar el programa.</div>
+    <div class="ci-q-block">
+      <div class="ci-q-text">¿Cómo calificarías tu experiencia con el Desafío?</div>
+      <div class="ci-opts" id="fb-rating">
+        <div class="ci-opt" data-val="5" onclick="fbPick(5,this)">Buenísima</div>
+        <div class="ci-opt" data-val="4" onclick="fbPick(4,this)">Buena</div>
+        <div class="ci-opt" data-val="3" onclick="fbPick(3,this)">Regular</div>
+        <div class="ci-opt" data-val="2" onclick="fbPick(2,this)">Difícil</div>
+      </div>
+    </div>
+    <div class="ci-q-block">
+      <div class="ci-q-text">¿Algo que quieras contarnos? (opcional)</div>
+      <textarea id="fb-comment" rows="3" style="width:100%;padding:10px;border-radius:8px;border:1.5px solid var(--card-brd);font-family:inherit;font-size:13px;box-sizing:border-box;background:var(--fondo);color:var(--texto)" placeholder="Qué te costó, qué te gustó, qué cambiarías..."></textarea>
+    </div>
+    <button class="btn btn-p btn-lg" id="fb-submit" onclick="submitFinalFeedback()" disabled style="margin-top:4px">Enviar</button>
+  </div>`;
+}
+
+let fbRating = null;
+function fbPick(val, el) {
+  const grid = document.getElementById('fb-rating');
+  if (grid) grid.querySelectorAll('.ci-opt').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  fbRating = val;
+  const btn = document.getElementById('fb-submit');
+  if (btn) btn.disabled = false;
+}
+
+async function submitFinalFeedback() {
+  if (!fbRating) return;
+  const btn = document.getElementById('fb-submit');
+  const commentEl = document.getElementById('fb-comment');
+  const comment = commentEl ? commentEl.value.trim() : '';
+  const total = Math.round(kmTotalSum() * 10) / 10;
+  const reached = total >= KM_TARGET;
+  if (btn) { btn.disabled = true; btn.textContent = 'Enviando...'; }
+  try {
+    if (myToken) {
+      await fetch('/api/submit-feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: myToken, rating: fbRating, comment, reached, kmTotal: total }),
+      });
+    }
+  } catch (err) {
+    // Falla silenciosa: igual le mostramos el agradecimiento al alumno.
+  }
+  const box = document.getElementById('final-feedback-box');
+  if (box) {
+    box.innerHTML = `<div style="text-align:center;padding:10px 0"><div style="font-size:2rem;margin-bottom:8px">🙏</div><p style="color:var(--celeste);font-size:13px;line-height:1.5">¡Gracias por contarnos cómo te fue! Si querés agregar algo más, escribinos a <a href="mailto:contactodesafio50km@gmail.com" style="color:var(--azul-dk);font-weight:700">contactodesafio50km@gmail.com</a>.</p></div>`;
+  }
 }
 
 // ════════════════════════════════════
