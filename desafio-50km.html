@@ -1154,6 +1154,7 @@ async function submitKmLog(dayNum, plannedKm) {
   const holder = document.getElementById(`km-log-${dayNum}`);
   if (holder) holder.outerHTML = kmLogBoxHtml(dayNum, plannedKm);
   renderKmCounter();
+  refreshCheckinGate(curWeek);
 }
 
 function editKmLog(dayNum, plannedKm) {
@@ -2029,10 +2030,36 @@ function renderCheckin(weekNum) {
       </div>
     </div>
 
+    <div class="km-log-note" id="ci-km-warn-${weekNum}" style="display:${allKmLoggedForWeek(weekNum) ? 'none' : 'block'};color:#b45309;font-weight:600">⚠️ Antes de continuar, cargá los km (aunque sea 0) de tus 3 salidas en bici de esta semana — subí a "Programa diario" arriba.</div>
     <button class="btn btn-p btn-lg" id="ci-submit-${weekNum}" onclick="submitCheckin(${weekNum})" disabled style="margin-top:4px">
       Ver mi plan de la semana ${weekNum + 1} →
     </button>
   </div>`;
+}
+
+// Días de bici (con km planificado) de una semana puntual del plan.
+function weekBikeDayNums(weekNum) {
+  const wd = PLANS[weekNum - 1];
+  if (!wd) return [];
+  return wd.days.filter(d => d.type === 'bike' && d.kmIdx !== undefined).map(d => d.num);
+}
+
+// True si el alumno ya cargó (aunque sea 0) los km de TODAS las salidas en
+// bici de esa semana — se lo exigimos antes de dejarlo pasar a la siguiente.
+function allKmLoggedForWeek(weekNum) {
+  return weekBikeDayNums(weekNum).every(n => kmLog[n] !== undefined);
+}
+
+// Se llama cada vez que se carga un km nuevo: si hay un check-in visible
+// para la semana actual, revisamos si ya puede habilitarse el botón de
+// continuar (necesita las 4 preguntas respondidas + todos los km cargados).
+function refreshCheckinGate(weekNum) {
+  const warn = document.getElementById(`ci-km-warn-${weekNum}`);
+  if (warn) warn.style.display = allKmLoggedForWeek(weekNum) ? 'none' : 'block';
+  const btn = document.getElementById(`ci-submit-${weekNum}`);
+  if (!btn) return;
+  const allAnswered = [1,2,3,4].every(i => ciAnswers[`w${weekNum}-q${i}`] !== undefined);
+  btn.disabled = !(allAnswered && allKmLoggedForWeek(weekNum));
 }
 
 const ciAnswers = {};
@@ -2046,10 +2073,10 @@ function ciPick(week, q, val, el) {
   if (grid) grid.querySelectorAll('.ci-opt').forEach(b => b.classList.remove('sel'));
   el.classList.add('sel');
 
-  // check if all 4 answered
+  // check if all 4 answered Y ya cargó los km de las 3 salidas de la semana
   const all = [1,2,3,4].every(i => ciAnswers[`w${week}-q${i}`] !== undefined);
   const btn = document.getElementById(`ci-submit-${week}`);
-  if (btn) btn.disabled = !all;
+  if (btn) btn.disabled = !(all && allKmLoggedForWeek(week));
 }
 
 function buildCheckinMessage(week, q1, q2, q3, q4, perf) {
