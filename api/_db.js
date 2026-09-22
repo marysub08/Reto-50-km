@@ -80,4 +80,18 @@ async function claimWelcomeEmail(token) {
   return rows.length > 0;
 }
 
-module.exports = { getSql, generateToken, findOrCreateStudent, claimWelcomeEmail };
+// Igual que claimWelcomeEmail, pero para el aviso que le mandamos a
+// contactodesafio50km@gmail.com cuando un alumno completa la encuesta de
+// cierre — así no le llega el mismo aviso dos veces si el alumno reenvía
+// el formulario (por ejemplo, por un problema de red la primera vez).
+async function claimFeedbackEmail(token) {
+  const sql = getSql();
+  const rows = await sql`
+    UPDATE students SET feedback_email_sent = true
+    WHERE token = ${token} AND feedback_email_sent = false
+    RETURNING token
+  `;
+  return rows.length > 0;
+}
+
+module.exports = { getSql, generateToken, findOrCreateStudent, claimWelcomeEmail, claimFeedbackEmail };
