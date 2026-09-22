@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
     const sql = getSql();
     const rows = await sql`
       SELECT nombre, edad, sexo, altura, peso, imc, bici, nivel, salud, motiv,
-             cur_week, week_perf, week_answers, ci_answers
+             cur_week, week_perf, week_answers, ci_answers, km_log
       FROM students
       WHERE token = ${token}
     `;
@@ -52,6 +52,7 @@ module.exports = async (req, res) => {
         weekPerf: r.week_perf || [],
         weekAnswers: r.week_answers || {},
         ciAnswers: r.ci_answers || {},
+        kmLog: r.km_log || {},
       },
     });
   } catch (err) {
