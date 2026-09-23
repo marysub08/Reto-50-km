@@ -231,6 +231,13 @@ window.onerror = function(msg, src, line) {
   .efc-btn { display: inline-flex; align-items: center; gap: 7px; background: rgba(255,255,255,.96); color: #1e293b; font-weight: 800; font-size: 13px; padding: 11px 16px; border-radius: 999px; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,.15); transition: transform .15s; }
   .efc-btn:hover { transform: translateY(-2px); }
   .efc-note { color: rgba(255,255,255,.85); font-size: 11.5px; margin-top: 6px; }
+
+  /* ── POPUP DEL CARTEL DE SUPERACIÓN (aparece encima de todo, no hay que scrollear) ── */
+  @keyframes efc-modal-in { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
+  .efc-modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.72); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 18px; }
+  .efc-modal-inner { width: 100%; max-width: 420px; max-height: 88vh; overflow-y: auto; border-radius: 20px; animation: efc-modal-in .3s ease; box-shadow: 0 20px 50px rgba(0,0,0,.45); }
+  .efc-modal-inner .early-finish-card { margin-bottom: 0; border-radius: 20px; }
+  .efc-modal-close { display: block; width: calc(100% - 32px); margin: 12px 16px 16px; padding: 12px; border: none; border-radius: 999px; background: rgba(255,255,255,.18); color: #fff; font-weight: 800; font-size: 13px; cursor: pointer; backdrop-filter: blur(2px); }
   .ex-body.open { display: block; }
   .ex-steps-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--azul-md); margin: 10px 0 7px; }
   .ex-steps { list-style: none; }
@@ -1232,9 +1239,11 @@ async function submitKmLog(dayNum, plannedKm) {
     kmLog[dayNum] = km;
   }
   // Si esta carga es justo la que lo hace cruzar los 120 km, festejamos en el momento.
+  const wdNow = PLANS[curWeek - 1];
   if (totalAntes < KM_TARGET && kmTotalSum() >= KM_TARGET) {
     celebrateConfetti();
     earlyFinishConfettiShown = true;
+    if (wdNow && !wdNow.finalDay) showEarlyFinishModal();
   }
   const holder = document.getElementById(`km-log-${dayNum}`);
   if (holder) holder.outerHTML = kmLogBoxHtml(dayNum, plannedKm);
@@ -1254,6 +1263,22 @@ function injectEarlyFinishCardIfNeeded() {
   const content = document.getElementById('weekContent');
   if (!content || content.querySelector('.early-finish-card')) return;
   content.insertAdjacentHTML('afterbegin', renderEarlyFinishCard());
+}
+
+// Muestra el cartel de superación como un popup encima de todo (no hace
+// falta scrollear para verlo). Se abre una sola vez por sesión de navegador.
+function showEarlyFinishModal() {
+  if (document.getElementById('efcModalBackdrop')) return;
+  const backdrop = document.createElement('div');
+  backdrop.id = 'efcModalBackdrop';
+  backdrop.className = 'efc-modal-backdrop';
+  backdrop.innerHTML = `<div class="efc-modal-inner">${renderEarlyFinishCard()}<button class="efc-modal-close" onclick="closeEarlyFinishModal()">Seguir entrenando ↓</button></div>`;
+  backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closeEarlyFinishModal(); });
+  document.body.appendChild(backdrop);
+}
+function closeEarlyFinishModal() {
+  const b = document.getElementById('efcModalBackdrop');
+  if (b) b.remove();
 }
 
 function editKmLog(dayNum, plannedKm) {
@@ -2027,6 +2052,7 @@ function buildWeek(weekNum, perf) {
   if (!wd.finalDay && kmTotalSum() >= KM_TARGET && !earlyFinishConfettiShown) {
     earlyFinishConfettiShown = true;
     celebrateConfetti();
+    showEarlyFinishModal();
   }
 }
 
