@@ -211,6 +211,26 @@ window.onerror = function(msg, src, line) {
   @keyframes str-pulse { 0%,100%{border-color:var(--card-brd)} 50%{border-color:var(--azul)} }
   @keyframes confetti-fall { to { transform: translateY(110vh) rotate(720deg); opacity: .25; } }
   .str-flash { animation: str-pulse .6s ease; }
+
+  /* ── CARTEL DE SUPERACIÓN TEMPRANA (llegó a 120 km antes de la semana final) ── */
+  @keyframes efc-bounce { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-6px) } }
+  @keyframes efc-shine { 0%{ background-position: 0% 50% } 100%{ background-position: 200% 50% } }
+  .early-finish-card {
+    position: relative; overflow: hidden; text-align: center;
+    border-radius: 18px; padding: 26px 20px 22px; margin-bottom: 20px;
+    background: linear-gradient(120deg, #f59e0b, #ec4899, #8b5cf6, #0ea5e9, #f59e0b);
+    background-size: 300% 300%; animation: efc-shine 8s ease infinite;
+    box-shadow: 0 10px 30px rgba(139,92,246,.35);
+  }
+  .efc-balloons { font-size: 1.6rem; letter-spacing: 6px; margin-bottom: 4px; animation: efc-bounce 1.6s ease-in-out infinite; }
+  .efc-trophy { font-size: 3rem; margin: 4px 0 6px; filter: drop-shadow(0 4px 8px rgba(0,0,0,.25)); }
+  .early-finish-card h2 { color: #fff; font-size: 1.25rem; font-weight: 900; margin-bottom: 8px; text-shadow: 0 2px 6px rgba(0,0,0,.25); }
+  .early-finish-card p { color: rgba(255,255,255,.96); font-size: 13.5px; line-height: 1.5; margin: 0 auto 8px; max-width: 480px; }
+  .early-finish-card p strong { color: #fff; }
+  .efc-contacts { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 16px 0 10px; }
+  .efc-btn { display: inline-flex; align-items: center; gap: 7px; background: rgba(255,255,255,.96); color: #1e293b; font-weight: 800; font-size: 13px; padding: 11px 16px; border-radius: 999px; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,.15); transition: transform .15s; }
+  .efc-btn:hover { transform: translateY(-2px); }
+  .efc-note { color: rgba(255,255,255,.85); font-size: 11.5px; margin-top: 6px; }
   .ex-body.open { display: block; }
   .ex-steps-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--azul-md); margin: 10px 0 7px; }
   .ex-steps { list-style: none; }
@@ -1214,11 +1234,26 @@ async function submitKmLog(dayNum, plannedKm) {
   // Si esta carga es justo la que lo hace cruzar los 120 km, festejamos en el momento.
   if (totalAntes < KM_TARGET && kmTotalSum() >= KM_TARGET) {
     celebrateConfetti();
+    earlyFinishConfettiShown = true;
   }
   const holder = document.getElementById(`km-log-${dayNum}`);
   if (holder) holder.outerHTML = kmLogBoxHtml(dayNum, plannedKm);
   renderKmCounter();
+  injectEarlyFinishCardIfNeeded();
   refreshCheckinGate(curWeek);
+}
+
+// Si el alumno ya superó los 120 km y todavía no llegó a la semana final,
+// insertamos el cartel de superación arriba de la lista de días sin tener
+// que reconstruir toda la semana (así no se recalculan los km sugeridos de
+// los días que todavía no cargó).
+function injectEarlyFinishCardIfNeeded() {
+  const wd = PLANS[curWeek - 1];
+  if (!wd || wd.finalDay) return;
+  if (kmTotalSum() < KM_TARGET) return;
+  const content = document.getElementById('weekContent');
+  if (!content || content.querySelector('.early-finish-card')) return;
+  content.insertAdjacentHTML('afterbegin', renderEarlyFinishCard());
 }
 
 function editKmLog(dayNum, plannedKm) {
@@ -1863,6 +1898,12 @@ function buildWeek(weekNum, perf) {
 
   let html = '';
 
+  // Si ya superó los 120 km y todavía no es la semana final, mostramos el
+  // cartel de superación temprana arriba de todo (con opciones de contacto).
+  if (!wd.finalDay && kmTotalSum() >= KM_TARGET) {
+    html += renderEarlyFinishCard();
+  }
+
   // Performance result message (from check-in)
   if (weekNum > 1 && weekAnswers[weekNum - 1]) {
     const wa = weekAnswers[weekNum - 1];
@@ -1979,6 +2020,14 @@ function buildWeek(weekNum, perf) {
   if (wd.finalDay && kmTotalSum() >= KM_TARGET) {
     celebrateConfetti();
   }
+
+  // Si es la primera vez que vemos el cartel de superación temprana en esta
+  // sesión del navegador, largamos los papelitos también acá (por si el
+  // alumno vuelve a entrar ya con los 120 km cargados de antes).
+  if (!wd.finalDay && kmTotalSum() >= KM_TARGET && !earlyFinishConfettiShown) {
+    earlyFinishConfettiShown = true;
+    celebrateConfetti();
+  }
 }
 
 function renderStrength(sess, perf, id) {
@@ -2055,6 +2104,32 @@ function toggleEx(cardId) {
 // ════════════════════════════════════
 //  CONFETTI (al llegar a los 120 km)
 // ════════════════════════════════════
+// ════════════════════════════════════
+//  CARTEL DE SUPERACIÓN TEMPRANA (llegó a los 120 km antes de la semana final)
+// ════════════════════════════════════
+const CONTACT_WEB = 'https://julioespositomtb.netlify.app/';
+const CONTACT_WA_JULIO = '5492616141873';
+const CONTACT_WA_CHARLY = '5492616814824';
+
+function renderEarlyFinishCard() {
+  const total = Math.round(kmTotalSum() * 10) / 10;
+  const waTexto = encodeURIComponent(`¡Hola! Llegué a superar el Desafío 120 km en 30 días (llevo ${total} km) y quiero saber más sobre los programas de alumnos, virtuales o presenciales.`);
+  return `
+    <div class="early-finish-card">
+      <div class="efc-balloons">🎈 🎊 🎉 🎊 🎈</div>
+      <div class="efc-trophy">🏆</div>
+      <h2>¡Superaste ampliamente el Desafío!</h2>
+      <p>Ya llevás <strong>${total} km</strong> — pasaste los 120 km del objetivo antes de terminar las 4 semanas. ¡Estás para mucho más!</p>
+      <p>Te invitamos a sumarte a nuestros <strong>programas de alumnos</strong>, virtuales o presenciales, con desafíos a tu altura. Elegí cómo comunicarte:</p>
+      <div class="efc-contacts">
+        <a class="efc-btn" href="${CONTACT_WEB}" target="_blank" rel="noopener">🌐 Ver la página</a>
+        <a class="efc-btn" href="https://wa.me/${CONTACT_WA_JULIO}?text=${waTexto}" target="_blank" rel="noopener">📱 Julio · WhatsApp</a>
+        <a class="efc-btn" href="https://wa.me/${CONTACT_WA_CHARLY}?text=${waTexto}" target="_blank" rel="noopener">📱 Charly · WhatsApp</a>
+      </div>
+      <div class="efc-note">Si querés, podés seguir entrenando estos días — tu plan sigue disponible más abajo.</div>
+    </div>`;
+}
+
 function celebrateConfetti() {
   const colors = ['#0ea5e9', '#f59e0b', '#22c55e', '#ef4444', '#a855f7', '#eab308'];
   const container = document.createElement('div');
@@ -2228,6 +2303,7 @@ const ciAnswers = {};
 const weekAnswers = {}; // stores {q1,q2,q3,q4} per week for message building
 const kmLog = {}; // stores { [dayNum]: kmReales } — kilómetros que el alumno cargó por cada salida en bici
 const KM_TARGET = 120;
+let earlyFinishConfettiShown = false; // evita repetir los papelitos del cartel de superación en cada re-render
 function ciPick(week, q, val, el) {
   const key = `w${week}-q${q}`;
   ciAnswers[key] = val;
