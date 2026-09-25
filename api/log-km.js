@@ -3,7 +3,7 @@
 // Guarda los kilómetros REALES que el alumno recorrió en una salida
 // puntual del plan (identificada por el número de día, 1–30). Se llama
 // cada vez que toca "Cargar km" en una salida de bici — así el contador
-// de "120 km" que ve arriba de su plan siempre refleja lo que realmente
+// de "200 km" que ve arriba de su plan siempre refleja lo que realmente
 // hizo, no lo planificado.
 //
 // Guardamos un objeto { "<dia>": km } en la columna km_log — cargar de
