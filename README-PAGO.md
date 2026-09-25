@@ -1,4 +1,4 @@
-# Cobro del Desafío 50 km — cómo ponerlo en marcha
+# Cobro del Desafío 200 km — cómo ponerlo en marcha
 
 Esto agrega el cobro con Mercado Pago (Checkout Pro) a `desafio-50km.html`. El alumno ve el precio, paga en Mercado Pago, y vuelve automáticamente a la pantalla de Mar IA solo si el pago se confirmó de verdad (se valida contra Mercado Pago desde el servidor, no se puede "hacer trampa" escribiendo la URL).
 
