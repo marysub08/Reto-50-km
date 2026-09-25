@@ -1,7 +1,7 @@
 // api/create-preference.js
 //
 // Crea una preferencia de pago de Mercado Pago (Checkout Pro) para el
-// Desafío 50 km y devuelve el link (init_point) al que hay que redirigir
+// Desafío 200 km y devuelve el link (init_point) al que hay que redirigir
 // al comprador. El precio se define ACÁ, en el servidor — nunca confíes
 // en un precio que venga del navegador.
 //
@@ -50,7 +50,7 @@ module.exports = async (req, res) => {
         items: [
           {
             id: 'desafio-50k',
-            title: 'Desafío 50 km en 30 días',
+            title: 'Desafío 200 km en 30 días',
             description: 'Plan personalizado de 30 días + coaching de Mar IA',
             quantity: 1,
             unit_price: PRECIO_ARS,
