@@ -1,7 +1,7 @@
 // api/submit-feedback.js
 //
 // Guarda la encuesta de cierre que el alumno completa en la semana final
-// del Desafío — llegue o no a los 120 km — y le avisa por email al coach
+// del Desafío — llegue o no a los 200 km — y le avisa por email al coach
 // (contactodesafio50km@gmail.com) para que se entere sin depender de que
 // el alumno le escriba por su cuenta.
 
