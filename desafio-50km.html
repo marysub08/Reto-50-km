@@ -353,6 +353,21 @@ window.onerror = function(msg, src, line) {
   .fitting-plan .fitting-pro { background: rgba(20,184,166,.1); color: #115e59; }
   .fitting-plan .fitting-tip { color: #0f766e; }
 
+  .fitting-km { background: linear-gradient(135deg, rgba(14,165,233,.15) 0%, rgba(7,89,133,.06) 100%); border: 1.5px solid rgba(14,165,233,.45); border-left: 5px solid #0ea5e9; border-radius: 0 16px 16px 0; margin-bottom: 14px; overflow: hidden; }
+  .fitting-km .fitting-hdr:hover { background: rgba(14,165,233,.12); }
+  .fitting-km .fitting-title { font-size: 14px; }
+  .fitting-km .fitting-sub { color: #075985; }
+  .fitting-km .fitting-cta { background: rgba(14,165,233,.2); border-color: rgba(14,165,233,.4); color: #075985; }
+  .fitting-km .fitting-hdr:hover .fitting-cta { background: rgba(14,165,233,.38); }
+  .fitting-km .fitting-body { border-top-color: rgba(14,165,233,.2); }
+  .fitting-km .fitting-pro { background: rgba(14,165,233,.1); color: #075985; }
+  .fitting-km .fitting-tip { color: #075985; }
+  .km-app-card { display:flex; gap:12px; align-items:flex-start; background:rgba(14,165,233,.08); border-radius:10px; padding:12px 14px; margin-bottom:10px; }
+  .km-app-card:last-child { margin-bottom:0; }
+  .km-app-ico { font-size:1.4rem; flex-shrink:0; width:28px; text-align:center; }
+  .km-app-name { font-size:13px; font-weight:800; color:var(--texto); margin-bottom:2px; }
+  .km-app-desc { font-size:12.5px; color:#075985; line-height:1.5; }
+
   /* ── ELEVATION ROW ── */
   .elev-row { display:flex; align-items:center; gap:8px; margin-top:7px; padding:6px 10px; border-radius:8px; }
   .elev-row svg { flex-shrink:0; }
@@ -678,6 +693,43 @@ window.onerror = function(msg, src, line) {
     <div id="alertSalud" class="alert alert-warn"></div>
     <div id="alertEdad" class="alert alert-info"></div>
     <div id="alertIMC" class="alert alert-info"></div>
+
+    <!-- CÓMO MEDIR LOS KM -->
+    <div class="fitting-km">
+      <div class="fitting-hdr" onclick="toggleKmGuide()">
+        <span class="fitting-icon icn" data-icon="target"></span>
+        <div>
+          <div class="fitting-title">¿Cómo mido los km que hago?</div>
+          <div class="fitting-sub">Importante antes de tu primera salida.</div>
+        </div>
+        <span class="fitting-cta" id="fitting-cta-km">Ver apps ▾</span>
+      </div>
+      <div class="fitting-body" id="fitting-body-km">
+        <div class="fitting-pro">
+          📍 <strong>Usá siempre la misma app o dispositivo durante todo el reto.</strong> Así el número que cargás cada vez es comparable y tu contador de 200 km refleja lo que realmente recorriste, no una estimación.
+        </div>
+        <div class="km-app-card">
+          <span class="km-app-ico">🟠</span>
+          <div><div class="km-app-name">Strava (recomendada)</div><div class="km-app-desc">Gratis, es la más usada por ciclistas. Antes de salir tocá "Grabar", elegí "Ciclismo" y arrancá. Al terminar, apretá "Finalizar" y ahí te muestra la distancia total — ese es el número que cargás.</div></div>
+        </div>
+        <div class="km-app-card">
+          <span class="km-app-ico">🟢</span>
+          <div><div class="km-app-name">Komoot o MapMyRide</div><div class="km-app-desc">Alternativas gratis a Strava, funcionan igual: iniciás el registro antes de salir y lo cerrás al terminar para ver el km total.</div></div>
+        </div>
+        <div class="km-app-card">
+          <span class="km-app-ico">⌚</span>
+          <div><div class="km-app-name">Reloj o pulsera deportiva</div><div class="km-app-desc">Si tenés un Garmin, Apple Watch u otro reloj con GPS, sirve igual — activá el modo "Ciclismo" antes de salir.</div></div>
+        </div>
+        <div class="km-app-card">
+          <span class="km-app-ico">🚲</span>
+          <div><div class="km-app-name">Ciclocomputador de la bici</div><div class="km-app-desc">Si tu bici ya tiene uno instalado (un velocímetro con pantalla en el manubrio), también funciona — fijate que esté en cero antes de salir.</div></div>
+        </div>
+        <div class="fitting-tip" style="margin-top:12px">
+          <span class="fitting-tip-ico" style="font-size:1.3rem">📲</span>
+          <div><strong>¿No tenés ninguno de estos?</strong><br>Instalá Strava gratis en tu celular (Android o iPhone) — no hace falta pagar nada ni crear una cuenta de pago para registrar tus salidas.</div>
+        </div>
+      </div>
+    </div>
 
     <!-- FITTING EN EL PLAN -->
     <div class="fitting-plan" style="margin-bottom:14px">
@@ -1861,6 +1913,13 @@ function toggleFitting2() {
   const cta  = document.getElementById('fitting-cta2');
   body.classList.toggle('open');
   cta.textContent = body.classList.contains('open') ? 'Cerrar ▴' : 'Ver tips ▾';
+}
+
+function toggleKmGuide() {
+  const body = document.getElementById('fitting-body-km');
+  const cta  = document.getElementById('fitting-cta-km');
+  body.classList.toggle('open');
+  cta.textContent = body.classList.contains('open') ? 'Cerrar ▴' : 'Ver apps ▾';
 }
 
 function goToPlan() { A.bici = 'si'; saveProgress(); initPlan(); }
