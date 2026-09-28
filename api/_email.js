@@ -75,7 +75,7 @@ async function sendFeedbackEmail({ nombre, rating, comment, reached, kmTotal, li
     return false;
   }
 
-  const to = process.env.FEEDBACK_TO_EMAIL || 'contactodesafio50km@gmail.com';
+  const to = process.env.FEEDBACK_TO_EMAIL || 'julioespositomtb@gmail.com';
   const nombreAlumno = (nombre || 'Un alumno').trim();
   const estado = reached ? '✅ Llegó a los 200 km' : '⚠️ No llegó a los 200 km';
   const ratingLabels = { 5: 'Buenísima', 4: 'Buena', 3: 'Regular', 2: 'Difícil' };
