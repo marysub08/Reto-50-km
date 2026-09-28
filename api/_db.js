@@ -81,7 +81,7 @@ async function claimWelcomeEmail(token) {
 }
 
 // Igual que claimWelcomeEmail, pero para el aviso que le mandamos a
-// contactodesafio50km@gmail.com cuando un alumno completa la encuesta de
+// julioespositomtb@gmail.com cuando un alumno completa la encuesta de
 // cierre — así no le llega el mismo aviso dos veces si el alumno reenvía
 // el formulario (por ejemplo, por un problema de red la primera vez).
 async function claimFeedbackEmail(token) {
