@@ -553,8 +553,9 @@ window.onerror = function(msg, src, line) {
     <div class="card-glow" style="text-align:center;padding:32px 20px">
       <div class="icn" data-icon="bike" style="font-size:3rem;margin-bottom:12px;color:var(--azul-dk)"></div>
       <h2 style="font-size:1.35rem;font-weight:800;color:var(--texto);margin-bottom:10px">Sumate al Desafío 200 km</h2>
-      <p style="color:var(--celeste);font-size:14px;line-height:1.6;margin-bottom:20px">Plan personalizado de 30 días + coaching de <strong style="color:var(--texto)">Mar IA</strong>, ajustándose semana a semana a tu progreso real.</p>
-      <div style="font-size:2.2rem;font-weight:900;color:var(--azul-dk);margin-bottom:2px">$20.000 <span style="font-size:.85rem;font-weight:600;color:var(--celeste)">ARS</span></div>
+      <p style="color:var(--celeste);font-size:14px;line-height:1.6;margin-bottom:16px">Plan personalizado de 30 días + coaching de <strong style="color:var(--texto)">Mar IA</strong>, ajustándose semana a semana a tu progreso real.</p>
+      <div style="display:inline-block;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;font-weight:800;font-size:13px;padding:8px 18px;border-radius:999px;margin-bottom:14px;letter-spacing:.3px;box-shadow:0 4px 14px rgba(220,38,38,.35)">🔥 PROMO DE LANZAMIENTO</div>
+      <div style="font-size:2.2rem;font-weight:900;color:var(--azul-dk);margin-bottom:2px">$30.000 <span style="font-size:.85rem;font-weight:600;color:var(--celeste)">ARS</span></div>
       <div style="font-size:12px;color:var(--celeste);margin-bottom:24px">Pago único · acceso inmediato</div>
       <div style="text-align:left;margin-bottom:16px">
         <label for="buyerEmail" style="display:block;font-size:13px;font-weight:700;color:var(--texto);margin-bottom:6px">Tu email (ahí te mandamos tu acceso)</label>
@@ -921,7 +922,7 @@ const PLANS = [
       { day:'DOM', num:7, type:'rest', det:'Estiramientos suaves. Tu cuerpo está construyendo la base.' }
     ],
     bikeKm:[10,13,17],
-    sessA:{ title:'Sesión A – Piernas + Core (Martes)', baseSets:3, exs:[{id:'squat_bw',reps:'12 reps'},{id:'lunge_front',reps:'10 reps/pierna'},{id:'glute_bridge',reps:'15 reps'},{id:'plank',reps:'25 seg'},{id:'superman',reps:'12 reps'}] },
+    sessA:{ title:'Sesión A – Piernas + Core (Martes)', baseSets:3, exs:[{id:'squat_bulgar',reps:'6 reps/pierna'},{id:'lunge_front',reps:'10 reps/pierna'},{id:'glute_bridge',reps:'15 reps'},{id:'plank',reps:'25 seg'},{id:'superman',reps:'12 reps'}] },
     sessB:{ title:'Sesión B – Glúteos + Estabilidad (Viernes)', baseSets:3, exs:[{id:'glute_bridge_1',reps:'10 reps/pierna'},{id:'lunge_lateral',reps:'10 reps/pierna'},{id:'plank_side',reps:'20 seg/lado'},{id:'bird_dog',reps:'10 reps/lado'},{id:'row',reps:'12 reps'}] },
     nut:[{ico:'🥣',t:'Antes del entreno',i:'Banana, avena con leche o tostadas con palta. Comé 1 hora antes.'},{ico:'💧',t:'Hidratación',i:'Mínimo 2 litros de agua por día. Siempre con botella en la bici.'},{ico:'🍗',t:'Post-entreno',i:'Pollo, huevos, yogur griego, legumbres. Proteínas para recuperarse.'},{ico:'🍊',t:'Antioxidantes',i:'Naranja, kiwi, frutillas. Reducen la inflamación muscular post-esfuerzo.'}]
   },
@@ -2297,7 +2298,7 @@ async function submitFinalFeedback() {
   }
   const box = document.getElementById('final-feedback-box');
   if (box) {
-    box.innerHTML = `<div style="text-align:center;padding:10px 0"><div style="font-size:2rem;margin-bottom:8px">🙏</div><p style="color:var(--celeste);font-size:13px;line-height:1.5">¡Gracias por contarnos cómo te fue! Si querés agregar algo más, escribinos a <a href="mailto:contactodesafio50km@gmail.com" style="color:var(--azul-dk);font-weight:700">contactodesafio50km@gmail.com</a>.</p></div>`;
+    box.innerHTML = `<div style="text-align:center;padding:10px 0"><div style="font-size:2rem;margin-bottom:8px">🙏</div><p style="color:var(--celeste);font-size:13px;line-height:1.5">¡Gracias por contarnos cómo te fue! Si querés agregar algo más, escribinos a <a href="mailto:julioespositomtb@gmail.com" style="color:var(--azul-dk);font-weight:700">julioespositomtb@gmail.com</a>.</p></div>`;
   }
 }
 
@@ -2629,7 +2630,7 @@ async function askmiSend() {
         <strong>Si completaste todo lo que propone el plan</strong> — los entrenamientos en bici, las sesiones de fuerza y los check-ins semanales de las 4 semanas — <strong>y aun así no llegaste a sumar los 200 km del mes</strong>, te devolvemos el pago completo.
       </p>
       <p>Esto no cubre el abandono del desafío, saltearse semanas o entrenamientos, ni el simple arrepentimiento de la compra. Sí cubre el caso en el que pusiste el esfuerzo real y el plan no te llevó a la meta — ahí la responsabilidad es nuestra, no tuya.</p>
-      <p>Para pedirlo, escribinos a <a href="mailto:contactodesafio50km@gmail.com" style="color:var(--azul-dk);font-weight:700">contactodesafio50km@gmail.com</a> contando tu caso — tu check-in semanal ya queda registrado en tu cuenta, así que podemos confirmar fácilmente que cumpliste el plan.</p>
+      <p>Para pedirlo, escribinos a <a href="mailto:julioespositomtb@gmail.com" style="color:var(--azul-dk);font-weight:700">julioespositomtb@gmail.com</a> contando tu caso — tu check-in semanal ya queda registrado en tu cuenta, así que podemos confirmar fácilmente que cumpliste el plan.</p>
     </div>
   </div>
 </div>
