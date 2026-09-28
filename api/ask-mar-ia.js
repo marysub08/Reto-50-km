@@ -56,7 +56,7 @@ module.exports = async (req, res) => {
     perf: String(c.perf || '').slice(0, 20),
   })) : [];
 
-  const CONTACT_EMAIL = 'contactodesafio50km@gmail.com';
+  const CONTACT_EMAIL = 'julioespositomtb@gmail.com';
   const CONTACT_WA_JULIO = '+54 9 261 614-1873';
   const CONTACT_WA_CHARLY = '+54 9 261 681-4824';
 
