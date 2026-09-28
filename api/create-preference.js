@@ -17,7 +17,7 @@
 
 const { MercadoPagoConfig, Preference } = require('mercadopago');
 
-const PRECIO_ARS = 20000;
+const PRECIO_ARS = 30000;
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
